@@ -1,6 +1,5 @@
-import Server from "./server";
-import { mysqlClient } from "./db";
-const server = new Server().init();
+import mysqlClient from "./db";
+import server from "./server";
 
 const start = async () => {
   try {

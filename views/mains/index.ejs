@@ -1,2 +1,10 @@
-<main class="main">
+<main class="main" id="main">
+    <% for (const file of files) {%>
+        <% if (file.endsWith('mov')) {%>
+            <video src="<%= file %>"></video>
+            <%} else if (file.endsWith('png')) {%>
+                <img src="<%= file %>" alt="">
+                <%}%>
+                    <%}%>
 </main>
+<script src="/public/js/mainsIndex.js"></script>

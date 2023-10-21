@@ -20,6 +20,16 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 
 /***/ }),
 
+/***/ "./frontend/js/mains/index.js":
+/*!************************************!*\
+  !*** ./frontend/js/mains/index.js ***!
+  \************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _main__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../main */ \"./frontend/js/main.js\");\n\nconst videoDOMs = document.querySelectorAll(\"#main video\");\nconst imageDOMs = document.querySelectorAll(\"#main img\");\nvideoDOMs.forEach(videoDOM => {\n  videoDOM.addEventListener(\"click\", () => {\n    if (videoDOM.paused) {\n      videoDOM.play();\n    } else {\n      videoDOM.pause();\n    }\n  });\n});\nimageDOMs.forEach(imageDOM => {\n  imageDOM.addEventListener(\"click\", () => {});\n});\nclass MainDOM extends _main__WEBPACK_IMPORTED_MODULE_0__.DOM {\n  constructor() {\n    // TODO: 입력받은 DOM 하위 DOM을 id로 할당\n    // const mainDOM = document.getElementById(\"main\");\n    // super(mainDOM);\n  }\n}\n\n//# sourceURL=webpack://generics/./frontend/js/mains/index.js?");
+
+/***/ }),
+
 /***/ "./frontend/scss/styles.scss":
 /*!***********************************!*\
   !*** ./frontend/scss/styles.scss ***!
@@ -90,7 +100,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n// extracted by mini-css-extr
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module can't be inlined because the eval devtool is used.
-/******/ 	var __webpack_exports__ = __webpack_require__("./frontend/js/main.js");
+/******/ 	var __webpack_exports__ = __webpack_require__("./frontend/js/mains/index.js");
 /******/ 	
 /******/ })()
 ;

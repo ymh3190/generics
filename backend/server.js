@@ -31,7 +31,7 @@ class Server {
   }
 
   #useMiddleware() {
-    this.#app.use(helmet());
+    this.#app.use(helmet({ contentSecurityPolicy: false }));
     this.#app.use(cors());
     this.#app.use(express.json());
     this.#app.use("/static", express.static("static"));
@@ -50,4 +50,5 @@ class Server {
   }
 }
 
-export default Server;
+const server = new Server().init();
+export default server;

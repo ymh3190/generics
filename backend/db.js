@@ -2,7 +2,15 @@ import mysql from "mysql2/promise";
 
 class MySQLClient {
   constructor() {
-    this.pool = null;
+    this.pool;
+  }
+
+  init() {
+    this.insert();
+    this.select();
+    this.update();
+    this.delete();
+    return this;
   }
 
   async connect() {
@@ -15,7 +23,45 @@ class MySQLClient {
     conn.release();
     console.log(`Connectedt to DB`);
   }
+
+  /**
+   * @abstract
+   */
+  insert() {}
+
+  /**
+   * @abstract
+   */
+  select() {}
+
+  /**
+   * @abstract
+   */
+  update() {}
+
+  /**
+   * @abstract
+   */
+  delete() {}
 }
 
-const mysqlClient = new MySQLClient();
-export { mysqlClient };
+export class Video extends MySQLClient {
+  constructor() {}
+
+  static insert() {}
+  static select() {}
+  static update() {}
+  static delete() {}
+}
+
+export class Image extends MySQLClient {
+  constructor() {}
+
+  static insert() {}
+  static select() {}
+  static update() {}
+  static delete() {}
+}
+
+const mysqlClient = new MySQLClient().init();
+export default mysqlClient;
