@@ -5,8 +5,6 @@ module.exports = {
   entry: {
     main: path.join(__dirname, "frontend/js", "main"),
     mainsIndex: path.join(__dirname, "frontend/js/mains", "index"),
-    mainsVideo: path.join(__dirname, "frontend/js/mains", "video"),
-    mainsImage: path.join(__dirname, "frontend/js/mains", "image"),
   },
   output: {
     path: path.resolve(__dirname, "public"),

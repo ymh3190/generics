@@ -1,7 +1,7 @@
 class Middleware {
-  constructor(siteName) {
+  constructor() {
     this.localsMiddleware = (req, res, next) => {
-      res.locals.siteName = siteName;
+      res.locals.siteName = "Generics";
       next();
     };
     this.asyncWrapper = (fn) => {
@@ -16,4 +16,4 @@ class Middleware {
   }
 }
 
-export const { localsMiddleware, asyncWrapper } = new Middleware("Generics");
+export const { localsMiddleware, asyncWrapper } = new Middleware();
