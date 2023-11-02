@@ -13,17 +13,16 @@ class Server {
   constructor() {
     this.#app = express();
     this.#port = process.env.PORT || 3000;
-  }
 
-  init() {
     this.#setConfig();
     this.#useMiddleware();
     this.#useRouter();
-    return this;
   }
 
   listen() {
-    this.#listen();
+    this.#app.listen(this.#port, () => {
+      console.log(`Server is listening port ${this.#port}`);
+    });
   }
 
   #setConfig() {
@@ -42,13 +41,7 @@ class Server {
   #useRouter() {
     this.#app.use(rootRouter.routes.root, rootRouter.router);
   }
-
-  #listen() {
-    this.#app.listen(this.#port, () => {
-      console.log(`Server is listening port ${this.#port}`);
-    });
-  }
 }
 
-const server = new Server().init();
+const server = new Server();
 export default server;

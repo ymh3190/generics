@@ -12,33 +12,30 @@ class Router {
     this.controllers = {};
   }
 
-  init() {
-    this.get();
-    this.post();
-    this.patch();
-    this.delete();
-    return this;
-  }
+  /**
+   * @abstract
+   */
+  #route() {}
 
   /**
    * @abstract
    */
-  get() {}
+  #get() {}
 
   /**
    * @abstract
    */
-  post() {}
+  #post() {}
 
   /**
    * @abstract
    */
-  patch() {}
+  #patch() {}
 
   /**
    * @abstract
    */
-  delete() {}
+  #delete() {}
 }
 
 class RootRouter extends Router {
@@ -47,11 +44,14 @@ class RootRouter extends Router {
     this.controllers.getIndex = asyncWrapper(
       rootController.getIndex.bind(rootController)
     );
+
+    this.#get();
   }
 
-  get() {
+  #get() {
     this.router.get(this.routes.root, this.controllers.getIndex);
   }
 }
 
-export const rootRouter = new RootRouter("/").init();
+const rootRouter = new RootRouter("/");
+export { rootRouter };

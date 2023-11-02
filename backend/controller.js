@@ -1,3 +1,5 @@
+import { Video } from "./db";
+
 /**
  * @abstract
  */
