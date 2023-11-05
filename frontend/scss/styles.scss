@@ -1,8 +1,30 @@
 @import "./normalize.scss";
 
-@import "./layouts/index.scss";
-@import "./headers/index.scss";
+@import "./header/index.scss";
+@import "./nav/index.scss";
+@import "./footer/index.scss";
+
 @import "./contents/index.scss";
-@import "./navs/index.scss";
-@import "./mains/index.scss";
-@import "./footers/index.scss";
+@import "./contents/watch.scss";
+
+.root {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+main {
+  display: flex;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
+
+li {
+  list-style: none;
+}
+
+.hide {
+  display: none;
+}

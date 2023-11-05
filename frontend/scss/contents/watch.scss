@@ -1,0 +1,11 @@
+.watch {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  padding-top: 10px;
+
+  .container {
+    video {
+      width: 100%;
+    }
+  }
+}

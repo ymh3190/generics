@@ -2,9 +2,6 @@ import express from "express";
 import { rootController } from "./controller";
 import { asyncWrapper } from "./middleware";
 
-/**
- * @abstract
- */
 class Router {
   constructor(path) {
     this.router = express.Router();
@@ -12,29 +9,19 @@ class Router {
     this.controllers = {};
   }
 
-  /**
-   * @abstract
-   */
+  /** @abstract */
   #route() {}
 
-  /**
-   * @abstract
-   */
+  /** @abstract */
   #get() {}
 
-  /**
-   * @abstract
-   */
+  /** @abstract */
   #post() {}
 
-  /**
-   * @abstract
-   */
+  /** @abstract */
   #patch() {}
 
-  /**
-   * @abstract
-   */
+  /** @abstract */
   #delete() {}
 }
 
@@ -45,13 +32,25 @@ class RootRouter extends Router {
       rootController.getIndex.bind(rootController)
     );
 
+    this.routes.video = "/video";
+    this.controllers.getVideo = asyncWrapper(
+      rootController.getVideo.bind(rootController)
+    );
+
+    this.routes.watch = "/watch/:id(\\d|\\w{32})";
+    this.controllers.getWatch = asyncWrapper(
+      rootController.getWatch.bind(rootController)
+    );
+
     this.#get();
   }
 
+  /** @implements */
   #get() {
     this.router.get(this.routes.root, this.controllers.getIndex);
+    this.router.get(this.routes.video, this.controllers.getVideo);
+    this.router.get(this.routes.watch, this.controllers.getWatch);
   }
 }
 
-const rootRouter = new RootRouter("/");
-export { rootRouter };
+export const rootRouter = new RootRouter("/");

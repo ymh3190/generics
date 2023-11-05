@@ -1,19 +1,29 @@
 class Middleware {
-  constructor() {
-    this.localsMiddleware = (req, res, next) => {
-      res.locals.siteName = "Generics";
-      next();
+  locals(req, res, next) {
+    next();
+  }
+
+  asyncWrapper(fn) {
+    return async (req, res, next) => {
+      try {
+        await fn(req, res, next);
+      } catch (error) {
+        next(error);
+      }
     };
-    this.asyncWrapper = (fn) => {
-      return async (req, res, next) => {
-        try {
-          await fn(req, res, next);
-        } catch (error) {
-          next(error);
-        }
-      };
-    };
+  }
+
+  notFound(req, res) {
+    return res
+      .status(404)
+      .render("contents/error", { pageTitle: "Route not found" });
+  }
+
+  errorHandler(err, req, res, next) {
+    console.log(err);
+    return res.end();
   }
 }
 
-export const { localsMiddleware, asyncWrapper } = new Middleware();
+export const { asyncWrapper, errorHandler, locals, notFound } =
+  new Middleware();

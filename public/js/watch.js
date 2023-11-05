@@ -9,13 +9,13 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./frontend/js/mains/index.js":
-/*!************************************!*\
-  !*** ./frontend/js/mains/index.js ***!
-  \************************************/
+/***/ "./frontend/js/contents/watch.js":
+/*!***************************************!*\
+  !*** ./frontend/js/contents/watch.js ***!
+  \***************************************/
 /***/ (() => {
 
-eval("\n\n//# sourceURL=webpack://generics/./frontend/js/mains/index.js?");
+eval("const barsDOM = document.getElementById(\"bars\");\nconst navDOM = document.getElementById(\"nav\");\nnavDOM.classList.add(\"hide\");\nbarsDOM.addEventListener(\"click\", () => {\n  if (navDOM.classList.contains(\"hide\")) {\n    navDOM.classList.remove(\"hide\");\n  } else {\n    navDOM.classList.add(\"hide\");\n  }\n});\n\n//# sourceURL=webpack://generics/./frontend/js/contents/watch.js?");
 
 /***/ })
 
@@ -26,7 +26,7 @@ eval("\n\n//# sourceURL=webpack://generics/./frontend/js/mains/index.js?");
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module can't be inlined because the eval devtool is used.
 /******/ 	var __webpack_exports__ = {};
-/******/ 	__webpack_modules__["./frontend/js/mains/index.js"]();
+/******/ 	__webpack_modules__["./frontend/js/contents/watch.js"]();
 /******/ 	
 /******/ })()
 ;

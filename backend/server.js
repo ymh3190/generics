@@ -4,7 +4,7 @@ import helmet from "helmet";
 import cors from "cors";
 
 import { rootRouter } from "./router";
-import { localsMiddleware } from "./middleware";
+import { errorHandler, notFound } from "./middleware";
 
 class Server {
   #app;
@@ -17,6 +17,7 @@ class Server {
     this.#setConfig();
     this.#useMiddleware();
     this.#useRouter();
+    this.#errorHandler();
   }
 
   listen() {
@@ -27,6 +28,7 @@ class Server {
 
   #setConfig() {
     this.#app.set("view engine", "ejs");
+    this.#app.set("views", process.cwd() + "/views/contents/index");
   }
 
   #useMiddleware() {
@@ -35,11 +37,15 @@ class Server {
     this.#app.use(express.json());
     this.#app.use("/static", express.static("static"));
     this.#app.use("/public", express.static("public"));
-    this.#app.use(localsMiddleware);
   }
 
   #useRouter() {
     this.#app.use(rootRouter.routes.root, rootRouter.router);
+  }
+
+  #errorHandler() {
+    this.#app.use(notFound);
+    this.#app.use(errorHandler);
   }
 }
 
