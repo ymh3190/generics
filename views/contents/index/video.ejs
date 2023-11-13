@@ -1,6 +1,11 @@
 <%- include('../../layouts/index') %>
 
     <%- include('../../navs/index') %>
-        <div class="content">
+        <div class="content video">
+            <% for (const video of videos) {%>
+                <video src="<%= video.path %>" poster="<%= video.poster%>" controls></video>
+                <%}%>
+                    <div></div>
         </div>
         <%- include('../../footers/index') %>
+            <script src="/public/js/bars.js"></script>

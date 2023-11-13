@@ -1,6 +1,7 @@
-import { Image, Video } from "./db";
+import Video from "../test/video";
+import Image from "../test/image";
 
-/** @abstract */
+/** @interface */
 class RenderController {
   constructor() {
     this.views = {};
@@ -45,8 +46,6 @@ class RootController extends RenderController {
   }
 }
 
-class ApiController {
-  constructor() {}
-}
+class ApiController {}
 
 export const rootController = new RootController();

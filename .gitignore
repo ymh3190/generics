@@ -1,6 +1,9 @@
 node_modules/
 videos/
 images/
+public/
+build/
+test/
 
 .env
 .DS_Store

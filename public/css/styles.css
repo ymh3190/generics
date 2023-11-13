@@ -374,6 +374,14 @@ template {
   width: 100%;
 }
 
+.video {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+.video video {
+  width: 100%;
+}
+
 .root {
   padding-left: 10px;
   padding-right: 10px;

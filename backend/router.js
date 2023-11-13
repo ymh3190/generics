@@ -2,6 +2,7 @@ import express from "express";
 import { rootController } from "./controller";
 import { asyncWrapper } from "./middleware";
 
+/** @interface */
 class Router {
   constructor(path) {
     this.router = express.Router();
@@ -9,19 +10,19 @@ class Router {
     this.controllers = {};
   }
 
-  /** @abstract */
+  /** @interface */
   #route() {}
 
-  /** @abstract */
+  /** @interface */
   #get() {}
 
-  /** @abstract */
+  /** @interface */
   #post() {}
 
-  /** @abstract */
+  /** @interface */
   #patch() {}
 
-  /** @abstract */
+  /** @interface */
   #delete() {}
 }
 

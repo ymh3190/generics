@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node build/app.js",
     "build": "babel backend -d build && webpack --mode=production",
-    "dev": "nodemon -x babel-node backend/app.js",
+    "dev": "nodemon -i test -x babel-node backend/app.js",
     "dist": "webpack --mode=development -w"
   },
   "keywords": [],

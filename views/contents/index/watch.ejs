@@ -3,11 +3,10 @@
     <%- include('../../navs/index') %>
         <div class="content watch">
             <div class="container">
-                <video src="<%= video.path %>" controls></video>
+                <video src="<%= video.path %>" poster="<%= video.poster%>" controls></video>
             </div>
             <div></div>
         </div>
-
         <%- include('../../footers/index') %>
             <script src="/public/js/bars.js"></script>
             <script src="/public/js/watch.js"></script>
