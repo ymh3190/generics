@@ -1,8 +1,14 @@
 .header {
-  padding-left: 10px;
-  padding-right: 10px;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
+  align-items: center;
+  padding-top: 10px;
+  div:nth-child(2) {
+    form {
+      display: grid;
+      grid-template-columns: 9fr 1fr;
+    }
+  }
   div:last-child {
     justify-self: self-end;
   }

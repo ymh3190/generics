@@ -10,7 +10,9 @@ barsDOM.addEventListener("click", () => {
       const iconDOM = anchorDOM.querySelector("i");
       iconDOM.classList.remove("margin-bottom");
       iconDOM.classList.add("margin-right");
-    } else if (anchorDOM.classList.contains("flex")) {
+      continue;
+    }
+    if (anchorDOM.classList.contains("flex")) {
       anchorDOM.classList.remove("flex");
       anchorDOM.classList.add("column");
       const iconDOM = anchorDOM.querySelector("i");

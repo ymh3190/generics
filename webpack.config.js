@@ -5,8 +5,9 @@ module.exports = {
   entry: {
     main: path.join(__dirname, "frontend/js", "main"),
     bars: path.join(__dirname, "frontend/js/header", "bars"),
-    login: path.join(__dirname, "frontend/js/header", "login"),
+    signin: path.join(__dirname, "frontend/js/header", "signin"),
     watch: path.join(__dirname, "frontend/js/contents", "watch"),
+    signin: path.join(__dirname, "frontend/js/contents", "signin"),
   },
   output: {
     path: path.resolve(__dirname, "public"),

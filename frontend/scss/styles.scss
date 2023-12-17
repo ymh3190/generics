@@ -1,19 +1,29 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap");
+
+@import "./variable.scss";
 @import "./normalize.scss";
+
+@import "./layouts/index.scss";
+@import "./layouts/auth.scss";
 
 @import "./header/index.scss";
 @import "./nav/index.scss";
 @import "./footer/index.scss";
 
-@import "./contents/index.scss";
 @import "./contents/watch.scss";
 @import "./contents/video.scss";
+@import "./contents/signin.scss";
 
-.root {
-  padding-left: 10px;
-  padding-right: 10px;
+body {
+  font-family: "Open Sans", sans-serif;
 }
 
-main {
+.root {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.index {
   display: flex;
 }
 
