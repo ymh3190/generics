@@ -21,8 +21,8 @@ class MySQLClient {
   async connect() {
     (await MySQLClient.pool.getConnection()).release();
     console.log(`Connected to DB`);
+    await this.#isExistsFile(this.#readLocalStorage());
     // await this.#readTables();
-    // await this.#isExistsFile(this.#readLocalStorage());
     //     for (const table of MySQLClient.tables) {
     //       const writeStream = createWriteStream(`model/${table}.js`);
     //       writeStream.write(

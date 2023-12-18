@@ -80,8 +80,14 @@ class ApiRouter extends Router {
       apiController.memory.bind(apiController)
     );
 
+    this.routes.signout = "/signout";
+    this.controllers.signout = asyncWrapper(
+      apiController.signout.bind(apiController)
+    );
+
     this.#get();
     this.#post();
+    this.#delete();
   }
 
   #get() {
@@ -90,6 +96,10 @@ class ApiRouter extends Router {
 
   #post() {
     this.router.post(this.routes.signin, this.controllers.signin);
+  }
+
+  #delete() {
+    this.router.delete(this.routes.signout, auth, this.controllers.signout);
   }
 }
 

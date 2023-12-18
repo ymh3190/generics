@@ -34,6 +34,7 @@ class RootController extends RenderController {
   async getIndex(req, res) {
     const images = await Image.select({});
     this.options.index.images = images;
+    this.options.index.user = req.user;
     res.status(200).render(this.views.index, this.options.index);
   }
 
@@ -44,6 +45,7 @@ class RootController extends RenderController {
     if (!video) throw new Error("Video not found");
     this.options.watch.pageTitle = video.id;
     this.options.watch.video = video;
+    this.options.watch.user = req.user;
     res.status(200).render(this.views.watch, this.options.watch);
   }
 
@@ -51,6 +53,7 @@ class RootController extends RenderController {
     const videos = await Video.select({});
     this.options.video.pageTitle = "Video";
     this.options.video.videos = videos;
+    this.options.video.user = req.user;
     res.status(200).render(this.views.video, this.options.video);
   }
 
@@ -98,7 +101,7 @@ class ApiController {
 
     const tokenUser = {
       username: user.username,
-      userId: user.id,
+      user_id: user.id,
       role: user.role,
     };
     let refreshToken = "";
@@ -115,20 +118,20 @@ class ApiController {
         process.env.JWT_SECRET
       );
       const refreshTokenJWT = jwt.sign(
-        { user: tokenUser, refreshToken },
+        { user: tokenUser, refresh_token: refreshToken },
         process.env.JWT_SECRET
       );
 
       const oneDay = 1000 * 60 * 60 * 24;
       const thirtyDay = 1000 * 60 * 60 * 24 * 30;
-      res.cookie("accessToken", accessTokenJWT, {
+      res.cookie("access_token", accessTokenJWT, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         signed: true,
         expires: new Date(Date.now() + oneDay),
       });
 
-      res.cookie("refreshToken", refreshTokenJWT, {
+      res.cookie("refresh_token", refreshTokenJWT, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         signed: true,
@@ -142,7 +145,12 @@ class ApiController {
     refreshToken = crypto.randomBytes(20).toString("hex");
     const userAgent = req.headers["user-agent"];
     const ip = req.ip;
-    const userToken = { refreshToken, ip, userAgent, userId: user.id };
+    const userToken = {
+      refresh_token: refreshToken,
+      ip,
+      user_agent: userAgent,
+      user_id: user.id,
+    };
     await Token.create(userToken);
 
     const accessTokenJWT = jwt.sign(
@@ -150,20 +158,20 @@ class ApiController {
       process.env.JWT_SECRET
     );
     const refreshTokenJWT = jwt.sign(
-      { user: tokenUser, refreshToken },
+      { user: tokenUser, refresh_token: refreshToken },
       process.env.JWT_SECRET
     );
 
     const oneDay = 1000 * 60 * 60 * 24;
     const thirtyDay = 1000 * 60 * 60 * 24 * 30;
-    res.cookie("accessToken", accessTokenJWT, {
+    res.cookie("access_token", accessTokenJWT, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       signed: true,
       expires: new Date(Date.now() + oneDay),
     });
 
-    res.cookie("refreshToken", refreshTokenJWT, {
+    res.cookie("refresh_token", refreshTokenJWT, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       signed: true,
@@ -176,6 +184,20 @@ class ApiController {
   memory(req, res) {
     const data = memInfo.used;
     res.status(200).json(data);
+  }
+
+  async signout(req, res) {
+    await Token.selectOne({ user_id: req.user.user_id });
+
+    res.cookie("access_token", "logout", {
+      httpOnly: true,
+      expires: new Date(Date.now()),
+    });
+    res.cookie("refresh_token", "logout", {
+      httpOnly: true,
+      expires: new Date(Date.now()),
+    });
+    res.status(200).end();
   }
 }
 
