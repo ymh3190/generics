@@ -69,137 +69,22 @@ class RootController extends RenderController {
 }
 
 class ApiController {
-  async auth(req, res) {
-    const { username, password } = req.body;
-    if (!username) throw new Error("Provide username");
-    if (!password) throw new Error("Provide password");
-    const hash = await bcrypt.hash(password, 10);
-    const hex = crypto.randomFillSync(Buffer.alloc(16)).toString("hex");
-    // no token
-    const token = jwt.sign({ username }, process.env.JWT_SECRET, { expiresIn });
-    // token exist
-    await User.create({ hex, username, hash });
-    res.status(201).json({ msg: "200" });
-  }
-
-  async signin(req, res) {
-    const { username, password } = req.body;
-
-    if (!username || !password) {
-      throw new Error("Provide username and password");
-    }
-
-    const user = await User.selectOne({ username });
-    if (!user) {
-      throw new Error("User not found");
-    }
-
-    const isPasswordCorrect = await bcrypt.compare(password, user.password);
-    if (!isPasswordCorrect) {
-      throw new Error("Unauthorized");
-    }
-
-    const tokenUser = {
-      username: user.username,
-      user_id: user.id,
-      role: user.role,
-    };
-    let refreshToken = "";
-
-    const existingToken = await Token.selectOne({ user_id: user.id });
-    if (existingToken) {
-      const { is_valid } = existingToken;
-      if (!is_valid) {
-        throw new Error("Unauthenticated error");
-      }
-      refreshToken = existingToken.refresh_token;
-      const accessTokenJWT = jwt.sign(
-        { user: tokenUser },
-        process.env.JWT_SECRET
-      );
-      const refreshTokenJWT = jwt.sign(
-        { user: tokenUser, refresh_token: refreshToken },
-        process.env.JWT_SECRET
-      );
-
-      const oneDay = 1000 * 60 * 60 * 24;
-      const thirtyDay = 1000 * 60 * 60 * 24 * 30;
-      res.cookie("access_token", accessTokenJWT, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        signed: true,
-        expires: new Date(Date.now() + oneDay),
-      });
-
-      res.cookie("refresh_token", refreshTokenJWT, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        signed: true,
-        expires: new Date(Date.now() + thirtyDay),
-      });
-
-      res.status(200).json({ user: tokenUser });
-      return;
-    }
-
-    refreshToken = crypto.randomBytes(20).toString("hex");
-    const userAgent = req.headers["user-agent"];
-    const ip = req.ip;
-    const userToken = {
-      refresh_token: refreshToken,
-      ip,
-      user_agent: userAgent,
-      user_id: user.id,
-    };
-    await Token.create(userToken);
-
-    const accessTokenJWT = jwt.sign(
-      { user: tokenUser },
-      process.env.JWT_SECRET
-    );
-    const refreshTokenJWT = jwt.sign(
-      { user: tokenUser, refresh_token: refreshToken },
-      process.env.JWT_SECRET
-    );
-
-    const oneDay = 1000 * 60 * 60 * 24;
-    const thirtyDay = 1000 * 60 * 60 * 24 * 30;
-    res.cookie("access_token", accessTokenJWT, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      signed: true,
-      expires: new Date(Date.now() + oneDay),
-    });
-
-    res.cookie("refresh_token", refreshTokenJWT, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      signed: true,
-      expires: new Date(Date.now() + thirtyDay),
-    });
-
-    res.status(200).json({ user: tokenUser });
-  }
-
   memory(req, res) {
     const data = memInfo.used;
     res.status(200).json(data);
   }
+}
 
-  async signout(req, res) {
-    await Token.selectOne({ user_id: req.user.user_id });
+class AuthController extends ApiController {
+  async signup(req, res) {}
 
-    res.cookie("access_token", "logout", {
-      httpOnly: true,
-      expires: new Date(Date.now()),
-    });
-    res.cookie("refresh_token", "logout", {
-      httpOnly: true,
-      expires: new Date(Date.now()),
-    });
-    res.status(200).end();
+  async signin(req, res) {
+    const { username, password } = req.body;
   }
+
+  async signout(req, res) {}
 }
 
 export const rootController = new RootController();
 export const apiController = new ApiController();
+export const authController = new AuthController();

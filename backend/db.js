@@ -15,8 +15,6 @@ class MySQLClient {
     enableKeepAlive: true,
     keepAliveInitialDelay: 0,
   });
-  // static tables = [];
-  // static columns = {};
 
   async connect() {
     (await MySQLClient.pool.getConnection()).release();
@@ -229,38 +227,47 @@ class MySQLClient {
     }
   }
 
-  /** @abstract */
-  #insert() {}
+  static async create(query) {
+    if (!query) {
+      // TODO: throw bad request error
+      return;
+    }
 
-  /** @abstract */
-  #select() {}
-
-  /** @abstract */
-  #update() {}
-
-  /** @abstract */
-  #delete() {}
-}
-
-// }
-
-class Video extends MySQLClient {
-  static async create(data) {
-    const sql = "INSERT INTO video(id, path) VALUES(?, ?)";
-    const values = Object.values(data);
+    const keys = Object.keys(query);
+    let sql = `INSERT INTO ${this.name.toLowerCase()}(`;
+    for (let i = 0; i < keys.length; i++) {
+      if (i !== keys.length - 1) {
+        sql = sql.concat(keys[i], ", ");
+        continue;
+      }
+      sql = sql.concat(keys[i], ") VALUES(");
+    }
+    for (let i = 0; i < keys.length; i++) {
+      if (i !== keys.length - 1) {
+        sql = sql.concat("?, ");
+        continue;
+      }
+      sql = sql.concat("?)");
+    }
+    const hex = crypto.randomBytes(16).toString("hex");
+    const values = [hex, ...Object.values(data)];
     await MySQLClient.pool.execute(sql, values);
   }
 
   static async select(query) {
-    if (!query) return;
+    if (!query) {
+      // TODO: throw bad request error
+      return;
+    }
+
     const keys = Object.keys(query);
     if (!keys.length) {
-      const sql = "SELECT * FROM video";
+      const sql = `SELECT * FROM ${this.name.toLowerCase()}`;
       const [result] = await MySQLClient.pool.execute(sql);
       return result;
     }
 
-    let sql = "SELECT * FROM video WHERE";
+    let sql = `SELECT * FROM ${this.name.toLowerCase()} WHERE`;
     for (let i = 0; i < keys.length; i++) {
       if (i !== keys.length - 1) {
         sql = sql.concat(" ", keys[i], " = ? AND");
@@ -273,6 +280,38 @@ class Video extends MySQLClient {
     return result;
   }
 
+  static async selectOne(query) {
+    if (!query) {
+      // TODO: throw bad request error
+      return;
+    }
+
+    const keys = Object.keys(query);
+    if (!keys.length) {
+      // TODO: throw bad request error
+      return;
+    }
+
+    let sql = `SELECT * FROM ${this.name.toLowerCase()} WHERE`;
+    for (let i = 0; i < keys.length; i++) {
+      if (i !== keys.length - 1) {
+        sql = sql.concat(" ", keys[i], " = ? AND");
+        continue;
+      }
+      sql = sql.concat(" ", keys[i], " = ?");
+    }
+    const values = Object.values(query);
+    const [[result]] = await MySQLClient.pool.execute(sql, values);
+    return result;
+  }
+
+  static async update(query) {}
+
+  /** @abstract */
+  #delete(query) {}
+}
+
+class Video extends MySQLClient {
   static async selectById(id) {
     const sql = `
     SELECT video.id, video.path, image.path AS poster
@@ -284,55 +323,9 @@ class Video extends MySQLClient {
     const [[result]] = await MySQLClient.pool.execute(sql, values);
     return result;
   }
-
-  static async selectOne(query) {
-    if (!query) return;
-    const keys = Object.keys(query);
-    if (!keys.length) return;
-
-    let sql = "SELECT * FROM video WHERE";
-    for (let i = 0; i < keys.length; i++) {
-      if (i !== keys.length - 1) {
-        sql = sql.concat(" ", keys[i], " = ? AND");
-        continue;
-      }
-      sql = sql.concat(" ", keys[i], " = ?");
-    }
-    const values = Object.values(query);
-    const [[result]] = await MySQLClient.pool.execute(sql, values);
-    return result;
-  }
 }
 
 class Image extends MySQLClient {
-  static async create(data) {
-    const sql = "INSERT INTO image(id, path) VALUES(?, ?)";
-    const values = Object.values(data);
-    await MySQLClient.pool.execute(sql, values);
-  }
-
-  static async select(query) {
-    if (!query) return;
-    const keys = Object.keys(query);
-    if (!keys.length) {
-      const sql = "SELECT * FROM image";
-      const [result] = await MySQLClient.pool.execute(sql);
-      return result;
-    }
-
-    let sql = "SELECT * FROM image WHERE";
-    for (let i = 0; i < keys.length; i++) {
-      if (i !== keys.length - 1) {
-        sql = sql.concat(" ", keys[i], " = ? AND");
-        continue;
-      }
-      sql = sql.concat(" ", keys[i], " = ?");
-    }
-    const values = Object.values(query);
-    const [result] = await MySQLClient.pool.execute(sql, values);
-    return result;
-  }
-
   static async selectById(id) {
     const sql = `
     `;
@@ -340,55 +333,9 @@ class Image extends MySQLClient {
     const [[result]] = await MySQLClient.pool.execute(sql, values);
     return result;
   }
-
-  static async selectOne(query) {
-    if (!query) return;
-    const keys = Object.keys(query);
-    if (!keys.length) return;
-
-    let sql = "SELECT * FROM image WHERE";
-    for (let i = 0; i < keys.length; i++) {
-      if (i !== keys.length - 1) {
-        sql = sql.concat(" ", keys[i], " = ? AND");
-        continue;
-      }
-      sql = sql.concat(" ", keys[i], " = ?");
-    }
-    const values = Object.values(query);
-    const [[result]] = await MySQLClient.pool.execute(sql, values);
-    return result;
-  }
 }
 
 class User extends MySQLClient {
-  static async create(data) {
-    const sql = "INSERT INTO user(id, username, password) VALUES(?, ?, ?)";
-    const values = Object.values(data);
-    await MySQLClient.pool.execute(sql, values);
-  }
-
-  static async select(query) {
-    if (!query) return;
-    const keys = Object.keys(query);
-    if (!keys.length) {
-      const sql = "SELECT * FROM user";
-      const [result] = await MySQLClient.pool.execute(sql);
-      return result;
-    }
-
-    let sql = "SELECT * FROM user WHERE";
-    for (let i = 0; i < keys.length; i++) {
-      if (i !== keys.length - 1) {
-        sql = sql.concat(" ", keys[i], " = ? AND");
-        continue;
-      }
-      sql = sql.concat(" ", keys[i], " = ?");
-    }
-    const values = Object.values(query);
-    const [result] = await MySQLClient.pool.execute(sql, values);
-    return result;
-  }
-
   static async selectById(id) {
     const sql =
       "SELECT user.id, user.username, image.username AS poster FROM user JOIN image ON user.id = image.id WHERE user.id = ?";
@@ -396,56 +343,11 @@ class User extends MySQLClient {
     const [[result]] = await MySQLClient.pool.execute(sql, values);
     return result;
   }
-
-  static async selectOne(query) {
-    if (!query) return;
-    const keys = Object.keys(query);
-    if (!keys.length) return;
-
-    let sql = "SELECT * FROM user WHERE";
-    for (let i = 0; i < keys.length; i++) {
-      if (i !== keys.length - 1) {
-        sql = sql.concat(" ", keys[i], " = ? AND");
-        continue;
-      }
-      sql = sql.concat(" ", keys[i], " = ?");
-    }
-    const values = Object.values(query);
-    const [[result]] = await MySQLClient.pool.execute(sql, values);
-    return result;
-  }
 }
 
-class Token extends MySQLClient {
-  static async create(data) {
-    const hex = crypto.randomBytes(16).toString("hex");
-    const sql = `
-    INSERT INTO token(id, refresh_token, ip, user_agent, user_id)
-    VALUES(?, ?, ?, ?, ?)
-    `;
-    const values = [hex, ...Object.values(data)];
-    await MySQLClient.pool.execute(sql, values);
-  }
-
-  static async selectOne(query) {
-    if (!query) return;
-    const keys = Object.keys(query);
-    if (!keys.length) return;
-
-    let sql = "SELECT * FROM token WHERE";
-    for (let i = 0; i < keys.length; i++) {
-      if (i !== keys.length - 1) {
-        sql = sql.concat(" ", keys[i], " = ? AND");
-        continue;
-      }
-      sql = sql.concat(" ", keys[i], " = ?");
-    }
-    const values = Object.values(query);
-    const [[result]] = await MySQLClient.pool.execute(sql, values);
-    return result;
-  }
-}
+class Token extends MySQLClient {}
 
 const mysqlClient = new MySQLClient();
 export default MySQLClient;
 export { mysqlClient, Image, Video, User, Token };
+Image.update({ a: 1, b: 2 });

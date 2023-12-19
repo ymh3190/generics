@@ -4,7 +4,7 @@ import helmet from "helmet";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
-import { apiRouter, rootRouter } from "./router";
+import { apiRouter, authRouter, rootRouter } from "./router";
 import { errorHandler, notFound } from "./middleware";
 
 class Server {
@@ -44,6 +44,7 @@ class Server {
   #useRouter() {
     this.#app.use(rootRouter.routes.root, rootRouter.router);
     this.#app.use(apiRouter.routes.root, apiRouter.router);
+    this.#app.use(authRouter.routes.root, authRouter.router);
   }
 
   #errorHandler() {

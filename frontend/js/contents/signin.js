@@ -11,7 +11,7 @@ signinFormDOM.addEventListener("submit", async (event) => {
   let data;
   let response;
   try {
-    response = await fetch("/api/signin", {
+    response = await fetch("/api/auth/signin", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),
