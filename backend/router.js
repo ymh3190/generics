@@ -1,7 +1,12 @@
 import express from "express";
 import jwt from "jsonwebtoken";
-import { apiController, authController, rootController } from "./controller";
-import {} from "./middleware";
+import {
+  monitorController,
+  authController,
+  rootController,
+} from "./controller";
+import { authenticateUser } from "./middleware";
+// import {} from "./middleware";
 
 /** @interface */
 class Router {
@@ -57,12 +62,12 @@ class RootRouter extends Router {
   }
 }
 
-class ApiRouter extends Router {
+class MonitorRouter extends Router {
   constructor(path) {
     super(path);
 
     this.routes.memory = "/memory";
-    this.controllers.memory = apiController.memory.bind(apiController);
+    this.controllers.memory = monitorController.memory.bind(monitorController);
 
     this.#get();
   }
@@ -72,7 +77,7 @@ class ApiRouter extends Router {
   }
 }
 
-class AuthRouter extends ApiRouter {
+class AuthRouter extends Router {
   constructor(path) {
     super(path);
 
@@ -96,5 +101,5 @@ class AuthRouter extends ApiRouter {
 }
 
 export const rootRouter = new RootRouter("/");
-export const apiRouter = new ApiRouter("/asdf");
 export const authRouter = new AuthRouter("/api/auth");
+export const monitorRouter = new MonitorRouter("/api/monitor");

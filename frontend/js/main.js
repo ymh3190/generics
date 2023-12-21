@@ -15,8 +15,3 @@ const start = async () => {
     console.log(data);
   }
 };
-
-// start();
-// setInterval(async () => {
-//   await start();
-// }, 1000);

@@ -6,7 +6,7 @@ class MySQLClient {
   static pool = mysql.createPool({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
-    database: process.env.DATABASE,
+    database: process.env.DB_DATABASE,
     waitForConnections: true,
     connectionLimit: 10,
     maxIdle: 10,
@@ -280,6 +280,32 @@ class MySQLClient {
     return result;
   }
 
+  static async selectById(id) {
+    if (!id) {
+      // TODO: throw error
+      return;
+    }
+
+    const table = this.name.toLowerCase();
+    const sql = `SELECT * FROM ${table} WHERE ${table}.id = ?`;
+    const values = [id];
+    const [[result]] = await MySQLClient.pool.execute(sql, values);
+    return result;
+  }
+
+  static async selectJoinById(id, query, projection) {
+    const table = this.name.toLowerCase();
+    const sql = `
+    SELECT ${table}.path, image.path AS poster
+    FROM ${table} JOIN image
+    ON ${table}.id = image.id
+    WHERE ${table}.id = ?
+    `;
+    const values = [id];
+    const [[result]] = await MySQLClient.pool.execute(sql, values);
+    return result;
+  }
+
   static async selectOne(query) {
     if (!query) {
       // TODO: throw bad request error
@@ -305,49 +331,71 @@ class MySQLClient {
     return result;
   }
 
-  static async update(query) {}
+  static async update(query, projection) {
+    if (!query) {
+      // TODO: throw bad request error
+      return;
+    }
 
-  /** @abstract */
-  #delete(query) {}
-}
+    const keys = Object.keys(query);
+    if (!keys.length) {
+      // TODO: update all
+      return;
+    }
 
-class Video extends MySQLClient {
-  static async selectById(id) {
-    const sql = `
-    SELECT video.id, video.path, image.path AS poster
-    FROM video JOIN image
-    ON video.id = image.id
-    WHERE video.id = ?
-    `;
-    const values = [id];
+    let sql = `UPDATE ${this.name.toLowerCase()} SET`;
+    for (let i = 0; i < keys.length; i++) {
+      if (i !== keys.length - 1) {
+        sql = sql.concat(" ", keys[i], " = ?,");
+        continue;
+      }
+      sql = sql.concat(" ", keys[i], " = ? WHERE").concat(" ", keys[i], " = ?");
+    }
+    if (projection) {
+      const keys = Object.keys(projection);
+      for (let i = 0; i < keys.length; i++) {
+        sql = sql.concat(" AND", keys[i], " = ?");
+      }
+    }
+    const values = [...Object.values(query), ...Object.values(projection)];
+    const [[result]] = await MySQLClient.pool.execute(sql, values);
+    return result;
+  }
+
+  static async delete(query) {
+    if (!query) {
+      // TODO: throw bad request error
+      return;
+    }
+
+    const keys = Object.keys(query);
+    if (!keys.length) {
+      // TODO: delete all
+      return;
+    }
+
+    let sql = `DELETE FROM ${this.name.toLowerCase()} WHERE`;
+    for (let i = 0; i < keys.length; i++) {
+      if (i !== keys.length - 1) {
+        sql = sql.concat(" ", keys[i], " = ? AND");
+        continue;
+      }
+      sql = sql.concat(" ", keys[i], " = ?");
+    }
+    const values = Object.values(query);
     const [[result]] = await MySQLClient.pool.execute(sql, values);
     return result;
   }
 }
 
-class Image extends MySQLClient {
-  static async selectById(id) {
-    const sql = `
-    `;
-    const values = [id];
-    const [[result]] = await MySQLClient.pool.execute(sql, values);
-    return result;
-  }
-}
+class Video extends MySQLClient {}
 
-class User extends MySQLClient {
-  static async selectById(id) {
-    const sql =
-      "SELECT user.id, user.username, image.username AS poster FROM user JOIN image ON user.id = image.id WHERE user.id = ?";
-    const values = [id];
-    const [[result]] = await MySQLClient.pool.execute(sql, values);
-    return result;
-  }
-}
+class Image extends MySQLClient {}
+
+class User extends MySQLClient {}
 
 class Token extends MySQLClient {}
 
 const mysqlClient = new MySQLClient();
-export default MySQLClient;
-export { mysqlClient, Image, Video, User, Token };
-Image.update({ a: 1, b: 2 });
+export default mysqlClient;
+export { Image, Video, User, Token };

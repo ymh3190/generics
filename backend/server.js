@@ -4,7 +4,7 @@ import helmet from "helmet";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
-import { apiRouter, authRouter, rootRouter } from "./router";
+import { authRouter, monitorRouter, rootRouter } from "./router";
 import { errorHandler, notFound } from "./middleware";
 
 class Server {
@@ -33,7 +33,13 @@ class Server {
   }
 
   #useMiddleware() {
-    this.#app.use(helmet({ contentSecurityPolicy: false }));
+    this.#app.use(
+      helmet({
+        contentSecurityPolicy: process.env.NODE_ENV === "production",
+        crossOriginOpenerPolicy: process.env.NODE_ENV === "production",
+        originAgentCluster: process.env.NODE_ENV === "production",
+      })
+    );
     this.#app.use(cors());
     this.#app.use(express.json());
     this.#app.use(cookieParser(process.env.JWT_SECRET));
@@ -43,8 +49,8 @@ class Server {
 
   #useRouter() {
     this.#app.use(rootRouter.routes.root, rootRouter.router);
-    this.#app.use(apiRouter.routes.root, apiRouter.router);
     this.#app.use(authRouter.routes.root, authRouter.router);
+    this.#app.use(monitorRouter.routes.root, monitorRouter.router);
   }
 
   #errorHandler() {

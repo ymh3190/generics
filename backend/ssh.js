@@ -8,9 +8,9 @@ const memInfo = {};
 
 const options = {
   enb: {
-    host: process.env.ENB_HOST,
-    username: process.env.ENB_USER,
-    port: process.env.ENB_PORT,
+    host: process.env.SSH_HOST,
+    username: process.env.SSH_USER,
+    port: process.env.SSH_PORT,
     privateKey: readFileSync(`${homedir()}/.ssh/id_rsa`),
   },
   home: {
@@ -39,7 +39,7 @@ ssh.on("ready", () => {
           const memAvailable = result[2].match(/\d+/).join("");
           memInfo.used = Number(
             100 * ((memTotal - memAvailable) / memTotal)
-          ).toFixed(2);
+          ).toFixed(1);
         }
       });
     stream.write("cat /proc/meminfo\n");

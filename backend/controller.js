@@ -1,8 +1,8 @@
 import crypto from "crypto";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import memInfo from "./ssh";
 import { Image, User, Video, Token } from "./db";
+import { attachCookiesToResponse, createId } from "./util";
 
 /** @interface */
 class RenderController {
@@ -32,7 +32,7 @@ class RootController extends RenderController {
   }
 
   async getIndex(req, res) {
-    const images = await Image.select({});
+    const images = await Image.select({}, { path: "/static" });
     this.options.index.images = images;
     this.options.index.user = req.user;
     res.status(200).render(this.views.index, this.options.index);
@@ -40,9 +40,16 @@ class RootController extends RenderController {
 
   async getWatch(req, res) {
     const { id } = req.params;
-    if (!id) throw new Error("Provide video id");
-    const video = await Video.selectById(id);
-    if (!video) throw new Error("Video not found");
+
+    if (!id) {
+      throw new Error("Provide video id");
+    }
+
+    const video = await Video.selectJoinById(id);
+    if (!video) {
+      throw new Error("Video not found");
+    }
+
     this.options.watch.pageTitle = video.id;
     this.options.watch.video = video;
     this.options.watch.user = req.user;
@@ -51,31 +58,28 @@ class RootController extends RenderController {
 
   async getVideo(req, res) {
     const videos = await Video.select({});
-    this.options.video.pageTitle = "Video";
     this.options.video.videos = videos;
     this.options.video.user = req.user;
     res.status(200).render(this.views.video, this.options.video);
   }
 
   async getSignin(req, res) {
-    this.options.signin.pageTitle = "Signin";
     res.status(200).render(this.views.signin, this.options.signin);
   }
 
   async getSignup(req, res) {
-    this.options.signup.pageTitle = "Signup";
     res.status(200).render(this.views.signup, this.options.signup);
   }
 }
 
-class ApiController {
+class MonitorController {
   memory(req, res) {
     const data = memInfo.used;
     res.status(200).json(data);
   }
 }
 
-class AuthController extends ApiController {
+class AuthController {
   async signup(req, res) {}
 
   async signin(req, res) {
@@ -86,5 +90,5 @@ class AuthController extends ApiController {
 }
 
 export const rootController = new RootController();
-export const apiController = new ApiController();
+export const monitorController = new MonitorController();
 export const authController = new AuthController();

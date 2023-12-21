@@ -1,5 +1,5 @@
 import server from "./server";
-import { mysqlClient } from "./db";
+import mysqlClient from "./db";
 import "./ssh";
 
 (async () => {
