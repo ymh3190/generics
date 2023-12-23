@@ -1,6 +1,7 @@
-import { readdirSync, renameSync, writeFileSync, createWriteStream } from "fs";
+import { readdirSync, renameSync } from "fs";
 import crypto from "crypto";
 import mysql from "mysql2/promise";
+import { BadRequestError } from "./error-api";
 
 class MySQLClient {
   static pool = mysql.createPool({
@@ -229,8 +230,7 @@ class MySQLClient {
 
   static async create(query) {
     if (!query) {
-      // TODO: throw bad request error
-      return;
+      throw new BadRequestError("Provide query");
     }
 
     const keys = Object.keys(query);
@@ -249,15 +249,13 @@ class MySQLClient {
       }
       sql = sql.concat("?)");
     }
-    const hex = crypto.randomBytes(16).toString("hex");
-    const values = [hex, ...Object.values(data)];
+    const values = Object.values(query);
     await MySQLClient.pool.execute(sql, values);
   }
 
   static async select(query) {
     if (!query) {
-      // TODO: throw bad request error
-      return;
+      throw new BadRequestError("Provide query");
     }
 
     const keys = Object.keys(query);
@@ -282,8 +280,7 @@ class MySQLClient {
 
   static async selectById(id) {
     if (!id) {
-      // TODO: throw error
-      return;
+      throw new BadRequestError("Provide id");
     }
 
     const table = this.name.toLowerCase();
@@ -294,6 +291,10 @@ class MySQLClient {
   }
 
   static async selectJoinById(id, query, projection) {
+    if (!id) {
+      throw new BadRequestError("Provide id");
+    }
+
     const table = this.name.toLowerCase();
     const sql = `
     SELECT ${table}.path, image.path AS poster
@@ -308,14 +309,12 @@ class MySQLClient {
 
   static async selectOne(query) {
     if (!query) {
-      // TODO: throw bad request error
-      return;
+      throw new BadRequestError("Provide query");
     }
 
     const keys = Object.keys(query);
     if (!keys.length) {
-      // TODO: throw bad request error
-      return;
+      throw new BadRequestError("Provide query");
     }
 
     let sql = `SELECT * FROM ${this.name.toLowerCase()} WHERE`;
@@ -333,14 +332,12 @@ class MySQLClient {
 
   static async update(query, projection) {
     if (!query) {
-      // TODO: throw bad request error
-      return;
+      throw new BadRequestError("Provide query");
     }
 
     const keys = Object.keys(query);
     if (!keys.length) {
-      // TODO: update all
-      return;
+      throw new BadRequestError("Provide query");
     }
 
     let sql = `UPDATE ${this.name.toLowerCase()} SET`;
@@ -351,27 +348,27 @@ class MySQLClient {
       }
       sql = sql.concat(" ", keys[i], " = ? WHERE").concat(" ", keys[i], " = ?");
     }
+
+    let values = Object.values(query);
     if (projection) {
       const keys = Object.keys(projection);
       for (let i = 0; i < keys.length; i++) {
         sql = sql.concat(" AND", keys[i], " = ?");
       }
+      values = values.concat(Object.values(projection));
     }
-    const values = [...Object.values(query), ...Object.values(projection)];
     const [[result]] = await MySQLClient.pool.execute(sql, values);
     return result;
   }
 
   static async delete(query) {
     if (!query) {
-      // TODO: throw bad request error
-      return;
+      throw new BadRequestError("Provide query");
     }
 
     const keys = Object.keys(query);
     if (!keys.length) {
-      // TODO: delete all
-      return;
+      throw new BadRequestError("Provide query");
     }
 
     let sql = `DELETE FROM ${this.name.toLowerCase()} WHERE`;
@@ -383,8 +380,7 @@ class MySQLClient {
       sql = sql.concat(" ", keys[i], " = ?");
     }
     const values = Object.values(query);
-    const [[result]] = await MySQLClient.pool.execute(sql, values);
-    return result;
+    await MySQLClient.pool.execute(sql, values);
   }
 }
 

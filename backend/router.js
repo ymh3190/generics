@@ -1,12 +1,10 @@
 import express from "express";
-import jwt from "jsonwebtoken";
 import {
   monitorController,
   authController,
   rootController,
 } from "./controller";
-import { authenticateUser } from "./middleware";
-// import {} from "./middleware";
+import middleware from "./middleware";
 
 /** @interface */
 class Router {
@@ -15,21 +13,6 @@ class Router {
     this.routes = { root: path };
     this.controllers = {};
   }
-
-  /** @interface */
-  #route() {}
-
-  /** @interface */
-  #get() {}
-
-  /** @interface */
-  #post() {}
-
-  /** @interface */
-  #patch() {}
-
-  /** @interface */
-  #delete() {}
 }
 
 class RootRouter extends Router {
@@ -52,13 +35,62 @@ class RootRouter extends Router {
     this.#get();
   }
 
-  /** @implements */
   #get() {
-    this.router.get(this.routes.root, this.controllers.getIndex);
-    this.router.get(this.routes.video, this.controllers.getVideo);
-    this.router.get(this.routes.watch, this.controllers.getWatch);
+    this.router.get(
+      this.routes.root,
+      middleware.authenticateUser,
+      middleware.authorizePermissions("admin"),
+      this.controllers.getIndex
+    );
+    this.router.get(
+      this.routes.video,
+      middleware.authenticateUser,
+      middleware.authorizePermissions("admin"),
+      this.controllers.getVideo
+    );
+    this.router.get(
+      this.routes.watch,
+      middleware.authenticateUser,
+      middleware.authorizePermissions("admin"),
+      this.controllers.getWatch
+    );
     this.router.get(this.routes.signin, this.controllers.getSignin);
     this.router.get(this.routes.signup, this.controllers.getSignup);
+  }
+}
+
+class AuthRouter extends Router {
+  constructor(path) {
+    super(path);
+
+    this.routes.signin = "/signin";
+    this.controllers.signin = middleware.asyncWrapper(
+      authController.signin.bind(authController)
+    );
+
+    this.routes.signout = "/signout";
+    this.controllers.signout = authController.signout.bind(authController);
+
+    this.routes.signup = "/signup";
+    this.controllers.signup = middleware.asyncWrapper(
+      authController.signup.bind(authController)
+    );
+
+    this.#post();
+    this.#delete();
+  }
+
+  #post() {
+    this.router.post(this.routes.signin, this.controllers.signin);
+    this.router.post(this.routes.signup, this.controllers.signup);
+  }
+
+  #delete() {
+    this.router.delete(
+      this.routes.signout,
+      middleware.authenticateUser,
+      this.controllers.signout
+    );
   }
 }
 
@@ -77,29 +109,7 @@ class MonitorRouter extends Router {
   }
 }
 
-class AuthRouter extends Router {
-  constructor(path) {
-    super(path);
-
-    this.routes.signin = "/signin";
-    this.controllers.signin = authController.signin.bind(authController);
-
-    this.routes.signout = "/signout";
-    this.controllers.signout = authController.signout.bind(authController);
-
-    this.#post();
-    this.#delete();
-  }
-
-  #post() {
-    this.router.post(this.routes.signin, this.controllers.signin);
-  }
-
-  #delete() {
-    this.router.delete(this.routes.signout, this.controllers.signout);
-  }
-}
-
-export const rootRouter = new RootRouter("/");
-export const authRouter = new AuthRouter("/api/auth");
-export const monitorRouter = new MonitorRouter("/api/monitor");
+const rootRouter = new RootRouter("/");
+const authRouter = new AuthRouter("/api/auth");
+const monitorRouter = new MonitorRouter("/api/monitor");
+export { rootRouter, authRouter, monitorRouter };

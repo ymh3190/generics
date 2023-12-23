@@ -1,12 +1,9 @@
 import { Token } from "./db";
 import jwt from "jsonwebtoken";
+import { UnauthenticatedError, UnauthorizedError } from "./error-api";
 import { attachCookiesToResponse } from "./util";
 
 class Middleware {
-  async authenticateUser(req, res, next) {
-    const { access_token, refresh_token } = req.signedCookies;
-  }
-
   asyncWrapper(fn) {
     return async (req, res, next) => {
       try {
@@ -17,8 +14,50 @@ class Middleware {
     };
   }
 
+  async authenticateUser(req, res, next) {
+    const { access_token, refresh_token } = req.signedCookies;
+
+    try {
+      if (access_token) {
+        const payload = jwt.verify(access_token, process.env.JWT_SECRET);
+        req.user = payload.user;
+        return next();
+      }
+
+      const payload = jwt.verify(refresh_token, process.env.JWT_SECRET);
+      const existingToken = await Token.selectOne({
+        refresh_token: payload.refresh_token,
+        user_id: payload.user.user_id,
+      });
+      if (!existingToken || !existingToken?.is_valid) {
+        throw new UnauthenticatedError("Authentication invalid");
+      }
+
+      attachCookiesToResponse({
+        res,
+        user: payload.user,
+        refresh_token: existingToken.refresh_token,
+      });
+      req.user = payload.user;
+      next();
+    } catch (error) {
+      res.redirect("/signin");
+    }
+  }
+
+  authorizePermissions(...roles) {
+    return (req, res, next) => {
+      if (!roles.includes(req.user.role)) {
+        throw new UnauthorizedError("Unauthorized to access this route");
+      }
+      next();
+    };
+  }
+
   notFound(req, res) {
-    return res.status(404).render("error", { pageTitle: "Route not found" });
+    return res
+      .status(404)
+      .render("error", { pageTitle: "404", message: "Route not found" });
   }
 
   errorHandler(err, req, res, next) {
@@ -27,9 +66,11 @@ class Middleware {
       statusCode: err.statusCode || 500,
       message: err.message || "Something wrong",
     };
-    res.status(customError.statusCode).json({ msg: customError.message });
+    return res
+      .status(customError.statusCode)
+      .json({ message: customError.message });
   }
 }
 
-export const { asyncWrapper, errorHandler, notFound, authenticateUser } =
-  new Middleware();
+const middleware = new Middleware();
+export default middleware;

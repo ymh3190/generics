@@ -5,7 +5,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 
 import { authRouter, monitorRouter, rootRouter } from "./router";
-import { errorHandler, notFound } from "./middleware";
+import middleware from "./middleware";
 
 class Server {
   #app;
@@ -54,8 +54,8 @@ class Server {
   }
 
   #errorHandler() {
-    this.#app.use(notFound);
-    this.#app.use(errorHandler);
+    this.#app.use(middleware.notFound.bind(middleware));
+    this.#app.use(middleware.errorHandler.bind(middleware));
   }
 }
 

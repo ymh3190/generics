@@ -31,6 +31,21 @@ class Utils {
   createJWT(payload) {
     return jwt.sign(payload, process.env.JWT_SECRET);
   }
+
+  createToken() {
+    const hex = crypto.randomBytes(20).toString("hex");
+    return hex;
+  }
+
+  createTokenUser(user) {
+    return { username: user.username, user_id: user.id, role: user.role };
+  }
 }
 
-export const { attachCookiesToResponse, createId, createJWT } = new Utils();
+export const {
+  attachCookiesToResponse,
+  createId,
+  createJWT,
+  createToken,
+  createTokenUser,
+} = new Utils();

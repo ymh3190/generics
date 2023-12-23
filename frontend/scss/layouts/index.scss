@@ -1,25 +1,9 @@
 .content {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
+  column-gap: 20px;
+  row-gap: 40px;
   img {
     width: 100%;
-  }
-}
-
-@media screen and (max-width: $desktop) {
-  .content {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-@media screen and (max-width: $tablet) {
-  .content {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media screen and (max-width: $mobile) {
-  .content {
-    grid-template-columns: 1fr;
   }
 }

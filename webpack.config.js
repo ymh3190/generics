@@ -5,9 +5,10 @@ module.exports = {
   entry: {
     main: path.join(__dirname, "frontend/js", "main"),
     bars: path.join(__dirname, "frontend/js/header", "bars"),
-    signout: path.join(__dirname, "frontend/js/header", "signout"),
     watch: path.join(__dirname, "frontend/js/contents", "watch"),
+    signout: path.join(__dirname, "frontend/js/header", "signout"),
     signin: path.join(__dirname, "frontend/js/contents", "signin"),
+    signup: path.join(__dirname, "frontend/js/contents", "signup"),
   },
   output: {
     path: path.resolve(__dirname, "public"),
