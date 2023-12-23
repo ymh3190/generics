@@ -12,12 +12,10 @@ barsDOM.addEventListener("click", () => {
       iconDOM.classList.add("margin-right");
       continue;
     }
-    if (anchorDOM.classList.contains("flex")) {
-      anchorDOM.classList.remove("flex");
-      anchorDOM.classList.add("column");
-      const iconDOM = anchorDOM.querySelector("i");
-      iconDOM.classList.remove("margin-right");
-      iconDOM.classList.add("margin-bottom");
-    }
+    anchorDOM.classList.remove("flex");
+    anchorDOM.classList.add("column");
+    const iconDOM = anchorDOM.querySelector("i");
+    iconDOM.classList.remove("margin-right");
+    iconDOM.classList.add("margin-bottom");
   }
 });

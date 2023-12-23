@@ -20,17 +20,17 @@ class RootRouter extends Router {
     super(path);
     this.controllers.getIndex = rootController.getIndex.bind(rootController);
 
-    this.routes.video = "/video";
-    this.controllers.getVideo = rootController.getVideo.bind(rootController);
-
-    this.routes.watch = "/watch/:id(\\d|\\w{32})";
-    this.controllers.getWatch = rootController.getWatch.bind(rootController);
-
     this.routes.signin = "/signin";
     this.controllers.getSignin = rootController.getSignin.bind(rootController);
 
     this.routes.signup = "/signup";
     this.controllers.getSignup = rootController.getSignup.bind(rootController);
+
+    this.routes.video = "/video";
+    this.controllers.getVideo = rootController.getVideo.bind(rootController);
+
+    this.routes.watch = "/watch/:id(\\d|\\w{32})";
+    this.controllers.getWatch = rootController.getWatch.bind(rootController);
 
     this.#get();
   }
@@ -38,24 +38,25 @@ class RootRouter extends Router {
   #get() {
     this.router.get(
       this.routes.root,
-      middleware.authenticateUser,
-      middleware.authorizePermissions("admin"),
+      [middleware.authenticateUser, middleware.authorizePermissions("admin")],
       this.controllers.getIndex
     );
+
+    this.router.get(this.routes.signin, this.controllers.getSignin);
+
+    this.router.get(this.routes.signup, this.controllers.getSignup);
+
     this.router.get(
       this.routes.video,
-      middleware.authenticateUser,
-      middleware.authorizePermissions("admin"),
+      [middleware.authenticateUser, middleware.authorizePermissions("admin")],
       this.controllers.getVideo
     );
+
     this.router.get(
       this.routes.watch,
-      middleware.authenticateUser,
-      middleware.authorizePermissions("admin"),
+      [middleware.authenticateUser, middleware.authorizePermissions("admin")],
       this.controllers.getWatch
     );
-    this.router.get(this.routes.signin, this.controllers.getSignin);
-    this.router.get(this.routes.signup, this.controllers.getSignup);
   }
 }
 

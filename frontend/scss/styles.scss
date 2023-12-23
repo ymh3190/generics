@@ -53,6 +53,10 @@ li {
     grid-template-columns: repeat(3, 1fr);
   }
 
+  .watch {
+    grid-template-columns: 2fr 1fr;
+  }
+
   .signin,
   .signup {
     grid-template-columns: none;
@@ -70,6 +74,10 @@ li {
     grid-template-columns: repeat(2, 1fr);
   }
 
+  .watch {
+    grid-template-columns: 2fr 1fr;
+  }
+
   .signin,
   .signup {
     grid-template-columns: none;
@@ -85,6 +93,10 @@ li {
 
   .content {
     grid-template-columns: 1fr;
+  }
+
+  .watch {
+    grid-template-columns: 2fr 1fr;
   }
 
   .signin,

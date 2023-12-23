@@ -1,6 +1,6 @@
 import "../scss/styles.scss";
 
-const start = async () => {
+(async () => {
   let data;
   let response;
   try {
@@ -14,4 +14,4 @@ const start = async () => {
   if (response.ok) {
     console.log(data);
   }
-};
+})();

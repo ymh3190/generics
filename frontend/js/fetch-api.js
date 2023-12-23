@@ -27,7 +27,6 @@ class FetchAPI {
       }
     } catch (error) {
       alert(error.message);
-      return;
     }
   }
 
@@ -50,7 +49,6 @@ class FetchAPI {
       }
     } catch (error) {
       alert(error.message);
-      return;
     }
   }
 
@@ -71,7 +69,6 @@ class FetchAPI {
       }
     } catch (error) {
       alert(error.message);
-      return;
     }
   }
 
@@ -90,7 +87,6 @@ class FetchAPI {
       }
     } catch (error) {
       alert(error.message);
-      return;
     }
   }
 }

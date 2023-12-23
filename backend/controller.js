@@ -28,17 +28,17 @@ class RootController extends RenderController {
     this.views.index = "index";
     this.options.index = { pageTitle: "Generics", images: null };
 
-    this.views.watch = "watch";
-    this.options.watch = { pageTitle: null, video: null };
-
-    this.views.video = "video";
-    this.options.video = { pageTitle: "Video", videos: null };
-
     this.views.signin = "signin";
     this.options.signin = { pageTitle: "Sign in" };
 
     this.views.signup = "signup";
     this.options.signup = { pageTitle: "Sign up" };
+
+    this.views.watch = "watch";
+    this.options.watch = { pageTitle: null, video: null };
+
+    this.views.video = "video";
+    this.options.video = { pageTitle: "Video", videos: null };
   }
 
   async getIndex(req, res) {
@@ -113,8 +113,8 @@ class AuthController {
       throw new NotFoundError("User not found");
     }
 
-    const isCorrectPassword = await bcrypt.compare(password, user.password);
-    if (!isCorrectPassword) {
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    if (!isPasswordCorrect) {
       throw new BadRequestError("Password not match");
     }
 
