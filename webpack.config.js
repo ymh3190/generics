@@ -6,6 +6,7 @@ module.exports = {
     main: path.join(__dirname, "frontend/js", "main"),
     bars: path.join(__dirname, "frontend/js/header", "bars"),
     signout: path.join(__dirname, "frontend/js/header", "signout"),
+    nav: path.join(__dirname, "frontend/js/navs", "nav"),
     signin: path.join(__dirname, "frontend/js/contents", "signin"),
     signup: path.join(__dirname, "frontend/js/contents", "signup"),
     watch: path.join(__dirname, "frontend/js/contents", "watch"),

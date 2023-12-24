@@ -20,13 +20,12 @@ body {
 }
 
 .root {
-  padding-left: 20px;
-  padding-right: 20px;
+  padding-left: 30px;
+  padding-right: 40px;
 }
 
 .index {
   display: flex;
-  padding-top: 10px;
 }
 
 a {
@@ -44,9 +43,7 @@ li {
 
 @media screen and (max-width: $desktop) {
   .nav {
-    padding-left: 15px;
     padding-right: 15px;
-    margin-right: 30px;
   }
 
   .content {
@@ -65,9 +62,7 @@ li {
 
 @media screen and (max-width: $tablet) {
   .nav {
-    padding-left: 10px;
     padding-right: 10px;
-    margin-right: 20px;
   }
 
   .content {
@@ -86,9 +81,7 @@ li {
 
 @media screen and (max-width: $mobile) {
   .nav {
-    padding-left: 5px;
     padding-right: 5px;
-    margin-right: 10px;
   }
 
   .content {
