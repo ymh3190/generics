@@ -2,7 +2,8 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   align-items: center;
-  padding-top: 10px;
+  padding: 10px 20px 10px 20px;
+
   div:nth-child(2) {
     form {
       display: grid;

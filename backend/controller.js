@@ -1,44 +1,35 @@
 import bcrypt from "bcrypt";
-import memInfo from "./ssh";
 import { Image, User, Video, Token } from "./db";
+import {
+  BadRequestError,
+  NotFoundError,
+  UnauthenticatedError,
+} from "./error-api";
+import memInfo from "./ssh";
 import {
   attachCookiesToResponse,
   createId,
   createToken,
   createTokenUser,
 } from "./util";
-import {
-  BadRequestError,
-  NotFoundError,
-  UnauthenticatedError,
-} from "./error-api";
 
-/** @interface */
-class RenderController {
+class RootController {
   constructor() {
-    this.views = {};
-    this.options = {};
-  }
-}
+    this.views = {
+      index: "index",
+      signin: "signin",
+      signup: "signup",
+      watch: "watch",
+      video: "video",
+    };
 
-class RootController extends RenderController {
-  constructor() {
-    super();
-
-    this.views.index = "index";
-    this.options.index = { pageTitle: "Generics", images: null };
-
-    this.views.signin = "signin";
-    this.options.signin = { pageTitle: "Sign in" };
-
-    this.views.signup = "signup";
-    this.options.signup = { pageTitle: "Sign up" };
-
-    this.views.watch = "watch";
-    this.options.watch = { pageTitle: null, video: null };
-
-    this.views.video = "video";
-    this.options.video = { pageTitle: "Video", videos: null };
+    this.options = {
+      index: { pageTitle: "Generics", images: null },
+      signin: { pageTitle: "Sign in" },
+      signup: { pageTitle: "Sign up" },
+      watch: { pageTitle: null, video: null },
+      video: { pageTitle: "Video", videos: null },
+    };
   }
 
   async getIndex(req, res) {

@@ -48,27 +48,23 @@ class Middleware {
   authorizePermissions(...roles) {
     return (req, res, next) => {
       if (!roles.includes(req.user.role)) {
-        throw new UnauthorizedError("Unauthorized to access this route");
+        const message = "Unauthorized to access this route";
+        return res.status(403).render("error", { pageTitle: "403", message });
       }
       next();
     };
   }
 
   notFound(req, res) {
-    return res
-      .status(404)
-      .render("error", { pageTitle: "404", message: "Route not found" });
+    const message = "Route not found";
+    return res.status(404).render("error", { pageTitle: "404", message });
   }
 
   errorHandler(err, req, res, next) {
     console.log(err);
-    const customError = {
-      statusCode: err.statusCode || 500,
-      message: err.message || "Something wrong",
-    };
-    return res
-      .status(customError.statusCode)
-      .json({ message: customError.message });
+    const statusCode = err.statusCode || 500;
+    const message = err.message || "Something wrong";
+    return res.status(statusCode).json({ message });
   }
 }
 

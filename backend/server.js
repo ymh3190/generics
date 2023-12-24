@@ -54,8 +54,8 @@ class Server {
   }
 
   #errorHandler() {
-    this.#app.use(middleware.notFound.bind(middleware));
-    this.#app.use(middleware.errorHandler.bind(middleware));
+    this.#app.use(middleware.notFound);
+    this.#app.use(middleware.errorHandler);
   }
 }
 
