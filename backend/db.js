@@ -193,7 +193,7 @@ class MySQLClient {
     for (const file of files) {
       let video;
       try {
-        const sql = `SELECT id FROM video WHERE id = ?`;
+        const sql = "SELECT id FROM video WHERE id = ?";
         [[video]] = await MySQLClient.pool.execute(sql, [file]);
       } catch (error) {
         console.log(error);
@@ -297,7 +297,7 @@ class MySQLClient {
 
     const table = this.name.toLowerCase();
     const sql = `
-    SELECT ${table}.path, image.path AS poster
+    SELECT ${table}.id, ${table}.path, image.path AS poster
     FROM ${table} JOIN image
     ON ${table}.id = image.id
     WHERE ${table}.id = ?

@@ -33,6 +33,11 @@ a {
   color: black;
 }
 
+i,
+button {
+  cursor: pointer;
+}
+
 li {
   list-style: none;
 }
@@ -42,8 +47,13 @@ li {
 }
 
 @media screen and (max-width: $desktop) {
+  .header {
+    height: 7vh;
+  }
+
   .nav {
     padding-right: 15px;
+    top: 7vh;
   }
 
   .content {
@@ -61,8 +71,13 @@ li {
 }
 
 @media screen and (max-width: $tablet) {
+  .header {
+    height: 5vh;
+  }
+
   .nav {
     padding-right: 10px;
+    top: 5vh;
   }
 
   .content {
@@ -80,8 +95,13 @@ li {
 }
 
 @media screen and (max-width: $mobile) {
+  .header {
+    height: 7vh;
+  }
+
   .nav {
     padding-right: 5px;
+    top: 7vh;
   }
 
   .content {

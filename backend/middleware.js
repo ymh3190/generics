@@ -1,6 +1,6 @@
 import { Token } from "./db";
 import jwt from "jsonwebtoken";
-import { UnauthenticatedError, UnauthorizedError } from "./error-api";
+import { UnauthenticatedError } from "./error-api";
 import { attachCookiesToResponse } from "./util";
 
 class Middleware {

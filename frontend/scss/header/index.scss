@@ -2,12 +2,12 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   align-items: center;
-  padding: 10px 20px 10px 20px;
+  padding: 10px 40px 10px 30px;
   position: fixed;
   left: 0;
   top: 0;
   width: 100%;
-  padding: 10px 40px 10px 30px;
+  height: 10vh;
   background-color: white;
   box-sizing: border-box;
 
@@ -15,11 +15,9 @@
     form {
       display: grid;
       grid-template-columns: 9fr 1fr;
-      button {
-        cursor: pointer;
-      }
     }
   }
+
   div:last-child {
     justify-self: self-end;
   }

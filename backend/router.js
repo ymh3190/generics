@@ -105,7 +105,7 @@ class MonitorRouter extends Router {
     };
 
     this.controllers = {
-      memory: monitorController.memory.bind(monitorController),
+      memory: monitorController.memory,
     };
 
     this.#get();

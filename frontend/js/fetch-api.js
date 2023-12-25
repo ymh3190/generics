@@ -1,9 +1,10 @@
 const catchResponseError = async (response) => {
-  const isBadRequest = response?.status === 400;
-  const isUnauthenticated = response?.status === 401;
-  const isUnauthorized = response?.status === 403;
-  const isNotFound = response?.status === 404;
-  if (isBadRequest || isUnauthenticated || isUnauthorized || isNotFound) {
+  const is400 = response?.status === 400;
+  const is401 = response?.status === 401;
+  const is403 = response?.status === 403;
+  const is404 = response?.status === 404;
+  const is500 = response?.status === 500;
+  if (is400 || is401 || is403 || is404 || is500) {
     const data = await response.json();
     return data.message;
   }
@@ -11,6 +12,8 @@ const catchResponseError = async (response) => {
   if (!response) {
     return "Network response error";
   }
+
+  return "Undefined error";
 };
 
 class FetchAPI {
@@ -22,12 +25,8 @@ class FetchAPI {
       }
 
       const message = await catchResponseError(response);
-      if (message) {
-        throw new Error(message);
-      }
-    } catch (error) {
-      alert(error.message);
-    }
+      alert(message);
+    } catch (error) {}
   }
 
   static async post(path, data) {
@@ -44,19 +43,17 @@ class FetchAPI {
       }
 
       const message = await catchResponseError(response);
-      if (message) {
-        throw new Error(message);
-      }
-    } catch (error) {
-      alert(error.message);
-    }
+      alert(message);
+    } catch (error) {}
   }
 
   static async patch(path, data) {
     try {
       const response = await fetch("/api" + path, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(data),
       });
       if (response?.ok) {
@@ -64,12 +61,8 @@ class FetchAPI {
       }
 
       const message = await catchResponseError(response);
-      if (message) {
-        throw new Error(message);
-      }
-    } catch (error) {
-      alert(error.message);
-    }
+      alert(message);
+    } catch (error) {}
   }
 
   static async delete(path) {
@@ -82,12 +75,8 @@ class FetchAPI {
       }
 
       const message = await catchResponseError(response);
-      if (message) {
-        throw new Error(message);
-      }
-    } catch (error) {
-      alert(error.message);
-    }
+      alert(message);
+    } catch (error) {}
   }
 }
 
