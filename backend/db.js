@@ -314,7 +314,7 @@ class MySQLClient {
 
     const keys = Object.keys(query);
     if (!keys.length) {
-      throw new BadRequestError("Provide query");
+      throw new BadRequestError("Provide key");
     }
 
     let sql = `SELECT * FROM ${this.name.toLowerCase()} WHERE`;
@@ -337,7 +337,7 @@ class MySQLClient {
 
     const keys = Object.keys(query);
     if (!keys.length) {
-      throw new BadRequestError("Provide query");
+      throw new BadRequestError("Provide key");
     }
 
     let sql = `UPDATE ${this.name.toLowerCase()} SET`;
@@ -368,7 +368,7 @@ class MySQLClient {
 
     const keys = Object.keys(query);
     if (!keys.length) {
-      throw new BadRequestError("Provide query");
+      throw new BadRequestError("Provide key");
     }
 
     let sql = `DELETE FROM ${this.name.toLowerCase()} WHERE`;

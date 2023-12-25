@@ -1,7 +1,7 @@
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
 
-class Utils {
+class Util {
   attachCookiesToResponse({ res, user, refresh_token }) {
     const accessToken = createJWT({ user });
     const refreshToken = createJWT({ user, refresh_token });
@@ -48,4 +48,4 @@ export const {
   createJWT,
   createToken,
   createTokenUser,
-} = new Utils();
+} = new Util();
