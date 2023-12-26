@@ -1,0 +1,10 @@
+productName: Generics
+appId: com.electron.generics
+asar: true
+win:
+  target: nsis
+linux:
+  target: deb
+directories:
+  output: exec
+  buildResources: static
