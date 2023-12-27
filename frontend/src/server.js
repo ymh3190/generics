@@ -4,7 +4,7 @@ import helmet from "helmet";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
-import { authRouter, monitorRouter, rootRouter } from "./router";
+import { /* authRouter, monitorRouter */ rootRouter } from "./router";
 import middleware from "./middleware";
 
 class Server {
@@ -49,8 +49,8 @@ class Server {
 
   #useRouter() {
     this.#app.use(rootRouter.routes.root, rootRouter.router);
-    this.#app.use(authRouter.routes.root, authRouter.router);
-    this.#app.use(monitorRouter.routes.root, monitorRouter.router);
+    // this.#app.use(authRouter.routes.root, authRouter.router);
+    // this.#app.use(monitorRouter.routes.root, monitorRouter.router);
   }
 
   #errorHandler() {

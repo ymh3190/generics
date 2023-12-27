@@ -1,5 +1,4 @@
-import { readdirSync, renameSync } from "fs";
-import crypto from "crypto";
+// import { readdirSync, renameSync } from "fs";
 import mysql from "mysql2/promise";
 import { BadRequestError } from "./error-api";
 
@@ -8,6 +7,8 @@ class MySQLClient {
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     database: process.env.DB_DATABASE,
+    port: process.env.DB_PORT,
+    password: process.env.DB_PASSWORD,
     waitForConnections: true,
     connectionLimit: 10,
     maxIdle: 10,
@@ -20,7 +21,7 @@ class MySQLClient {
   async connect() {
     (await MySQLClient.pool.getConnection()).release();
     console.log(`Connected to DB`);
-    await this.#isExistsFile(this.#readLocalStorage());
+    // await this.#isExistsFile(this.#readLocalStorage());
     // await this.#readTables();
     //     for (const table of MySQLClient.tables) {
     //       const writeStream = createWriteStream(`model/${table}.js`);
@@ -161,72 +162,72 @@ class MySQLClient {
     //     }
   }
 
-  async #createImage(file, hex) {
-    try {
-      const url = "static/images";
-      const path = `/${url}/${hex}.png`;
-      const values = [hex, path];
-      const sql = `INSERT INTO image(id, path) VALUES(?, ?)`;
-      await MySQLClient.pool.execute(sql, values);
-      renameSync(`${url}/${file}.png`, `${url}/${hex}.png`);
-    } catch (error) {
-      console.log(error);
-      return;
-    }
-  }
+  // async #createImage(file, hex) {
+  //   try {
+  //     const url = "static/images";
+  //     const path = `/${url}/${hex}.png`;
+  //     const values = [hex, path];
+  //     const sql = `INSERT INTO image(id, path) VALUES(?, ?)`;
+  //     await MySQLClient.pool.execute(sql, values);
+  //     renameSync(`${url}/${file}.png`, `${url}/${hex}.png`);
+  //   } catch (error) {
+  //     console.log(error);
+  //     return;
+  //   }
+  // }
 
-  async #createVideo(file, hex) {
-    try {
-      const url = "static/videos";
-      const path = `/${url}/${hex}.mov`;
-      const values = [hex, path];
-      const sql = `INSERT INTO video(id, path) VALUES(?, ?)`;
-      await MySQLClient.pool.execute(sql, values);
-      renameSync(`${url}/${file}.mov`, `${url}/${hex}.mov`);
-    } catch (error) {
-      console.log(error);
-      return;
-    }
-  }
+  // async #createVideo(file, hex) {
+  //   try {
+  //     const url = "static/videos";
+  //     const path = `/${url}/${hex}.mov`;
+  //     const values = [hex, path];
+  //     const sql = `INSERT INTO video(id, path) VALUES(?, ?)`;
+  //     await MySQLClient.pool.execute(sql, values);
+  //     renameSync(`${url}/${file}.mov`, `${url}/${hex}.mov`);
+  //   } catch (error) {
+  //     console.log(error);
+  //     return;
+  //   }
+  // }
 
-  async #isExistsFile(files) {
-    for (const file of files) {
-      let video;
-      try {
-        const sql = "SELECT id FROM video WHERE id = ?";
-        [[video]] = await MySQLClient.pool.execute(sql, [file]);
-      } catch (error) {
-        console.log(error);
-        return;
-      }
-      if (video) continue;
-      const hex = crypto.randomBytes(16).toString("hex");
-      await this.#createVideo(file, hex);
-      await this.#createImage(file, hex);
-    }
-  }
+  // async #isExistsFile(files) {
+  //   for (const file of files) {
+  //     let video;
+  //     try {
+  //       const sql = "SELECT id FROM video WHERE id = ?";
+  //       [[video]] = await MySQLClient.pool.execute(sql, [file]);
+  //     } catch (error) {
+  //       console.log(error);
+  //       return;
+  //     }
+  //     if (video) continue;
+  //     const hex = crypto.randomBytes(16).toString("hex");
+  //     await this.#createVideo(file, hex);
+  //     await this.#createImage(file, hex);
+  //   }
+  // }
 
-  #readLocalStorage() {
-    const files = readdirSync("static/videos")
-      .filter((file) => {
-        if (!file.includes(".DS_Store")) return file;
-      })
-      .map((file) => file.split(".")[0]);
-    return files;
-  }
+  // #readLocalStorage() {
+  //   const files = readdirSync("static/videos")
+  //     .filter((file) => {
+  //       if (!file.includes(".DS_Store")) return file;
+  //     })
+  //     .map((file) => file.split(".")[0]);
+  //   return files;
+  // }
 
-  async #readTables() {
-    const sql = "SHOW TABLES";
-    const [results] = await MySQLClient.pool.execute(sql);
-    for (const result of results) {
-      MySQLClient.tables.push(result.Tables_in_test);
-    }
-    for (const table of MySQLClient.tables) {
-      const sql = `DESC ${table}`;
-      const [result] = await MySQLClient.pool.execute(sql);
-      MySQLClient.columns[table] = result;
-    }
-  }
+  // async #readTables() {
+  //   const sql = "SHOW TABLES";
+  //   const [results] = await MySQLClient.pool.execute(sql);
+  //   for (const result of results) {
+  //     MySQLClient.tables.push(result.Tables_in_test);
+  //   }
+  //   for (const table of MySQLClient.tables) {
+  //     const sql = `DESC ${table}`;
+  //     const [result] = await MySQLClient.pool.execute(sql);
+  //     MySQLClient.columns[table] = result;
+  //   }
+  // }
 
   static async create(query) {
     if (!query) {

@@ -3,13 +3,13 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
   entry: {
-    main: path.join(__dirname, "frontend/js", "main"),
-    bars: path.join(__dirname, "frontend/js/header", "bars"),
-    signout: path.join(__dirname, "frontend/js/header", "signout"),
-    nav: path.join(__dirname, "frontend/js/navs", "nav"),
-    signin: path.join(__dirname, "frontend/js/contents", "signin"),
-    signup: path.join(__dirname, "frontend/js/contents", "signup"),
-    watch: path.join(__dirname, "frontend/js/contents", "watch"),
+    main: path.join(__dirname, "client/js", "main"),
+    bars: path.join(__dirname, "client/js/header", "bars"),
+    signout: path.join(__dirname, "client/js/header", "signout"),
+    nav: path.join(__dirname, "client/js/navs", "nav"),
+    signin: path.join(__dirname, "client/js/contents", "signin"),
+    signup: path.join(__dirname, "client/js/contents", "signup"),
+    watch: path.join(__dirname, "client/js/contents", "watch"),
   },
   output: {
     path: path.resolve(__dirname, "public"),

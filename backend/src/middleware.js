@@ -56,8 +56,7 @@ class Middleware {
   }
 
   notFound(req, res) {
-    const message = "Route not found";
-    return res.status(404).render("error", { pageTitle: "404", message });
+    return res.status(404).json({ message: "Route not found" });
   }
 
   errorHandler(err, req, res, next) {

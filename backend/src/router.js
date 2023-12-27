@@ -2,7 +2,8 @@ import express from "express";
 import {
   monitorController,
   authController,
-  rootController,
+  imageController,
+  videoController,
 } from "./controller";
 import middleware from "./middleware";
 
@@ -12,51 +13,53 @@ class Router {
   }
 }
 
-class RootRouter extends Router {
+class ImageRouter extends Router {
   constructor() {
     super();
 
     this.routes = {
-      root: "/",
-      signin: "/signin",
-      signup: "/signup",
-      video: "/video",
-      watch: "/watch/:id(\\d|\\w{32})",
+      root: "/api/v1/images",
+      index: "/",
+      image: "/:id(\\d|\\w{32})",
     };
 
     this.controllers = {
-      getIndex: rootController.getIndex.bind(rootController),
-      getSignin: rootController.getSignin.bind(rootController),
-      getSignup: rootController.getSignup.bind(rootController),
-      getVideo: rootController.getVideo.bind(rootController),
-      getWatch: rootController.getWatch.bind(rootController),
+      createImage: imageController.createImage,
+      getImages: imageController.getImages,
+      getImage: middleware.asyncWrapper(imageController.getImage),
     };
 
-    this.#get();
+    this.router
+      .route(this.routes.index)
+      .get(this.controllers.getImages)
+      .post(this.controllers.createImage);
+
+    this.router.route(this.routes.image).get(this.controllers.getImage);
   }
+}
 
-  #get() {
-    this.router.get(
-      this.routes.root,
-      [middleware.authenticateUser, middleware.authorizePermissions("admin")],
-      this.controllers.getIndex
-    );
+class VideoRouter extends Router {
+  constructor() {
+    super();
 
-    this.router.get(this.routes.signin, this.controllers.getSignin);
+    this.routes = {
+      root: "/api/v1/videos",
+      index: "/",
+      video: "/:id(\\d|\\w{32})",
+    };
 
-    this.router.get(this.routes.signup, this.controllers.getSignup);
+    this.controllers = {
+      createVideo: videoController.createVideo,
+      getVideos: videoController.getVideos,
+      getVideo: middleware.asyncWrapper(videoController.getVideo),
+    };
 
-    this.router.get(
-      this.routes.video,
-      [middleware.authenticateUser, middleware.authorizePermissions("admin")],
-      this.controllers.getVideo
-    );
+    this.router
+      .route(this.routes.index)
+      .get(this.controllers.getVideos)
+      .post(this.controllers.createVideo);
 
-    this.router.get(
-      this.routes.watch,
-      [middleware.authenticateUser, middleware.authorizePermissions("admin")],
-      this.controllers.getWatch
-    );
+    this.router.route(this.routes.video).get(this.controllers.getVideo);
   }
 }
 
@@ -65,7 +68,7 @@ class AuthRouter extends Router {
     super();
 
     this.routes = {
-      root: "/api/auth",
+      root: "/api/v1/auth",
       signup: "/signup",
       signin: "/signin",
       signout: "/signout",
@@ -116,7 +119,8 @@ class MonitorRouter extends Router {
   }
 }
 
-const rootRouter = new RootRouter();
 const authRouter = new AuthRouter();
 const monitorRouter = new MonitorRouter();
-export { rootRouter, authRouter, monitorRouter };
+const imageRouter = new ImageRouter();
+const videoRouter = new VideoRouter();
+export { authRouter, monitorRouter, imageRouter, videoRouter };

@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import { Image, User, Video, Token } from "./db";
+import { User, Token, Image, Video } from "./db";
 import {
   BadRequestError,
   NotFoundError,
@@ -13,61 +13,53 @@ import {
   createTokenUser,
 } from "./util";
 
-class RootController {
-  constructor() {
-    this.views = {
-      index: "index",
-      signin: "signin",
-      signup: "signup",
-      watch: "watch",
-      video: "video",
-    };
-
-    this.options = {
-      index: { pageTitle: "Generics", images: null },
-      signin: { pageTitle: "Sign in" },
-      signup: { pageTitle: "Sign up" },
-      watch: { pageTitle: null, video: null },
-      video: { pageTitle: "Video", videos: null },
-    };
+class ImageController {
+  async createImage(req, res) {
+    const { id, path } = req.body;
+    await Image.create({ id, path });
+    res.status(201).end();
   }
 
-  async getIndex(req, res) {
+  async getImages(req, res) {
     const images = await Image.select({});
-    this.options.index.images = images;
-    this.options.index.user = req.user;
-    res.status(200).render(this.views.index, this.options.index);
+    res.status(200).json(images);
   }
 
-  async getWatch(req, res) {
+  async getImage(req, res) {
     const { id } = req.params;
-
-    const video = await Video.selectJoinById(id);
-    if (!video) {
-      this.options.watch.pageTitle = "Generics";
-      this.options.watch.message = "Video not found";
-      return res.status(404).render("error", this.options.watch);
+    if (!id) {
+      throw new BadRequestError("Provide id");
     }
+    const image = await Image.selectOne({ id });
+    if (!image) {
+      throw new NotFoundError("Image not found");
+    }
+    res.status(200).json(image);
+  }
+}
 
-    this.options.watch.pageTitle = video.id;
-    this.options.watch.video = video;
-    this.options.watch.user = req.user;
-    res.status(200).render(this.views.watch, this.options.watch);
+class VideoController {
+  async createVideo(req, res) {
+    const { id, path } = req.body;
+    await Video.create({ id, path });
+    res.status(201).end();
+  }
+
+  async getVideos(req, res) {
+    const videos = await Video.select({});
+    res.status(200).json(videos);
   }
 
   async getVideo(req, res) {
-    const videos = await Video.select({});
-    this.options.video.videos = videos;
-    this.options.video.user = req.user;
-    res.status(200).render(this.views.video, this.options.video);
-  }
-
-  async getSignin(req, res) {
-    res.status(200).render(this.views.signin, this.options.signin);
-  }
-
-  async getSignup(req, res) {
-    res.status(200).render(this.views.signup, this.options.signup);
+    const { id } = req.params;
+    if (!id) {
+      throw new BadRequestError("Provide id");
+    }
+    const video = await Video.selectOne({ id });
+    if (!video) {
+      throw new NotFoundError("video not found");
+    }
+    res.status(200).json(video);
   }
 }
 
@@ -159,7 +151,8 @@ class MonitorController {
   }
 }
 
-const rootController = new RootController();
 const authController = new AuthController();
 const monitorController = new MonitorController();
-export { rootController, authController, monitorController };
+const imageController = new ImageController();
+const videoController = new VideoController();
+export { authController, monitorController, imageController, videoController };
