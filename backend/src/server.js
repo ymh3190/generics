@@ -1,10 +1,11 @@
 import "dotenv/config";
+import "./layer";
 import express from "express";
 import helmet from "helmet";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
-import { authRouter, monitorRouter, imageRouter } from "./router";
+import { authRouter, monitorRouter, imageRouter, videoRouter } from "./router";
 import middleware from "./middleware";
 
 class Server {
@@ -43,6 +44,7 @@ class Server {
     this.#app.use(authRouter.routes.root, authRouter.router);
     this.#app.use(monitorRouter.routes.root, monitorRouter.router);
     this.#app.use(imageRouter.routes.root, imageRouter.router);
+    this.#app.use(videoRouter.routes.root, videoRouter.router);
   }
 
   #errorHandler() {

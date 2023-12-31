@@ -26,12 +26,12 @@ class ImageRouter extends Router {
     this.controllers = {
       createImage: imageController.createImage,
       getImages: imageController.getImages,
-      getImage: middleware.asyncWrapper(imageController.getImage),
+      getImage: imageController.getImage,
     };
 
     this.router
       .route(this.routes.index)
-      .get(this.controllers.getImages)
+      .get(middleware.authenticateUser, this.controllers.getImages)
       .post(this.controllers.createImage);
 
     this.router.route(this.routes.image).get(this.controllers.getImage);
@@ -51,15 +51,17 @@ class VideoRouter extends Router {
     this.controllers = {
       createVideo: videoController.createVideo,
       getVideos: videoController.getVideos,
-      getVideo: middleware.asyncWrapper(videoController.getVideo),
+      getVideo: videoController.getVideo,
     };
 
     this.router
       .route(this.routes.index)
-      .get(this.controllers.getVideos)
+      .get(middleware.authenticateUser, this.controllers.getVideos)
       .post(this.controllers.createVideo);
 
-    this.router.route(this.routes.video).get(this.controllers.getVideo);
+    this.router
+      .route(this.routes.video)
+      .get(middleware.authenticateUser, this.controllers.getVideo);
   }
 }
 
@@ -75,21 +77,13 @@ class AuthRouter extends Router {
     };
 
     this.controllers = {
+      signup: authController.signup,
+      signin: authController.signin,
       signout: authController.signout,
-      signin: middleware.asyncWrapper(authController.signin),
-      signup: middleware.asyncWrapper(authController.signup),
     };
 
-    this.#post();
-    this.#delete();
-  }
-
-  #post() {
     this.router.post(this.routes.signup, this.controllers.signup);
     this.router.post(this.routes.signin, this.controllers.signin);
-  }
-
-  #delete() {
     this.router.delete(
       this.routes.signout,
       middleware.authenticateUser,

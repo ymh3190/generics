@@ -1,10 +1,9 @@
 import express from "express";
 import {
-  /* monitorController,
-  authController, */
+  authController,
+  // monitorController
   rootController,
 } from "./controller";
-// import middleware from "./middleware";
 
 class Router {
   constructor() {
@@ -18,6 +17,7 @@ class RootRouter extends Router {
 
     this.routes = {
       root: "/",
+      index: "/",
       signin: "/signin",
       signup: "/signup",
       video: "/video",
@@ -26,58 +26,40 @@ class RootRouter extends Router {
 
     this.controllers = {
       getIndex: rootController.getIndex.bind(rootController),
-      // getSignin: rootController.getSignin.bind(rootController),
+      getWatch: rootController.getWatch.bind(rootController),
+      getSignin: rootController.getSignin.bind(rootController),
       // getSignup: rootController.getSignup.bind(rootController),
       // getVideo: rootController.getVideo.bind(rootController),
-      // getWatch: rootController.getWatch.bind(rootController),
     };
 
-    this.#get();
-  }
-
-  #get() {
-    this.router.get(this.routes.root, this.controllers.getIndex);
-
-    // this.router.get(this.routes.signin, this.controllers.getSignin);
-
-    // this.router.get(this.routes.signup, this.controllers.getSignup);
-
-    // this.router.get(this.routes.video, this.controllers.getVideo);
-
-    // this.router.get(this.routes.watch, this.controllers.getWatch);
+    this.router.get(this.routes.index, this.controllers.getIndex);
+    this.router.get(this.routes.signin, this.controllers.getSignin);
+    this.router.get(this.routes.watch, this.controllers.getWatch);
   }
 }
 
-// class AuthRouter extends Router {
-//   constructor() {
-//     super();
+class AuthRouter extends Router {
+  constructor() {
+    super();
 
-//     this.routes = {
-//       root: "/api/auth",
-//       signup: "/signup",
-//       signin: "/signin",
-//       signout: "/signout",
-//     };
+    this.routes = {
+      root: "/api/auth",
+      signup: "/signup",
+      signin: "/signin",
+      signout: "/signout",
+    };
 
-//     this.controllers = {
-//       signout: authController.signout,
-//       signin: middleware.asyncWrapper(authController.signin),
-//       signup: middleware.asyncWrapper(authController.signup),
-//     };
+    this.controllers = {
+      // signup: authController.signup,
+      signin: authController.signin,
+      signout: authController.signout,
+    };
 
-//     this.#post();
-//     this.#delete();
-//   }
-
-//   #post() {
-//     this.router.post(this.routes.signup, this.controllers.signup);
-//     this.router.post(this.routes.signin, this.controllers.signin);
-//   }
-
-//   #delete() {
-//     this.router.delete(this.routes.signout, this.controllers.signout);
-//   }
-// }
+    // this.router.post(this.routes.signup, this.controllers.signup);
+    this.router.post(this.routes.signin, this.controllers.signin);
+    this.router.delete(this.routes.signout, this.controllers.signout);
+  }
+}
 
 // class MonitorRouter extends Router {
 //   constructor() {
@@ -92,15 +74,11 @@ class RootRouter extends Router {
 //       memory: monitorController.memory,
 //     };
 
-//     this.#get();
-//   }
-
-//   #get() {
 //     this.router.get(this.routes.memory, this.controllers.memory);
 //   }
 // }
 
 const rootRouter = new RootRouter();
-// const authRouter = new AuthRouter();
+const authRouter = new AuthRouter();
 // const monitorRouter = new MonitorRouter();
-export { rootRouter /* authRouter, monitorRouter */ };
+export { rootRouter, authRouter /* , monitorRouter */ };

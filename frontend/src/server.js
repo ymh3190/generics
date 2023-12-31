@@ -1,10 +1,10 @@
 import "dotenv/config";
+import "./layer";
 import express from "express";
 import helmet from "helmet";
 import cors from "cors";
-import cookieParser from "cookie-parser";
 
-import { /* authRouter, monitorRouter */ rootRouter } from "./router";
+import { authRouter, rootRouter } from "./router";
 import middleware from "./middleware";
 
 class Server {
@@ -42,14 +42,13 @@ class Server {
     );
     this.#app.use(cors());
     this.#app.use(express.json());
-    this.#app.use(cookieParser(process.env.JWT_SECRET));
     this.#app.use("/static", express.static("static"));
     this.#app.use("/public", express.static("public"));
   }
 
   #useRouter() {
     this.#app.use(rootRouter.routes.root, rootRouter.router);
-    // this.#app.use(authRouter.routes.root, authRouter.router);
+    this.#app.use(authRouter.routes.root, authRouter.router);
     // this.#app.use(monitorRouter.routes.root, monitorRouter.router);
   }
 

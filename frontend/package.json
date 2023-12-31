@@ -1,11 +1,12 @@
 {
   "name": "frontend",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "build/app.js",
   "private": true,
   "scripts": {
+    "start": "node .",
     "build": "babel -d build src && webpack --mode=production",
-    "dev": "nodemon -x babel-node src/app.js",
+    "dev": "nodemon -i webpack.config.js -i public -i client -x babel-node src/app.js",
     "dist": "webpack --mode=development -w"
   },
   "keywords": [],
@@ -13,7 +14,6 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "ejs": "^3.1.9",

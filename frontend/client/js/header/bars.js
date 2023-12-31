@@ -13,7 +13,7 @@ if (isMobileOrTable) {
     const iconDOM = anchorDOM.querySelector("i");
     iconDOM.classList.remove("margin-right");
     iconDOM.classList.add("margin-bottom");
-    contentDOM.classList.add("padding-left");
+    contentDOM?.classList.add("padding-left");
   }
 }
 
@@ -25,7 +25,7 @@ barsDOM.addEventListener("click", () => {
       const iconDOM = anchorDOM.querySelector("i");
       iconDOM.classList.remove("margin-bottom");
       iconDOM.classList.add("margin-right");
-      contentDOM.classList.remove("padding-left");
+      contentDOM?.classList.remove("padding-left");
       continue;
     }
     anchorDOM.classList.remove("flex");
@@ -33,6 +33,6 @@ barsDOM.addEventListener("click", () => {
     const iconDOM = anchorDOM.querySelector("i");
     iconDOM.classList.remove("margin-right");
     iconDOM.classList.add("margin-bottom");
-    contentDOM.classList.add("padding-left");
+    contentDOM?.classList.add("padding-left");
   }
 });

@@ -1,25 +1,31 @@
-class BadRequestError extends Error {
+class CustomError extends Error {
+  constructor(message) {
+    super(message);
+  }
+}
+
+class BadRequestError extends CustomError {
   constructor(message) {
     super(message);
     this.statusCode = 400;
   }
 }
 
-class NotFoundError extends Error {
+class NotFoundError extends CustomError {
   constructor(message) {
     super(message);
     this.statusCode = 404;
   }
 }
 
-class UnauthenticatedError extends Error {
+class UnauthenticatedError extends CustomError {
   constructor(message) {
     super(message);
     this.statusCode = 401;
   }
 }
 
-class UnauthorizedError extends Error {
+class UnauthorizedError extends CustomError {
   constructor(message) {
     super(message);
     this.statusCode = 403;

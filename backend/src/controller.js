@@ -1,10 +1,6 @@
 import bcrypt from "bcrypt";
 import { User, Token, Image, Video } from "./db";
-import {
-  BadRequestError,
-  NotFoundError,
-  UnauthenticatedError,
-} from "./error-api";
+import * as CustomError from "./error";
 import memInfo from "./ssh";
 import {
   attachCookiesToResponse,
@@ -16,25 +12,36 @@ import {
 class ImageController {
   async createImage(req, res) {
     const { id, path } = req.body;
+    if (!id) {
+      throw new CustomError.BadRequestError("Provide id");
+    }
+    if (!path) {
+      throw new CustomError.BadRequestError("Provide path");
+    }
     await Image.create({ id, path });
     res.status(201).end();
   }
 
   async getImages(req, res) {
     const images = await Image.select({});
-    res.status(200).json(images);
+    res.status(200).json({ images, user: req.user });
   }
 
   async getImage(req, res) {
     const { id } = req.params;
     if (!id) {
-      throw new BadRequestError("Provide id");
+      throw new CustomError.BadRequestError("Provide id");
     }
-    const image = await Image.selectOne({ id });
-    if (!image) {
-      throw new NotFoundError("Image not found");
+
+    try {
+      const image = await Image.selectOne({ id });
+      if (!image) {
+        throw new CustomError.NotFoundError("Image not found");
+      }
+      res.status(200).json({ image });
+    } catch (error) {
+      res.status(error.statusCode).json({ message: error.message });
     }
-    res.status(200).json(image);
   }
 }
 
@@ -47,19 +54,19 @@ class VideoController {
 
   async getVideos(req, res) {
     const videos = await Video.select({});
-    res.status(200).json(videos);
+    res.status(200).json({ videos });
   }
 
   async getVideo(req, res) {
     const { id } = req.params;
     if (!id) {
-      throw new BadRequestError("Provide id");
+      throw new CustomError.BadRequestError("Provide id");
     }
     const video = await Video.selectOne({ id });
     if (!video) {
-      throw new NotFoundError("video not found");
+      throw new CustomError.NotFoundError("video not found");
     }
-    res.status(200).json(video);
+    res.status(200).json({ video, user: req.user });
   }
 }
 
@@ -68,12 +75,12 @@ class AuthController {
     const { username, password } = req.body;
 
     if (!username || !password) {
-      throw new BadRequestError("Provide username and password");
+      throw new CustomError.BadRequestError("Provide username and password");
     }
 
     const existingUser = await User.selectOne({ username });
     if (existingUser) {
-      throw new BadRequestError("User already exists");
+      throw new CustomError.BadRequestError("User already exists");
     }
 
     const id = createId();
@@ -88,17 +95,17 @@ class AuthController {
     const { username, password } = req.body;
 
     if (!username || !password) {
-      throw new BadRequestError("Provide username and password");
+      throw new CustomError.BadRequestError("Provide username and password");
     }
 
     const user = await User.selectOne({ username });
     if (!user) {
-      throw new NotFoundError("User not found");
+      throw new CustomError.NotFoundError("User not found");
     }
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
     if (!isPasswordCorrect) {
-      throw new BadRequestError("Password not match");
+      throw new CustomError.BadRequestError("Password not match");
     }
 
     const tokenUser = createTokenUser(user);
@@ -107,7 +114,7 @@ class AuthController {
     if (existingToken) {
       const { is_valid } = existingToken;
       if (!is_valid) {
-        throw new UnauthenticatedError("Authentication invalid");
+        throw new CustomError.UnauthenticatedError("Authentication invalid");
       }
 
       refreshToken = existingToken.refresh_token;
@@ -116,7 +123,7 @@ class AuthController {
         user: tokenUser,
         refresh_token: refreshToken,
       });
-      return res.status(200).end();
+      return res.status(200).json({ user: tokenUser });
     }
 
     const id = createId();
@@ -126,7 +133,7 @@ class AuthController {
     const user_id = user.id;
     await Token.create({ id, refresh_token, ip, user_agent, user_id });
     attachCookiesToResponse({ res, user: tokenUser, refresh_token });
-    res.status(200).end();
+    res.status(200).json({ user: tokenUser });
   }
 
   async signout(req, res) {

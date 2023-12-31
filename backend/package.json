@@ -2,12 +2,12 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "build/app.js",
   "private": true,
   "scripts": {
-    "start": "node build/app.js",
+    "start": "node .",
     "build": "babel -d build src",
-    "dev": "nodemon -x babel-node src/app.js"
+    "dev": "nodemon -i build -x babel-node src/app.js"
   },
   "keywords": [],
   "author": "",

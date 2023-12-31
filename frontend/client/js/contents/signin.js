@@ -16,9 +16,12 @@ if (signinFormDOM) {
       return;
     }
 
-    const result = await FetchAPI.post("/auth/signin", { username, password });
-    if (result) {
-      window.location.href = "/";
-    }
+    const response = await FetchAPI.post("/auth/signin", {
+      username,
+      password,
+    });
+    const data = await response.json();
+    // localStorage.setItem("user", data.user);
+    window.location.href = "/";
   });
 }
