@@ -63,6 +63,10 @@ class AuthController {
       throw new CustomError.BadRequestError("Provide username and password");
     }
 
+    await FetchAPI.post("/auth/signup", {
+      username,
+      password,
+    });
     res.status(200).end();
   }
 

@@ -28,12 +28,13 @@ class RootRouter extends Router {
       getIndex: rootController.getIndex.bind(rootController),
       getWatch: rootController.getWatch.bind(rootController),
       getSignin: rootController.getSignin.bind(rootController),
-      // getSignup: rootController.getSignup.bind(rootController),
+      getSignup: rootController.getSignup.bind(rootController),
       // getVideo: rootController.getVideo.bind(rootController),
     };
 
     this.router.get(this.routes.index, this.controllers.getIndex);
     this.router.get(this.routes.signin, this.controllers.getSignin);
+    this.router.get(this.routes.signup, this.controllers.getSignup);
     this.router.get(this.routes.watch, this.controllers.getWatch);
   }
 }
@@ -50,12 +51,12 @@ class AuthRouter extends Router {
     };
 
     this.controllers = {
-      // signup: authController.signup,
+      signup: authController.signup,
       signin: authController.signin,
       signout: authController.signout,
     };
 
-    // this.router.post(this.routes.signup, this.controllers.signup);
+    this.router.post(this.routes.signup, this.controllers.signup);
     this.router.post(this.routes.signin, this.controllers.signin);
     this.router.delete(this.routes.signout, this.controllers.signout);
   }
