@@ -67,7 +67,7 @@ class AuthController {
       username,
       password,
     });
-    res.status(200).end();
+    res.status(201).end();
   }
 
   async signin(req, res) {
