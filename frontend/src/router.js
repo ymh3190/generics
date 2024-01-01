@@ -44,7 +44,7 @@ class AuthRouter extends Router {
     super();
 
     this.routes = {
-      root: "/api/auth",
+      root: "/api/v1/auth",
       signup: "/signup",
       signin: "/signin",
       signout: "/signout",

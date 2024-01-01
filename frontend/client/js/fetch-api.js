@@ -19,7 +19,7 @@ const catchResponseError = async (response) => {
 
 class FetchAPI {
   static async get(path) {
-    const response = await fetch("/api" + path);
+    const response = await fetch("/api/v1" + path);
     if (response?.ok) {
       return response;
     }
@@ -27,7 +27,7 @@ class FetchAPI {
   }
 
   static async post(path, data) {
-    const response = await fetch("/api" + path, {
+    const response = await fetch("/api/v1" + path, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -41,7 +41,7 @@ class FetchAPI {
   }
 
   static async patch(path, data) {
-    const response = await fetch("/api" + path, {
+    const response = await fetch("/api/v1" + path, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -55,7 +55,7 @@ class FetchAPI {
   }
 
   static async delete(path) {
-    const response = await fetch("/api" + path, {
+    const response = await fetch("/api/v1" + path, {
       method: "DELETE",
     });
     if (response?.ok) {

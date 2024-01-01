@@ -22,7 +22,12 @@ if (signupFormDOM) {
       return;
     }
 
-    await FetchAPI.post("/auth/signup", { username, password });
-    window.location.href = "/signin";
+    const response = await FetchAPI.post("/auth/signup", {
+      username,
+      password,
+    });
+    if (response) {
+      window.location.href = "/signin";
+    }
   });
 }

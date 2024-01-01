@@ -31,7 +31,11 @@ class ImageRouter extends Router {
 
     this.router
       .route(this.routes.index)
-      .get(middleware.authenticateUser, this.controllers.getImages)
+      .get(
+        middleware.authenticateUser,
+        middleware.authorizePermissions("admin"),
+        this.controllers.getImages
+      )
       .post(this.controllers.createImage);
 
     this.router.route(this.routes.image).get(this.controllers.getImage);
@@ -61,7 +65,11 @@ class VideoRouter extends Router {
 
     this.router
       .route(this.routes.video)
-      .get(middleware.authenticateUser, this.controllers.getVideo);
+      .get(
+        middleware.authenticateUser,
+        middleware.authorizePermissions("admin"),
+        this.controllers.getVideo
+      );
   }
 }
 

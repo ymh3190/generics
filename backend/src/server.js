@@ -16,6 +16,7 @@ class Server {
     this.#app = express();
     this.#port = process.env.PORT || 3000;
 
+    this.#setConfig();
     this.#useMiddleware();
     this.#useRouter();
     this.#errorHandler();
@@ -25,6 +26,10 @@ class Server {
     this.#app.listen(this.#port, () => {
       console.log(`Server is listening port ${this.#port}`);
     });
+  }
+
+  #setConfig() {
+    this.#app.set("trust proxy", 1);
   }
 
   #useMiddleware() {

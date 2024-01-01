@@ -6,8 +6,8 @@ if (signoutDOM) {
   signoutDOM.addEventListener("click", async (event) => {
     event.preventDefault();
 
-    const result = await FetchAPI.delete("/auth/signout");
-    if (result) {
+    const response = await FetchAPI.delete("/auth/signout");
+    if (response) {
       window.location.href = "/signin";
     }
   });

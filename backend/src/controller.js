@@ -123,17 +123,17 @@ class AuthController {
         user: tokenUser,
         refresh_token: refreshToken,
       });
-      return res.status(200).json({ user: tokenUser });
+      return res.status(200).end();
     }
 
     const id = createId();
     const refresh_token = createToken();
-    const ip = req.ip;
+    const ip = req.headers["x-forwared-for"];
     const user_agent = req.headers["user-agent"];
     const user_id = user.id;
     await Token.create({ id, refresh_token, ip, user_agent, user_id });
     attachCookiesToResponse({ res, user: tokenUser, refresh_token });
-    res.status(200).json({ user: tokenUser });
+    res.status(200).end();
   }
 
   async signout(req, res) {

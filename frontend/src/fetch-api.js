@@ -52,7 +52,23 @@ class FetchAPI {
     await catchResponseError(response);
   }
 
-  static async post(path, data) {
+  static async post(path, data, options = null) {
+    if (options) {
+      const response = await fetch(FetchAPI.#url + path, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-forwared-for": options.ip,
+          "user-agent": options.userAgent,
+        },
+        body: JSON.stringify(data),
+      });
+      if (response?.ok) {
+        return response;
+      }
+      return await catchResponseError(response);
+    }
+
     const response = await fetch(FetchAPI.#url + path, {
       method: "POST",
       headers: {

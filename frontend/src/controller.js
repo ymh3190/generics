@@ -26,7 +26,11 @@ class RootController {
     }
 
     const response = await FetchAPI.get("/images", {
-      headers: { cookie: req.headers.cookie },
+      headers: {
+        cookie: req.headers.cookie,
+        "x-forwarded-for": req.ip,
+        "user-agent": req.headers["user-agent"],
+      },
     });
     const data = await response.json();
     this.options.index.images = data.images;
@@ -37,12 +41,18 @@ class RootController {
   async getWatch(req, res) {
     const { id } = req.params;
 
-    const response = await FetchAPI.get(`/videos/${id}`, {
+    let response = await FetchAPI.get(`/videos/${id}`, {
       headers: { cookie: req.headers.cookie },
     });
-    const data = await response.json();
+    let data = await response.json();
     this.options.watch.video = data.video;
     this.options.watch.user = data.user;
+
+    response = await FetchAPI.get(`/images/${id}`, {
+      headers: { cookie: req.headers.cookie },
+    });
+    data = await response.json();
+    this.options.watch.image = data.image;
     res.status(200).render(this.views.watch, this.options.watch);
   }
 
@@ -57,6 +67,10 @@ class RootController {
 
 class AuthController {
   async signup(req, res) {
+    if (req.headers.cookie) {
+      return res.redirect("/");
+    }
+
     const { username, password } = req.body;
 
     if (!username || !password) {
@@ -71,23 +85,28 @@ class AuthController {
   }
 
   async signin(req, res) {
+    if (req.headers.cookie) {
+      return res.redirect("/");
+    }
+
     const { username, password } = req.body;
 
     if (!username || !password) {
       throw new CustomError.BadRequestError("Provide username and password");
     }
 
-    const response = await FetchAPI.post("/auth/signin", {
-      username,
-      password,
-    });
-    const data = await response.json();
+    const ip = req.ip;
+    const userAgent = req.headers["user-agent"];
+    const payload = { username, password };
+    const options = { ip, userAgent };
+
+    const response = await FetchAPI.post("/auth/signin", payload, options);
     const cookies = response.headers.raw()["set-cookie"];
     const access_token = cookies[0];
     const refresh_token = cookies[1];
     res.cookie(access_token);
     res.cookie(refresh_token);
-    return res.status(200).json({ user: data.user });
+    return res.status(200).end();
   }
 
   async signout(req, res) {
@@ -97,7 +116,10 @@ class AuthController {
 
     const response = await FetchAPI.delete("/auth/signout", {
       method: "DELETE",
-      headers: { cookie: req.headers.cookie },
+      headers: {
+        cookie: req.headers.cookie,
+        "x-forwarded-for": req.ip,
+      },
     });
     const cookies = response.headers.raw()["set-cookie"];
     const access_token = cookies[0];
