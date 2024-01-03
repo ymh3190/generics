@@ -57,10 +57,16 @@ class RootController {
   }
 
   async getSignup(req, res) {
+    if (req.headers.cookie) {
+      return res.redirect("/");
+    }
     res.status(200).render(this.views.signup, this.options.signup);
   }
 
   async getSignin(req, res) {
+    if (req.headers.cookie) {
+      return res.redirect("/");
+    }
     res.status(200).render(this.views.signin, this.options.signin);
   }
 }
