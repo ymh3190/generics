@@ -108,11 +108,10 @@ class AuthController {
 
     const response = await FetchAPI.post("/auth/signin", payload, options);
     const cookies = response.headers.raw()["set-cookie"];
-    const access_token = cookies[0];
-    const refresh_token = cookies[1];
+    const [access_token, refresh_token] = cookies;
     res.cookie(access_token);
     res.cookie(refresh_token);
-    return res.status(200).end();
+    res.status(200).end();
   }
 
   async signout(req, res) {
@@ -128,8 +127,10 @@ class AuthController {
       },
     });
     const cookies = response.headers.raw()["set-cookie"];
-    const access_token = cookies[0];
-    const refresh_token = cookies[1];
+    const [access_token, refresh_token] = cookies;
+    // if (!access_token || !refresh_token) {
+    //   throw new CustomError.NotFoundError("Token not found");
+    // }
     res.cookie(access_token);
     res.cookie(refresh_token);
     res.status(200).end();

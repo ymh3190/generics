@@ -1,7 +1,7 @@
 import mysql from "mysql2/promise";
 import * as CustomError from "./error";
 
-class MySQLClient {
+class MySQLAPI {
   static pool = mysql.createPool({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
@@ -18,36 +18,53 @@ class MySQLClient {
   });
 
   async connect() {
-    (await MySQLClient.pool.getConnection()).release();
+    (await MySQLAPI.pool.getConnection()).release();
     console.log(`Connected to DB`);
   }
 
-  static async create(query) {
+  /**
+   *
+   * @param {{}} query
+   * @param {{}} options
+   */
+  static async create(query, options = null) {
     if (!query) {
       throw new CustomError.BadRequestError("Provide query");
     }
 
     const keys = Object.keys(query);
     let sql = `INSERT INTO ${this.name.toLowerCase()}(`;
-    for (let i = 0; i < keys.length; i++) {
-      if (i !== keys.length - 1) {
+    for (let i = 0, len = keys.length; i < len; ++i) {
+      if (i !== len - 1) {
         sql = sql.concat(keys[i], ", ");
         continue;
       }
       sql = sql.concat(keys[i], ") VALUES(");
     }
-    for (let i = 0; i < keys.length; i++) {
-      if (i !== keys.length - 1) {
+    for (let i = 0, len = keys.length; i < len; ++i) {
+      if (i !== len - 1) {
         sql = sql.concat("?, ");
         continue;
       }
       sql = sql.concat("?)");
     }
     const values = Object.values(query);
-    await MySQLClient.pool.execute(sql, values);
+    await MySQLAPI.pool.execute(sql, values);
+
+    // TODO: options filter
+    if (options) {
+      const keys = Object.keys(options);
+    }
   }
 
-  static async select(query) {
+  /**
+   *
+   * @param {{}} query
+   * @param {{}} filter
+   * @param {{}} options
+   * @returns
+   */
+  static async select(query, filter = null, options = null) {
     if (!query) {
       throw new CustomError.BadRequestError("Provide query");
     }
@@ -61,23 +78,29 @@ class MySQLClient {
       const sql = `
       SELECT *, ${createdAt} FROM ${this.name.toLowerCase()}
       `;
-      const [result] = await MySQLClient.pool.execute(sql);
+
+      const [result] = await MySQLAPI.pool.execute(sql);
       return result;
     }
 
     let sql = `SELECT *, ${createdAt} FROM ${this.name.toLowerCase()} WHERE`;
-    for (let i = 0; i < keys.length; i++) {
-      if (i !== keys.length - 1) {
+    for (let i = 0, len = keys.length; i < len; ++i) {
+      if (i !== len - 1) {
         sql = sql.concat(" ", keys[i], " = ? AND");
         continue;
       }
       sql = sql.concat(" ", keys[i], " = ?");
     }
     const values = Object.values(query);
-    const [result] = await MySQLClient.pool.execute(sql, values);
+    const [result] = await MySQLAPI.pool.execute(sql, values);
     return result;
   }
 
+  /**
+   *
+   * @param {string} id
+   * @returns {{}}
+   */
   static async selectById(id) {
     if (!id) {
       throw new CustomError.BadRequestError("Provide id");
@@ -90,7 +113,7 @@ class MySQLClient {
     const table = this.name.toLowerCase();
     const sql = `SELECT *, ${createdAt} FROM ${table} WHERE ${table}.id = ?`;
     const values = [id];
-    const [[result]] = await MySQLClient.pool.execute(sql, values);
+    const [[result]] = await MySQLAPI.pool.execute(sql, values);
     return result;
   }
 
@@ -107,10 +130,15 @@ class MySQLClient {
     WHERE ${table}.id = ?
     `;
     const values = [id];
-    const [[result]] = await MySQLClient.pool.execute(sql, values);
+    const [[result]] = await MySQLAPI.pool.execute(sql, values);
     return result;
   }
 
+  /**
+   *
+   * @param {{}} query
+   * @returns {{}}
+   */
   static async selectOne(query) {
     if (!query) {
       throw new CustomError.BadRequestError("Provide query");
@@ -126,19 +154,27 @@ class MySQLClient {
     }
 
     let sql = `SELECT *, ${createdAt} FROM ${this.name.toLowerCase()} WHERE`;
-    for (let i = 0; i < keys.length; i++) {
-      if (i !== keys.length - 1) {
+    for (let i = 0, len = keys.length; i < len; ++i) {
+      if (i !== len - 1) {
         sql = sql.concat(" ", keys[i], " = ? AND");
         continue;
       }
       sql = sql.concat(" ", keys[i], " = ?");
     }
     const values = Object.values(query);
-    const [[result]] = await MySQLClient.pool.execute(sql, values);
+    const [[result]] = await MySQLAPI.pool.execute(sql, values);
     return result;
   }
 
-  static async update(query, projection) {
+  /**
+   *
+   * @param {{}} query
+   * @param {{}} projection
+   * @returns
+   */
+  static async update(query, projection = null) {
+    // TODO: 매개변수 이름 및 로직 수정이 필요
+    // projection? filter? condition?
     if (!query) {
       throw new CustomError.BadRequestError("Provide query");
     }
@@ -149,8 +185,8 @@ class MySQLClient {
     }
 
     let sql = `UPDATE ${this.name.toLowerCase()} SET`;
-    for (let i = 0; i < keys.length; i++) {
-      if (i !== keys.length - 1) {
+    for (let i = 0, len = keys.length; i < len; ++i) {
+      if (i !== len - 1) {
         sql = sql.concat(" ", keys[i], " = ?,");
         continue;
       }
@@ -160,15 +196,19 @@ class MySQLClient {
     let values = Object.values(query);
     if (projection) {
       const keys = Object.keys(projection);
-      for (let i = 0; i < keys.length; i++) {
+      for (let i = 0, len = keys.length; i < len; ++i) {
         sql = sql.concat(" AND", keys[i], " = ?");
       }
       values = values.concat(Object.values(projection));
     }
-    const [[result]] = await MySQLClient.pool.execute(sql, values);
+    const [[result]] = await MySQLAPI.pool.execute(sql, values);
     return result;
   }
 
+  /**
+   *
+   * @param {{}} query
+   */
   static async delete(query) {
     if (!query) {
       throw new CustomError.BadRequestError("Provide query");
@@ -180,26 +220,26 @@ class MySQLClient {
     }
 
     let sql = `DELETE FROM ${this.name.toLowerCase()} WHERE`;
-    for (let i = 0; i < keys.length; i++) {
-      if (i !== keys.length - 1) {
+    for (let i = 0, len = keys.length; i < len; ++i) {
+      if (i !== len - 1) {
         sql = sql.concat(" ", keys[i], " = ? AND");
         continue;
       }
       sql = sql.concat(" ", keys[i], " = ?");
     }
     const values = Object.values(query);
-    await MySQLClient.pool.execute(sql, values);
+    await MySQLAPI.pool.execute(sql, values);
   }
 }
 
-class Video extends MySQLClient {}
+class Video extends MySQLAPI {}
 
-class Image extends MySQLClient {}
+class Image extends MySQLAPI {}
 
-class User extends MySQLClient {}
+class User extends MySQLAPI {}
 
-class Token extends MySQLClient {}
+class Token extends MySQLAPI {}
 
-const mysqlClient = new MySQLClient();
-export default mysqlClient;
+const mysqlAPI = new MySQLAPI();
+export default mysqlAPI;
 export { Image, Video, User, Token };
