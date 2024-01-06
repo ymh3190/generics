@@ -47,8 +47,8 @@ class Server {
   }
 
   #useRouter() {
-    this.#app.use(rootRouter.routes.root, rootRouter.router);
-    this.#app.use(authRouter.routes.root, authRouter.router);
+    this.#app.use("/", rootRouter);
+    this.#app.use("/api/v1/auth", authRouter);
     // this.#app.use(monitorRouter.routes.root, monitorRouter.router);
   }
 

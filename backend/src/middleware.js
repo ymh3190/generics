@@ -1,6 +1,6 @@
 import { Token } from "./db";
 import jwt from "jsonwebtoken";
-import { UnauthenticatedError, UnauthorizedError } from "./error";
+import * as CustomError from "./error";
 import { attachCookiesToResponse } from "./util";
 
 class Middleware {
@@ -20,7 +20,7 @@ class Middleware {
         user_id: payload.user.user_id,
       });
       if (!existingToken || !existingToken?.is_valid) {
-        throw new UnauthenticatedError("Authentication invalid");
+        throw new CustomError.UnauthenticatedError("Authentication invalid");
       }
 
       attachCookiesToResponse({
@@ -31,14 +31,16 @@ class Middleware {
       req.user = payload.user;
       next();
     } catch (error) {
-      throw new UnauthenticatedError("Authentication invalid");
+      throw new CustomError.UnauthenticatedError("Authentication invalid");
     }
   }
 
   authorizePermissions(...roles) {
     return (req, res, next) => {
       if (!roles.includes(req.user.role)) {
-        throw new UnauthorizedError("Unauthorized to access this route");
+        throw new CustomError.UnauthorizedError(
+          "Unauthorized to access this route"
+        );
       }
       next();
     };

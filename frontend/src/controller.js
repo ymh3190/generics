@@ -2,24 +2,6 @@ import FetchAPI from "./fetch-api";
 import * as CustomError from "./error";
 
 class RootController {
-  constructor() {
-    this.views = {
-      index: "index",
-      signin: "signin",
-      signup: "signup",
-      watch: "watch",
-      video: "video",
-    };
-
-    this.options = {
-      index: { pageTitle: "Generics", images: null, user: null },
-      signup: { pageTitle: "Sign up" },
-      signin: { pageTitle: "Sign in" },
-      watch: { pageTitle: null, video: null, user: null },
-      video: { pageTitle: "Video", videos: null, user: null },
-    };
-  }
-
   async getIndex(req, res) {
     if (!req.headers.cookie) {
       return res.redirect("/signin");
@@ -33,9 +15,15 @@ class RootController {
       },
     });
     const data = await response.json();
-    this.options.index.images = data.images;
-    this.options.index.user = data.user;
-    res.status(200).render(this.views.index, this.options.index);
+    const images = data.images;
+    const user = data.user;
+    const cookies = response.headers.raw()["set-cookie"];
+    if (cookies?.length) {
+      const [access_token, refresh_token] = cookies;
+      res.cookie(access_token);
+      res.cookie(refresh_token);
+    }
+    res.status(200).render("index", { pageTitle: "Generics", images, user });
   }
 
   async getWatch(req, res) {
@@ -45,29 +33,29 @@ class RootController {
       headers: { cookie: req.headers.cookie },
     });
     let data = await response.json();
-    this.options.watch.video = data.video;
-    this.options.watch.user = data.user;
+    const video = data.video;
+    const user = data.user;
 
     response = await FetchAPI.get(`/images/${id}`, {
       headers: { cookie: req.headers.cookie },
     });
     data = await response.json();
-    this.options.watch.image = data.image;
-    res.status(200).render(this.views.watch, this.options.watch);
+    const image = data.image;
+    res.status(200).render("watch", { pageTitle: id, image, user, video });
   }
 
   async getSignup(req, res) {
     if (req.headers.cookie) {
       return res.redirect("/");
     }
-    res.status(200).render(this.views.signup, this.options.signup);
+    res.status(200).render("signup", { pageTitle: "Sign up" });
   }
 
   async getSignin(req, res) {
     if (req.headers.cookie) {
       return res.redirect("/");
     }
-    res.status(200).render(this.views.signin, this.options.signin);
+    res.status(200).render("signin", { pageTitle: "Sign in" });
   }
 }
 
@@ -128,9 +116,6 @@ class AuthController {
     });
     const cookies = response.headers.raw()["set-cookie"];
     const [access_token, refresh_token] = cookies;
-    // if (!access_token || !refresh_token) {
-    //   throw new CustomError.NotFoundError("Token not found");
-    // }
     res.cookie(access_token);
     res.cookie(refresh_token);
     res.status(200).end();

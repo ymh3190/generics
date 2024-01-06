@@ -99,7 +99,7 @@ class MySQLAPI {
   /**
    *
    * @param {string} id
-   * @returns {{}}
+   * @returns
    */
   static async selectById(id) {
     if (!id) {
@@ -137,7 +137,7 @@ class MySQLAPI {
   /**
    *
    * @param {{}} query
-   * @returns {{}}
+   * @returns
    */
   static async selectOne(query) {
     if (!query) {
@@ -170,7 +170,6 @@ class MySQLAPI {
    *
    * @param {{}} query
    * @param {{}} projection
-   * @returns
    */
   static async update(query, projection = null) {
     // TODO: 매개변수 이름 및 로직 수정이 필요
@@ -201,8 +200,7 @@ class MySQLAPI {
       }
       values = values.concat(Object.values(projection));
     }
-    const [[result]] = await MySQLAPI.pool.execute(sql, values);
-    return result;
+    await MySQLAPI.pool.execute(sql, values);
   }
 
   /**

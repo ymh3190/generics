@@ -15,27 +15,10 @@ class RootRouter extends Router {
   constructor() {
     super();
 
-    this.routes = {
-      root: "/",
-      index: "/",
-      signin: "/signin",
-      signup: "/signup",
-      video: "/video",
-      watch: "/watch/:id(\\d|\\w{32})",
-    };
-
-    this.controllers = {
-      getIndex: rootController.getIndex.bind(rootController),
-      getWatch: rootController.getWatch.bind(rootController),
-      getSignin: rootController.getSignin.bind(rootController),
-      getSignup: rootController.getSignup.bind(rootController),
-      // getVideo: rootController.getVideo.bind(rootController),
-    };
-
-    this.router.get(this.routes.index, this.controllers.getIndex);
-    this.router.get(this.routes.signin, this.controllers.getSignin);
-    this.router.get(this.routes.signup, this.controllers.getSignup);
-    this.router.get(this.routes.watch, this.controllers.getWatch);
+    this.router.get("/", rootController.getIndex);
+    this.router.get("/signin", rootController.getSignin);
+    this.router.get("/signup", rootController.getSignup);
+    this.router.get("/watch/:id(\\d|\\w{32})", rootController.getWatch);
   }
 }
 
@@ -43,22 +26,9 @@ class AuthRouter extends Router {
   constructor() {
     super();
 
-    this.routes = {
-      root: "/api/v1/auth",
-      signup: "/signup",
-      signin: "/signin",
-      signout: "/signout",
-    };
-
-    this.controllers = {
-      signup: authController.signup,
-      signin: authController.signin,
-      signout: authController.signout,
-    };
-
-    this.router.post(this.routes.signup, this.controllers.signup);
-    this.router.post(this.routes.signin, this.controllers.signin);
-    this.router.delete(this.routes.signout, this.controllers.signout);
+    this.router.post("/signup", authController.signup);
+    this.router.post("/signin", authController.signin);
+    this.router.delete("/signout", authController.signout);
   }
 }
 
@@ -79,7 +49,6 @@ class AuthRouter extends Router {
 //   }
 // }
 
-const rootRouter = new RootRouter();
-const authRouter = new AuthRouter();
-// const monitorRouter = new MonitorRouter();
+const { router: rootRouter } = new RootRouter();
+const { router: authRouter } = new AuthRouter();
 export { rootRouter, authRouter /* , monitorRouter */ };

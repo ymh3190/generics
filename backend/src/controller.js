@@ -12,16 +12,20 @@ import {
 class ImageController {
   async createImage(req, res) {
     const { id, path } = req.body;
-    if (!id) {
-      throw new CustomError.BadRequestError("Provide id");
+
+    if (!id || !path) {
+      throw new CustomError.BadRequestError("Provide id and path");
     }
-    if (!path) {
-      throw new CustomError.BadRequestError("Provide path");
-    }
+
     await Image.create({ id, path });
     res.status(201).end();
   }
 
+  /**
+   *
+   * @param {import("express").Request} req
+   * @param {import("express").Response} res
+   */
   async getImages(req, res) {
     const images = await Image.select({});
     res.status(200).json({ images, user: req.user });
@@ -29,25 +33,23 @@ class ImageController {
 
   async getImage(req, res) {
     const { id } = req.params;
+
     if (!id) {
       throw new CustomError.BadRequestError("Provide id");
     }
 
-    try {
-      const image = await Image.selectOne({ id });
-      if (!image) {
-        throw new CustomError.NotFoundError("Image not found");
-      }
-      res.status(200).json({ image });
-    } catch (error) {
-      res.status(error.statusCode).json({ message: error.message });
+    const image = await Image.selectOne({ id });
+    if (!image) {
+      throw new CustomError.NotFoundError("Image not found");
     }
+    res.status(200).json({ image });
   }
 }
 
 class VideoController {
   async createVideo(req, res) {
     const { id, path } = req.body;
+
     await Video.create({ id, path });
     res.status(201).end();
   }
@@ -59,9 +61,11 @@ class VideoController {
 
   async getVideo(req, res) {
     const { id } = req.params;
+
     if (!id) {
       throw new CustomError.BadRequestError("Provide id");
     }
+
     const video = await Video.selectOne({ id });
     if (!video) {
       throw new CustomError.NotFoundError("video not found");
@@ -131,7 +135,9 @@ class AuthController {
     const ip = req.headers["x-forwared-for"];
     const user_agent = req.headers["user-agent"];
     const user_id = user.id;
+
     await Token.create({ id, refresh_token, ip, user_agent, user_id });
+
     attachCookiesToResponse({ res, user: tokenUser, refresh_token });
     res.status(200).end();
   }
@@ -143,10 +149,12 @@ class AuthController {
       httpOnly: true,
       expires: new Date(Date.now()),
     });
+
     res.cookie("refresh_token", "logout", {
       httpOnly: true,
       expires: new Date(Date.now()),
     });
+
     res.status(200).end();
   }
 }

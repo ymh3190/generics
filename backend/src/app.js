@@ -1,10 +1,10 @@
 import server from "./server";
-import mysqlClient from "./db";
+import mysqlAPI from "./db";
 import "./ssh";
 
 (async () => {
   try {
-    await mysqlClient.connect();
+    await mysqlAPI.connect();
     server.listen();
   } catch (error) {
     console.log(error);
