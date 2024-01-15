@@ -5,16 +5,20 @@ import helmet from "helmet";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
-import { authRouter, monitorRouter, imageRouter, videoRouter } from "./router";
+import {
+  authRouter,
+  monitorRouter,
+  imageRouter,
+  videoRouter,
+  workOrderRouter,
+} from "./router";
 import middleware from "./middleware";
 
 class Server {
   #app;
-  #port;
 
   constructor() {
     this.#app = express();
-    this.#port = process.env.PORT || 3000;
 
     this.#setConfig();
     this.#useMiddleware();
@@ -23,8 +27,9 @@ class Server {
   }
 
   listen() {
-    this.#app.listen(this.#port, () => {
-      console.log(`Server is listening port ${this.#port}`);
+    const port = process.env.PORT || 3000;
+    this.#app.listen(port, () => {
+      console.log(`Server is listening port ${port}`);
     });
   }
 
@@ -50,6 +55,7 @@ class Server {
     this.#app.use("/api/v1/monitor", monitorRouter);
     this.#app.use("/api/v1/images", imageRouter);
     this.#app.use("/api/v1/videos", videoRouter);
+    this.#app.use("/api/v1/work-orders", workOrderRouter);
   }
 
   #errorHandler() {

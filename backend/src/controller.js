@@ -1,8 +1,48 @@
 import bcrypt from "bcrypt";
-import { User, Token, Image, Video } from "./db";
+import { User, Token, Image, Video, WorkOrder } from "./db";
 import * as CustomError from "./error";
 import memInfo from "./ssh";
 import util from "./util";
+
+class WorkOrderController {
+  async createWorkOrder(req, res) {
+    const id = util.createId();
+    const workOrder = await WorkOrder.create(
+      { id, orderer_id: req.user.user_id },
+      { new: true }
+    );
+    res.status(201).json({ workOrder });
+  }
+
+  async getWorkOrders(req, res) {
+    const workOrders = await WorkOrder.select({});
+    res.status(200).json({ workOrders });
+  }
+
+  async getWorkOrder(req, res) {
+    const { id } = req.params;
+    const workOrder = await WorkOrder.selectById(id);
+    res.status(200).json({ workOrder });
+  }
+
+  async updateWorkOrder(req, res) {
+    const { id } = req.params;
+
+    const workOrder = await WorkOrder.selectByIdAndUpdate(
+      id,
+      { worker_id: req.user.user_id },
+      { new: true }
+    );
+    res.status(200).json({ workOrder });
+  }
+
+  async deleteWorkOrder(req, res) {
+    const { id } = req.params;
+
+    await WorkOrder.selectByIdAndDelete(id);
+    res.status(200).json({ message: "Work-order removed" });
+  }
+}
 
 class ImageController {
   async createImage(req, res) {
@@ -180,7 +220,14 @@ class MonitorController {
 }
 
 const authController = new AuthController();
+const workOrderController = new WorkOrderController();
 const monitorController = new MonitorController();
 const imageController = new ImageController();
 const videoController = new VideoController();
-export { authController, monitorController, imageController, videoController };
+export {
+  authController,
+  monitorController,
+  imageController,
+  videoController,
+  workOrderController,
+};

@@ -4,12 +4,38 @@ import {
   authController,
   imageController,
   videoController,
+  workOrderController,
 } from "./controller";
 import middleware from "./middleware";
 
 class Router {
   constructor() {
     this.router = express.Router();
+  }
+}
+
+class WorkOrderRouter extends Router {
+  constructor() {
+    super();
+
+    this.router
+      .route("/")
+      .get(middleware.authenticateUser, workOrderController.getWorkOrders)
+      .post(
+        middleware.authenticateUser,
+        middleware.authorizePermissions("admin"),
+        workOrderController.createWorkOrder
+      );
+
+    this.router
+      .route("/:id(\\d|\\w{32})")
+      .get(middleware.authenticateUser, workOrderController.getWorkOrder)
+      .patch(middleware.authenticateUser, workOrderController.updateWorkOrder)
+      .delete(
+        middleware.authenticateUser,
+        middleware.authorizePermissions("admin"),
+        workOrderController.deleteWorkOrder
+      );
   }
 }
 
@@ -81,4 +107,5 @@ const { router: authRouter } = new AuthRouter();
 const { router: monitorRouter } = new MonitorRouter();
 const { router: imageRouter } = new ImageRouter();
 const { router: videoRouter } = new VideoRouter();
-export { authRouter, monitorRouter, imageRouter, videoRouter };
+const { router: workOrderRouter } = new WorkOrderRouter();
+export { authRouter, monitorRouter, imageRouter, videoRouter, workOrderRouter };
