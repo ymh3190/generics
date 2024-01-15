@@ -1,0 +1,39 @@
+.nav {
+  padding-right: 20px;
+  position: fixed;
+  z-index: 1;
+  top: 7vh;
+
+  ul {
+    padding-left: 0;
+  }
+  li {
+    display: inline-block;
+  }
+  a {
+    span {
+      text-transform: capitalize;
+    }
+  }
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.margin-bottom {
+  margin-bottom: 5px;
+}
+
+.margin-right {
+  margin-right: 10px;
+}

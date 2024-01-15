@@ -1,0 +1,9 @@
+create table user(id char(32) primary key, username varchar(10) not null unique, password char(60) not null, role enum('admin','user') not null default 'user', created_at datetime not null default current_timestamp);
+
+create table token(id char(32) primary key, refresh_token char(40), ip varchar(22) not null, user_agent varchar(150) not null, is_valid boolean not null default true, user_id char(32) not null, foreign key(user_id) references user(id) on delete cascade, created_at datetime not null default current_timestamp);
+
+create table image(id char(32) primary key, path char(51) not null unique, created_at datetime not null default current_timestamp);
+
+create table video(id char(32) primary key, path char(51) not null unique, created_at datetime not null default current_timestamp);
+
+create table session(id char(32) primary key, ip varchar(22) not null, user_agent varchar(150) not null, is_valid boolean not null default true, user_id char(32) not null, foreign key(user_id) references user(id) on delete cascade, created_at datetime not null default current_timestamp);

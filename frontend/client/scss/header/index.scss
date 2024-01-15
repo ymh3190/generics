@@ -1,0 +1,24 @@
+.header {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: center;
+  padding: 10px 40px 10px 30px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 7vh;
+  background-color: white;
+  box-sizing: border-box;
+
+  div:nth-child(2) {
+    form {
+      display: grid;
+      grid-template-columns: 9fr 1fr;
+    }
+  }
+
+  div:last-child {
+    justify-self: self-end;
+  }
+}

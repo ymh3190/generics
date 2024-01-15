@@ -1,0 +1,11 @@
+<%- include('../../layouts/index') %>
+
+    <div class="content watch" id="watch">
+        <div class="container">
+            <video src="<%= video.path %>" poster="<%= image.path%>" controls></video>
+        </div>
+        <div></div>
+    </div>
+    <script src="/public/js/bars.js"></script>
+    <script src="/public/js/watch.js"></script>
+    <%- include('../../footers/index') %>

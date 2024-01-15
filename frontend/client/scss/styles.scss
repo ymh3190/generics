@@ -1,0 +1,119 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap");
+
+@import "./variable.scss";
+@import "./normalize.scss";
+
+@import "./layouts/index.scss";
+@import "./layouts/auth.scss";
+
+@import "./header/index.scss";
+@import "./nav/index.scss";
+@import "./footer/index.scss";
+
+@import "./contents/watch.scss";
+@import "./contents/video.scss";
+@import "./contents/signin.scss";
+@import "./contents/signup.scss";
+
+body {
+  font-family: "Open Sans", sans-serif;
+}
+
+.root {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+.index {
+  display: flex;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
+
+i,
+button {
+  cursor: pointer;
+}
+
+li {
+  list-style: none;
+}
+
+.hide {
+  display: none;
+}
+
+@media screen and (max-width: $desktop) {
+  .header {
+    height: 7vh;
+  }
+
+  .nav {
+    padding-right: 15px;
+    top: 7vh;
+  }
+
+  .content {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .watch {
+    grid-template-columns: 2fr 1fr;
+  }
+
+  .signin,
+  .signup {
+    grid-template-columns: none;
+  }
+}
+
+@media screen and (max-width: $tablet) {
+  .header {
+    height: 5vh;
+  }
+
+  .nav {
+    padding-right: 10px;
+    top: 5vh;
+  }
+
+  .content {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .watch {
+    grid-template-columns: 2fr 1fr;
+  }
+
+  .signin,
+  .signup {
+    grid-template-columns: none;
+  }
+}
+
+@media screen and (max-width: $mobile) {
+  .header {
+    height: 7vh;
+  }
+
+  .nav {
+    padding-right: 5px;
+    top: 7vh;
+  }
+
+  .content {
+    grid-template-columns: 1fr;
+  }
+
+  .watch {
+    grid-template-columns: 2fr 1fr;
+  }
+
+  .signin,
+  .signup {
+    grid-template-columns: none;
+  }
+}

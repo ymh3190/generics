@@ -1,0 +1,32 @@
+<%- include('../../layouts/auth') %>
+
+    <div class="content signin">
+        <div>
+            <span>sign </span>
+            <span>in</span>
+        </div>
+        <div>
+            <form id="signinForm">
+                <div>
+                    <div>
+                        <span>username</span>
+                        <input type="text" id="username" autocomplete="on">
+                    </div>
+                    <div>
+                        <span>password</span>
+                        <input type="password" id="password">
+                    </div>
+                </div>
+                <div>
+                    <div>
+                        <a href="/signup"><span>create </span><span>account</span> &rarr;</a>
+                    </div>
+                    <div>
+                        <button id="signinButton"><span>sign </span><span>in</span></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="/public/js/signin.js"></script>
+    <%- include('../../footers/index') %>

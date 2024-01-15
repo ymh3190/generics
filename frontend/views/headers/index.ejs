@@ -1,0 +1,27 @@
+<header class="header">
+    <div>
+        <i class="fa-solid fa-bars" id="bars"></i>
+    </div>
+    <div>
+        <div>
+            <form id="searchForm">
+                <input type="text" name="query">
+                <button>
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+    <div>
+        <% if (user) {%>
+            <a href="/api/auth/signout" id="signout">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+            </a>
+            <%} else {%>
+                <a href="/signin">
+                    <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                </a>
+                <%}%>
+    </div>
+</header>
+<script src="/public/js/signout.js"></script>
