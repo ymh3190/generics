@@ -1,3 +1,31 @@
+-- @test
+create table image(
+    id char(32) primary key,
+    path char(51) not null unique,
+    created_at datetime not null default current_timestamp
+    );
+    -- 
+
+-- @test
+create table video(
+    id char(32) primary key,
+    path char(51) not null unique,
+    created_at datetime not null default current_timestamp
+    );
+    -- 
+
+-- @deprecated
+create table session(
+    id char(32) primary key,
+    ip varchar(22) not null,
+    user_agent varchar(150) not null,
+    is_valid boolean not null default true,
+    user_id char(32) not null,
+    created_at datetime not null default current_timestamp,
+    foreign key (user_id) references user(id) on delete cascade
+    );
+    -- 
+
 create table user(
     id char(32) primary key,
     username varchar(10) not null unique,
@@ -55,26 +83,4 @@ create table work_comment(
     created_at datetime not null default current_timestamp,
     foreign key (work_order_id) references work_order(id),
     foreign key (user_id) references user(id)
-    );
-
-create table image(
-    id char(32) primary key,
-    path char(51) not null unique,
-    created_at datetime not null default current_timestamp
-    );
-
-create table video(
-    id char(32) primary key,
-    path char(51) not null unique,
-    created_at datetime not null default current_timestamp
-    );
-
-create table session(
-    id char(32) primary key,
-    ip varchar(22) not null,
-    user_agent varchar(150) not null,
-    is_valid boolean not null default true,
-    user_id char(32) not null,
-    created_at datetime not null default current_timestamp,
-    foreign key (user_id) references user(id) on delete cascade
     );

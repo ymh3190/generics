@@ -66,7 +66,7 @@ class WorkDetailController {
 
     const workOrder = await WorkOrder.selectById(work_order_id);
     if (!workOrder) {
-      throw CustomError.NotFoundError("Work-order not found");
+      throw new CustomError.NotFoundError("Work-order not found");
     }
 
     const workDetails = await WorkDetail.select({ work_order_id });
@@ -237,37 +237,6 @@ class AuthController {
 
     res.status(200).json({ message: "Signout success" });
   }
-
-  // async test(req, res) {
-  //   const { username, password } = req.body;
-
-  //   if (!username || !password) {
-  //     throw new CustomError.BadRequestError("Provide username and password");
-  //   }
-
-  //   const user = await User.selectOne({ username });
-  //   if (!user) {
-  //     throw new CustomError.NotFoundError("User not found");
-  //   }
-
-  //   const isPasswordCorrect = await bcrypt.compare(password, user.password);
-  //   if (!isPasswordCorrect) {
-  //     throw new CustomError.BadRequestError("Password not match");
-  //   }
-
-  //   const id = crypto.randomUUID().replaceAll("-", "");
-  //   const ip = req.headers["x-forwared-for"];
-  //   const user_agent = req.headers["user-agent"];
-  //   const user_id = user.id;
-  //   await Session.create({ id, ip, user_agent, user_id });
-
-  //   res.cookie("sId", id, {
-  //     httpOnly: true,
-  //     secure: process.env.NODE_ENV === "production",
-  //     signed: true,
-  //   });
-  //   res.status(200).end();
-  // }
 }
 
 class MonitorController {

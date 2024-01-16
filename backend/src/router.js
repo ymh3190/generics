@@ -58,8 +58,8 @@ class ItemRouter extends Router {
 
     this.router
       .route("/")
-      .get(middleware.authenticateUser, itemController.select)
-      .post(middleware.authenticateUser, itemController.create);
+      .post(middleware.authenticateUser, itemController.create)
+      .get(middleware.authenticateUser, itemController.select);
   }
 }
 
