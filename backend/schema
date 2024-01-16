@@ -13,8 +13,48 @@ create table token(
     user_agent varchar(150) not null,
     is_valid boolean not null default true,
     user_id char(32) not null,
-    foreign key(user_id) references user(id) on delete cascade,
+    created_at datetime not null default current_timestamp,
+    foreign key (user_id) references user(id) on delete cascade
+    );
+
+create table item(
+    id char(32) primary key,
+    name varchar(10) not null unique,
     created_at datetime not null default current_timestamp
+    );
+
+create table work_order(
+    id char(32) primary key,
+    orderer_id char(32) not null,
+    worker_id char(32),
+    start_date datetime on update current_timestamp,
+    end_date datetime on update current_timestamp,
+    created_at datetime not null default current_timestamp,
+    foreign key (orderer_id) references user(id),
+    foreign key (worker_id) references user(id)
+    );
+
+create table work_detail(
+    id char(32) primary key,
+    work_order_id char(32) not null,
+    item_id char(32) not null,
+    width int not null,
+    length int not null,
+    depth int not null,
+    quantity int not null,
+    created_at datetime not null default current_timestamp,
+    foreign key (work_order_id) references work_order(id),
+    foreign key (item_id) references item(id)
+    );
+
+create table work_comment(
+    id char(32) primary key,
+    work_order_id char(32) not null,
+    user_id char(32) not null,
+    comment varchar(50) not null,
+    created_at datetime not null default current_timestamp,
+    foreign key (work_order_id) references work_order(id),
+    foreign key (user_id) references user(id)
     );
 
 create table image(
@@ -29,23 +69,12 @@ create table video(
     created_at datetime not null default current_timestamp
     );
 
-create table work_order(
-    id char(32) primary key,
-    orderer_id char(32) not null,
-    worker_id char(32),
-    start_date datetime on update current_timestamp,
-    end_date datetime on update current_timestamp,
-    created_at datetime not null default current_timestamp,
-    foreign key(orderer_id) references user(id) on delete cascade,
-    foreign key(worker_id) references user(id)
-    );
-
 create table session(
     id char(32) primary key,
     ip varchar(22) not null,
     user_agent varchar(150) not null,
     is_valid boolean not null default true,
     user_id char(32) not null,
-    foreign key(user_id) references user(id) on delete cascade,
-    created_at datetime not null default current_timestamp
+    created_at datetime not null default current_timestamp,
+    foreign key (user_id) references user(id) on delete cascade
     );

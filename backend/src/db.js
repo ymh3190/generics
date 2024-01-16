@@ -170,6 +170,34 @@ class MySQLAPI {
 
   /**
    *
+   * @param {{}} filter
+   */
+  static async selectOneAndDelete(filter) {
+    if (!filter) {
+      throw new CustomError.BadRequestError("Provide filter");
+    }
+
+    const table = this.getTable();
+
+    const keys = Object.keys(filter);
+    if (!keys.length) {
+      throw new CustomError.BadRequestError("Provide key");
+    }
+
+    let sql = `DELETE FROM ${table} WHERE`;
+    for (let i = 0, len = keys.length; i < len; ++i) {
+      if (i !== len - 1) {
+        sql = sql.concat(" ", keys[i], " = ? AND");
+        continue;
+      }
+      sql = sql.concat(" ", keys[i], " = ?");
+    }
+    const values = Object.values(filter);
+    await MySQLAPI.pool.execute(sql, values);
+  }
+
+  /**
+   *
    * @param {string} id
    * @param {{}} filter
    * @param {{}} options
@@ -415,21 +443,15 @@ class MySQLAPI {
   // }
 }
 
-class User extends MySQLAPI {}
 // User.table = User.getTable();
-
+class User extends MySQLAPI {}
 class Token extends MySQLAPI {}
-// Token.table = Token.getTable();
-
 class WorkOrder extends MySQLAPI {}
-// WorkOrder.table = WorkOrder.getTable();
-
+class WorkDetail extends MySQLAPI {}
 class Video extends MySQLAPI {}
-// Video.table = Video.getTable();
-
 class Image extends MySQLAPI {}
-// Image.table = Image.getTable();
+class Item extends MySQLAPI {}
 
 const mysqlAPI = new MySQLAPI();
 export default mysqlAPI;
-export { Image, Video, User, Token, WorkOrder };
+export { Image, Video, User, Token, WorkOrder, WorkDetail, Item };

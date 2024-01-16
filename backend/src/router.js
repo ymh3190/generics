@@ -5,6 +5,8 @@ import {
   imageController,
   videoController,
   workOrderController,
+  workDetailController,
+  itemController,
 } from "./controller";
 import middleware from "./middleware";
 
@@ -20,22 +22,44 @@ class WorkOrderRouter extends Router {
 
     this.router
       .route("/")
-      .get(middleware.authenticateUser, workOrderController.getWorkOrders)
       .post(
         middleware.authenticateUser,
         middleware.authorizePermissions("admin"),
-        workOrderController.createWorkOrder
-      );
+        workOrderController.create
+      )
+      .get(middleware.authenticateUser, workOrderController.select);
 
     this.router
       .route("/:id(\\d|\\w{32})")
-      .get(middleware.authenticateUser, workOrderController.getWorkOrder)
-      .patch(middleware.authenticateUser, workOrderController.updateWorkOrder)
+      .get(middleware.authenticateUser, workOrderController.selectById)
+      .patch(middleware.authenticateUser, workOrderController.update)
       .delete(
         middleware.authenticateUser,
         middleware.authorizePermissions("admin"),
-        workOrderController.deleteWorkOrder
+        workOrderController.delete
       );
+  }
+}
+
+class WorkDetailRouter extends Router {
+  constructor() {
+    super();
+
+    this.router
+      .route("/")
+      .post(middleware.authenticateUser, workDetailController.create)
+      .get(middleware.authenticateUser, workDetailController.select);
+  }
+}
+
+class ItemRouter extends Router {
+  constructor() {
+    super();
+
+    this.router
+      .route("/")
+      .get(middleware.authenticateUser, itemController.select)
+      .post(middleware.authenticateUser, itemController.create);
   }
 }
 
@@ -45,14 +69,14 @@ class ImageRouter extends Router {
 
     this.router
       .route("/")
+      .post(imageController.create)
       .get(
         middleware.authenticateUser,
         middleware.authorizePermissions("admin"),
-        imageController.getImages
-      )
-      .post(imageController.createImage);
+        imageController.select
+      );
 
-    this.router.route("/:id(\\d|\\w{32})").get(imageController.getImage);
+    this.router.route("/:id(\\d|\\w{32})").get(imageController.selectOne);
   }
 }
 
@@ -62,19 +86,19 @@ class VideoRouter extends Router {
 
     this.router
       .route("/")
+      .post(videoController.create)
       .get(
         middleware.authenticateUser,
         middleware.authorizePermissions("admin"),
-        videoController.getVideos
-      )
-      .post(videoController.createVideo);
+        videoController.select
+      );
 
     this.router
       .route("/:id(\\d|\\w{32})")
       .get(
         middleware.authenticateUser,
         middleware.authorizePermissions("admin"),
-        videoController.getVideo
+        videoController.selectOne
       );
   }
 }
@@ -108,4 +132,14 @@ const { router: monitorRouter } = new MonitorRouter();
 const { router: imageRouter } = new ImageRouter();
 const { router: videoRouter } = new VideoRouter();
 const { router: workOrderRouter } = new WorkOrderRouter();
-export { authRouter, monitorRouter, imageRouter, videoRouter, workOrderRouter };
+const { router: workDetailRouter } = new WorkDetailRouter();
+const { router: itemRouter } = new ItemRouter();
+export {
+  authRouter,
+  monitorRouter,
+  imageRouter,
+  videoRouter,
+  workOrderRouter,
+  workDetailRouter,
+  itemRouter,
+};
