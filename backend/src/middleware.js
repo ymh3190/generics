@@ -56,6 +56,9 @@ class Middleware {
       statusCode: err.statusCode || 500,
       message: err.message || "Something wrong",
     };
+    if (err.errno === 1062) {
+      error.statusCode = 400;
+    }
     return res.status(error.statusCode).json({ message: error.message });
   }
 }

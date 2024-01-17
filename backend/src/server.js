@@ -13,6 +13,8 @@ import {
   workOrderRouter,
   workDetailRouter,
   itemRouter,
+  workLogRouter,
+  clientRouter,
 } from "./router";
 import middleware from "./middleware";
 
@@ -60,6 +62,8 @@ class Server {
     this.#app.use("/api/v1/videos", videoRouter);
     this.#app.use("/api/v1/work-orders", workOrderRouter);
     this.#app.use("/api/v1/work-details", workDetailRouter);
+    this.#app.use("/api/v1/work-logs", workLogRouter);
+    this.#app.use("/api/v1/clients", clientRouter);
   }
 
   #errorHandler() {

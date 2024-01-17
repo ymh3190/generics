@@ -1,8 +1,52 @@
 import bcrypt from "bcrypt";
-import { User, Token, Image, Video, WorkOrder, WorkDetail, Item } from "./db";
+import {
+  User,
+  Token,
+  Image,
+  Video,
+  WorkOrder,
+  WorkDetail,
+  Item,
+  WorkLog,
+  Client,
+} from "./db";
 import * as CustomError from "./error";
 import memInfo from "./ssh";
 import util from "./util";
+
+class ClientController {
+  async create(req, res) {
+    const client = await Client.create(
+      { id: util.createId(), creator_id: req.user.user_id, ...req.body },
+      { new: true }
+    );
+    res.status(201).json({ client });
+  }
+
+  async select(req, res) {
+    const clients = await Client.select({});
+    res.status(200).json({ clients });
+  }
+
+  async selectById(req, res) {
+    const { id } = req.params;
+
+    const client = await Client.selectById(id);
+    if (!client) {
+      throw new CustomError.NotFoundError("Client not found");
+    }
+    res.status(200).json({ client });
+  }
+
+  async update(req, res) {
+    const { id } = req.params;
+
+    const client = await Client.selectByIdAndUpdate(id, req.body, {
+      new: true,
+    });
+    res.status(200).json({ client });
+  }
+}
 
 class WorkOrderController {
   async create(req, res) {
@@ -20,7 +64,11 @@ class WorkOrderController {
 
   async selectById(req, res) {
     const { id } = req.params;
+
     const workOrder = await WorkOrder.selectById(id);
+    if (!workOrder) {
+      throw new CustomError.NotFoundError("Work-order not found");
+    }
     res.status(200).json({ workOrder });
   }
 
@@ -71,6 +119,28 @@ class WorkDetailController {
 
     const workDetails = await WorkDetail.select({ work_order_id });
     res.status(200).json({ workDetails });
+  }
+}
+
+class WorkLogController {
+  async create(req, res) {
+    const workLog = await WorkLog.create(
+      { id: util.createId(), worker_id: req.user.user_id, ...req.body },
+      { new: true }
+    );
+    res.status(201).json({ workLog });
+  }
+
+  async select(req, res) {
+    const { work_order_id } = req.body;
+
+    const workOrder = await WorkOrder.selectById(work_order_id);
+    if (!workOrder) {
+      throw new CustomError.NotFoundError("Work-order not found");
+    }
+
+    const workLogs = await WorkLog.select({ work_order_id });
+    res.status(200).json({ workLogs });
   }
 }
 
@@ -246,19 +316,12 @@ class MonitorController {
   }
 }
 
-const authController = new AuthController();
-const workOrderController = new WorkOrderController();
-const monitorController = new MonitorController();
-const imageController = new ImageController();
-const videoController = new VideoController();
-const workDetailController = new WorkDetailController();
-const itemController = new ItemController();
-export {
-  authController,
-  monitorController,
-  imageController,
-  videoController,
-  workOrderController,
-  workDetailController,
-  itemController,
-};
+export const authController = new AuthController();
+export const workOrderController = new WorkOrderController();
+export const monitorController = new MonitorController();
+export const imageController = new ImageController();
+export const videoController = new VideoController();
+export const workDetailController = new WorkDetailController();
+export const workLogController = new WorkLogController();
+export const itemController = new ItemController();
+export const clientController = new ClientController();

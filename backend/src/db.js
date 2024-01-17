@@ -266,15 +266,15 @@ class MySQLAPI {
   }
 }
 
-// User.table = User.getTable();
-class User extends MySQLAPI {}
-class Token extends MySQLAPI {}
-class WorkOrder extends MySQLAPI {}
-class WorkDetail extends MySQLAPI {}
-class Video extends MySQLAPI {}
-class Image extends MySQLAPI {}
-class Item extends MySQLAPI {}
-
 const mysqlAPI = new MySQLAPI();
 export default mysqlAPI;
-export { Image, Video, User, Token, WorkOrder, WorkDetail, Item };
+// User.table = User.getTable();
+export class User extends MySQLAPI {}
+export class Token extends MySQLAPI {}
+export class WorkOrder extends MySQLAPI {}
+export class WorkDetail extends MySQLAPI {}
+export class WorkLog extends MySQLAPI {}
+export class Video extends MySQLAPI {}
+export class Image extends MySQLAPI {}
+export class Item extends MySQLAPI {}
+export class Client extends MySQLAPI {}

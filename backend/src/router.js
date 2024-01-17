@@ -7,6 +7,8 @@ import {
   workOrderController,
   workDetailController,
   itemController,
+  workLogController,
+  clientController,
 } from "./controller";
 import middleware from "./middleware";
 
@@ -52,6 +54,17 @@ class WorkDetailRouter extends Router {
   }
 }
 
+class WorkLogRouter extends Router {
+  constructor() {
+    super();
+
+    this.router
+      .route("/")
+      .post(middleware.authenticateUser, workLogController.create)
+      .get(middleware.authenticateUser, workLogController.select);
+  }
+}
+
 class ItemRouter extends Router {
   constructor() {
     super();
@@ -60,6 +73,23 @@ class ItemRouter extends Router {
       .route("/")
       .post(middleware.authenticateUser, itemController.create)
       .get(middleware.authenticateUser, itemController.select);
+  }
+}
+
+class ClientRouter extends Router {
+  constructor() {
+    super();
+
+    this.router
+      .route("/")
+      .post(middleware.authenticateUser, clientController.create)
+      .get(middleware.authenticateUser, clientController.select);
+
+    this.router
+      .route("/:id")
+      .get(middleware.authenticateUser, clientController.selectById)
+      .patch(middleware.authenticateUser, clientController.update)
+      .delete();
   }
 }
 
@@ -127,19 +157,12 @@ class MonitorRouter extends Router {
   }
 }
 
-const { router: authRouter } = new AuthRouter();
-const { router: monitorRouter } = new MonitorRouter();
-const { router: imageRouter } = new ImageRouter();
-const { router: videoRouter } = new VideoRouter();
-const { router: workOrderRouter } = new WorkOrderRouter();
-const { router: workDetailRouter } = new WorkDetailRouter();
-const { router: itemRouter } = new ItemRouter();
-export {
-  authRouter,
-  monitorRouter,
-  imageRouter,
-  videoRouter,
-  workOrderRouter,
-  workDetailRouter,
-  itemRouter,
-};
+export const { router: authRouter } = new AuthRouter();
+export const { router: monitorRouter } = new MonitorRouter();
+export const { router: imageRouter } = new ImageRouter();
+export const { router: videoRouter } = new VideoRouter();
+export const { router: workOrderRouter } = new WorkOrderRouter();
+export const { router: workDetailRouter } = new WorkDetailRouter();
+export const { router: itemRouter } = new ItemRouter();
+export const { router: workLogRouter } = new WorkLogRouter();
+export const { router: clientRouter } = new ClientRouter();
