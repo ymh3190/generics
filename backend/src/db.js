@@ -87,8 +87,9 @@ class MySQLAPI {
   /**
    *
    * @param {{}} filter
+   * @param {string} column
    */
-  static async select(filter) {
+  static async select(filter, column) {
     if (!filter) {
       throw new CustomError.BadRequestError("Provide filter");
     }
@@ -106,6 +107,11 @@ class MySQLAPI {
       `;
 
       const [result] = await MySQLAPI.pool.execute(sql);
+      if (column) {
+        for (let i = 0, len = result.length; i < len; ++i) {
+          delete result[i][`${column.replace("-", "")}`];
+        }
+      }
       return result;
     }
 

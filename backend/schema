@@ -65,7 +65,7 @@ create table item(
 create table work_order(
     id char(32) primary key,
     orderer_id char(32) not null,
-    worker_id char(32),
+    worker_id char(32) not null,
     is_complete boolean not null default false,
     is_urgent boolean not null default false,
     end_date datetime on update current_timestamp,

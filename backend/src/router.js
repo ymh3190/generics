@@ -8,8 +8,8 @@ import {
   workDetailController,
   workLogController,
   clientController,
-  remnantController,
   itemController,
+  userController,
 } from "./controller";
 import middleware from "./middleware";
 
@@ -55,6 +55,20 @@ class VideoRouter extends Router {
         middleware.authenticateUser,
         middleware.authorizePermissions("admin"),
         videoController.selectOne
+      );
+  }
+}
+
+class UserRouter extends Router {
+  constructor() {
+    super();
+
+    this.router
+      .route("/")
+      .get(
+        middleware.authenticateUser,
+        middleware.authorizePermissions("admin"),
+        userController.select
       );
   }
 }
@@ -199,3 +213,4 @@ export const { router: workDetailRouter } = new WorkDetailRouter();
 export const { router: workLogRouter } = new WorkLogRouter();
 export const { router: remnantDetailRouter } = new RemnantDetailRouter();
 export const { router: remnantZoneRouter } = new RemnantZoneRouter();
+export const { router: userRouter } = new UserRouter();

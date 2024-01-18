@@ -17,6 +17,7 @@ import {
   remnantDetailRouter,
   remnantZoneRouter,
   itemRouter,
+  userRouter,
 } from "./router";
 import middleware from "./middleware";
 
@@ -60,6 +61,7 @@ class Server {
     this.#app.use("/api/v1/images", imageRouter);
     this.#app.use("/api/v1/videos", videoRouter);
     this.#app.use("/api/v1/monitor", monitorRouter);
+    this.#app.use("/api/v1/users", userRouter);
     this.#app.use("/api/v1/auth", authRouter);
     this.#app.use("/api/v1/clients", clientRouter);
     this.#app.use("/api/v1/items", itemRouter);

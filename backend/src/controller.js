@@ -73,6 +73,23 @@ class MonitorController {
   }
 }
 
+class UserController {
+  async select(req, res) {
+    // sol #1
+    // const users = (await User.select({})).map((user) => {
+    //   delete user.password;
+    //   return user;
+    // });
+
+    // sol #2 mongoose
+    // const users = await User.select({}).filter('-password')
+
+    // sol #3
+    const users = await User.select({}, "-password");
+    res.status(201).json({ users });
+  }
+}
+
 class AuthController {
   async signup(req, res) {
     const { username, password } = req.body;
@@ -187,8 +204,11 @@ class ItemController {
 
 class WorkOrderController {
   async create(req, res) {
+    req.body.orderer_id = req.user.user_id;
+    req.body.worker_id = req.user.user_id;
+
     const workOrder = await WorkOrder.create(
-      { id: util.createId(), orderer_id: req.user.user_id, ...req.body },
+      { id: util.createId(), ...req.body },
       { new: true }
     );
     res.status(201).json({ workOrder });
@@ -328,3 +348,4 @@ export const workOrderController = new WorkOrderController();
 export const workDetailController = new WorkDetailController();
 export const workLogController = new WorkLogController();
 export const clientController = new ClientController();
+export const userController = new UserController();
