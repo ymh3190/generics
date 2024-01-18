@@ -6,90 +6,16 @@ import {
   videoController,
   workOrderController,
   workDetailController,
-  itemController,
   workLogController,
   clientController,
+  remnantController,
+  itemController,
 } from "./controller";
 import middleware from "./middleware";
 
 class Router {
   constructor() {
     this.router = express.Router();
-  }
-}
-
-class WorkOrderRouter extends Router {
-  constructor() {
-    super();
-
-    this.router
-      .route("/")
-      .post(
-        middleware.authenticateUser,
-        middleware.authorizePermissions("admin"),
-        workOrderController.create
-      )
-      .get(middleware.authenticateUser, workOrderController.select);
-
-    this.router
-      .route("/:id(\\d|\\w{32})")
-      .get(middleware.authenticateUser, workOrderController.selectById)
-      .patch(middleware.authenticateUser, workOrderController.update)
-      .delete(
-        middleware.authenticateUser,
-        middleware.authorizePermissions("admin"),
-        workOrderController.delete
-      );
-  }
-}
-
-class WorkDetailRouter extends Router {
-  constructor() {
-    super();
-
-    this.router
-      .route("/")
-      .post(middleware.authenticateUser, workDetailController.create)
-      .get(middleware.authenticateUser, workDetailController.select);
-  }
-}
-
-class WorkLogRouter extends Router {
-  constructor() {
-    super();
-
-    this.router
-      .route("/")
-      .post(middleware.authenticateUser, workLogController.create)
-      .get(middleware.authenticateUser, workLogController.select);
-  }
-}
-
-class ItemRouter extends Router {
-  constructor() {
-    super();
-
-    this.router
-      .route("/")
-      .post(middleware.authenticateUser, itemController.create)
-      .get(middleware.authenticateUser, itemController.select);
-  }
-}
-
-class ClientRouter extends Router {
-  constructor() {
-    super();
-
-    this.router
-      .route("/")
-      .post(middleware.authenticateUser, clientController.create)
-      .get(middleware.authenticateUser, clientController.select);
-
-    this.router
-      .route("/:id")
-      .get(middleware.authenticateUser, clientController.selectById)
-      .patch(middleware.authenticateUser, clientController.update)
-      .delete();
   }
 }
 
@@ -157,12 +83,119 @@ class MonitorRouter extends Router {
   }
 }
 
-export const { router: authRouter } = new AuthRouter();
+class ItemRouter extends Router {
+  constructor() {
+    super();
+
+    this.router
+      .route("/")
+      .post(middleware.authenticateUser, itemController.create)
+      .get(middleware.authenticateUser, itemController.select);
+
+    this.router
+      .route("/:id(\\d|\\w{32})")
+      .get(middleware.authenticateUser, itemController.selectById);
+  }
+}
+
+class ClientRouter extends Router {
+  constructor() {
+    super();
+
+    this.router
+      .route("/")
+      .post(middleware.authenticateUser, clientController.create)
+      .get(middleware.authenticateUser, clientController.select);
+
+    this.router
+      .route("/:id(\\d|\\w{32})")
+      .get(middleware.authenticateUser, clientController.selectById)
+      .patch(middleware.authenticateUser, clientController.update)
+      .delete(middleware.authenticateUser, clientController.delete);
+  }
+}
+
+class WorkOrderRouter extends Router {
+  constructor() {
+    super();
+
+    this.router
+      .route("/")
+      .post(
+        middleware.authenticateUser,
+        middleware.authorizePermissions("admin"),
+        workOrderController.create
+      )
+      .get(middleware.authenticateUser, workOrderController.select);
+
+    this.router
+      .route("/:id(\\d|\\w{32})")
+      .get(middleware.authenticateUser, workOrderController.selectById)
+      .patch(middleware.authenticateUser, workOrderController.update)
+      .delete(
+        middleware.authenticateUser,
+        middleware.authorizePermissions("admin"),
+        workOrderController.delete
+      );
+
+    this.router
+      .route("/:id(\\d|\\w{32})/details")
+      .get(
+        middleware.authenticateUser,
+        workDetailController.selectByWorkOrderId
+      );
+
+    this.router
+      .route("/:id(\\d|\\w{32})/logs")
+      .get(middleware.authenticateUser, workLogController.selectByWorkOrderId);
+  }
+}
+
+class WorkDetailRouter extends Router {
+  constructor() {
+    super();
+
+    this.router
+      .route("/")
+      .post(middleware.authenticateUser, workDetailController.create);
+
+    this.router
+      .route("/:id(\\d|\\w{32})")
+      .patch(middleware.authenticateUser, workDetailController.update)
+      .delete(middleware.authenticateUser, workDetailController.delete);
+  }
+}
+
+class WorkLogRouter extends Router {
+  constructor() {
+    super();
+
+    this.router
+      .route("/")
+      .post(middleware.authenticateUser, workLogController.create);
+  }
+}
+
+class RemnantDetailRouter extends Router {
+  constructor() {
+    super();
+  }
+}
+
+class RemnantZoneRouter extends Router {
+  constructor() {
+    super();
+  }
+}
+
 export const { router: monitorRouter } = new MonitorRouter();
 export const { router: imageRouter } = new ImageRouter();
 export const { router: videoRouter } = new VideoRouter();
+export const { router: authRouter } = new AuthRouter();
+export const { router: clientRouter } = new ClientRouter();
+export const { router: itemRouter } = new ItemRouter();
 export const { router: workOrderRouter } = new WorkOrderRouter();
 export const { router: workDetailRouter } = new WorkDetailRouter();
-export const { router: itemRouter } = new ItemRouter();
 export const { router: workLogRouter } = new WorkLogRouter();
-export const { router: clientRouter } = new ClientRouter();
+export const { router: remnantDetailRouter } = new RemnantDetailRouter();
+export const { router: remnantZoneRouter } = new RemnantZoneRouter();

@@ -45,6 +45,17 @@ create table token(
     foreign key (user_id) references user(id) on delete cascade
 );
 
+create table client(
+    id char(32) primary key,
+    association varchar(20) not null,
+    name varchar(10) not null,
+    telephone varchar(13) not null,
+    creator_id char(32) not null,
+    created_at datetime not null default current_timestamp,
+    unique key (association, name),
+    foreign key (creator_id) references user(id)
+);
+
 create table item(
     id char(32) primary key,
     name varchar(10) not null unique,
@@ -55,12 +66,25 @@ create table work_order(
     id char(32) primary key,
     orderer_id char(32) not null,
     worker_id char(32),
-    start_date datetime on update current_timestamp,
+    is_complete boolean not null default false,
+    is_urgent boolean not null default false,
     end_date datetime on update current_timestamp,
     created_at datetime not null default current_timestamp,
     foreign key (orderer_id) references user(id),
     foreign key (worker_id) references user(id)
 );
+
+-- create table work_detail(
+--     id char(32) primary key,
+--     work_order_id char(32) not null,
+--     item enum('iPad', 'iPhone', 'Mac') not null,
+--     width int not null,
+--     length int not null,
+--     depth int not null,
+--     quantity int not null,
+--     created_at datetime not null default current_timestamp,
+--     foreign key (work_order_id) references work_order(id)
+-- );
 
 create table work_detail(
     id char(32) primary key,
@@ -79,19 +103,30 @@ create table work_log(
     id char(32) primary key,
     work_order_id char(32) not null,
     worker_id char(32) not null,
-    content varchar(50) not null,
+    comment varchar(20) not null,
     created_at datetime not null default current_timestamp,
     foreign key (work_order_id) references work_order(id),
     foreign key (worker_id) references user(id)
 );
 
-create table client(
+create table remnant_zone(
     id char(32) primary key,
-    association varchar(20) not null,
-    name varchar(10) not null,
-    telephone varchar(13) not null,
+    name char(2) not null unique,
+    comment varchar(10) not null,
+    created_at datetime not null default current_timestamp
+);
+
+create table remnant_detail(
+    id char(32) primary key,
+    item_id char(32) not null,
+    width int not null,
+    length int not null,
+    depth int not null,
+    quantity int not null,
+    remnant_zone_id char(32) not null,
     creator_id char(32) not null,
     created_at datetime not null default current_timestamp,
-    unique key (association, name),
+    foreign key (item_id) references item(id),
+    foreign key (remnant_zone_id) references remnant_zone(id),
     foreign key (creator_id) references user(id)
 );

@@ -12,9 +12,11 @@ import {
   videoRouter,
   workOrderRouter,
   workDetailRouter,
-  itemRouter,
   workLogRouter,
   clientRouter,
+  remnantDetailRouter,
+  remnantZoneRouter,
+  itemRouter,
 } from "./router";
 import middleware from "./middleware";
 
@@ -55,15 +57,17 @@ class Server {
   }
 
   #useRouter() {
-    this.#app.use("/api/v1/auth", authRouter);
-    this.#app.use("/api/v1/monitor", monitorRouter);
     this.#app.use("/api/v1/images", imageRouter);
-    this.#app.use("/api/v1/items", itemRouter);
     this.#app.use("/api/v1/videos", videoRouter);
+    this.#app.use("/api/v1/monitor", monitorRouter);
+    this.#app.use("/api/v1/auth", authRouter);
+    this.#app.use("/api/v1/clients", clientRouter);
+    this.#app.use("/api/v1/items", itemRouter);
     this.#app.use("/api/v1/work-orders", workOrderRouter);
     this.#app.use("/api/v1/work-details", workDetailRouter);
     this.#app.use("/api/v1/work-logs", workLogRouter);
-    this.#app.use("/api/v1/clients", clientRouter);
+    this.#app.use("/api/v1/remnant-details", remnantDetailRouter);
+    this.#app.use("/api/v1/remnant-zones", remnantZoneRouter);
   }
 
   #errorHandler() {

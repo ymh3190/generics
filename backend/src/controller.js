@@ -6,169 +6,13 @@ import {
   Video,
   WorkOrder,
   WorkDetail,
-  Item,
   WorkLog,
   Client,
+  Item,
 } from "./db";
 import * as CustomError from "./error";
 import memInfo from "./ssh";
 import util from "./util";
-
-class ClientController {
-  async create(req, res) {
-    const client = await Client.create(
-      { id: util.createId(), creator_id: req.user.user_id, ...req.body },
-      { new: true }
-    );
-    res.status(201).json({ client });
-  }
-
-  async select(req, res) {
-    const clients = await Client.select({});
-    res.status(200).json({ clients });
-  }
-
-  async selectById(req, res) {
-    const { id } = req.params;
-
-    const client = await Client.selectById(id);
-    if (!client) {
-      throw new CustomError.NotFoundError("Client not found");
-    }
-    res.status(200).json({ client });
-  }
-
-  async update(req, res) {
-    const { id } = req.params;
-
-    const client = await Client.selectByIdAndUpdate(id, req.body, {
-      new: true,
-    });
-    res.status(200).json({ client });
-  }
-}
-
-class WorkOrderController {
-  async create(req, res) {
-    const workOrder = await WorkOrder.create(
-      { id: util.createId(), orderer_id: req.user.user_id },
-      { new: true }
-    );
-    res.status(201).json({ workOrder });
-  }
-
-  async select(req, res) {
-    const workOrders = await WorkOrder.select({});
-    res.status(200).json({ workOrders });
-  }
-
-  async selectById(req, res) {
-    const { id } = req.params;
-
-    const workOrder = await WorkOrder.selectById(id);
-    if (!workOrder) {
-      throw new CustomError.NotFoundError("Work-order not found");
-    }
-    res.status(200).json({ workOrder });
-  }
-
-  async update(req, res) {
-    const { id } = req.params;
-
-    // TODO: 두 번째 업데이트에 end_date 반영하는 방법
-
-    const workOrder = await WorkOrder.selectByIdAndUpdate(
-      id,
-      { worker_id: req.user.user_id },
-      { new: true }
-    );
-    res.status(200).json({ workOrder });
-  }
-
-  async delete(req, res) {
-    const { id } = req.params;
-
-    await WorkOrder.selectByIdAndDelete(id);
-    res.status(200).json({ message: "Delete success" });
-  }
-}
-
-class WorkDetailController {
-  async create(req, res) {
-    const { work_order_id } = req.body;
-
-    const workOrder = await WorkOrder.selectById(work_order_id);
-    if (!workOrder) {
-      throw CustomError.NotFoundError("Work-order not found");
-    }
-
-    const workDetail = await WorkDetail.create(
-      { id: util.createId(), ...req.body },
-      { new: true }
-    );
-    res.status(201).json({ workDetail });
-  }
-
-  async select(req, res) {
-    const { work_order_id } = req.body;
-
-    const workOrder = await WorkOrder.selectById(work_order_id);
-    if (!workOrder) {
-      throw new CustomError.NotFoundError("Work-order not found");
-    }
-
-    const workDetails = await WorkDetail.select({ work_order_id });
-    res.status(200).json({ workDetails });
-  }
-}
-
-class WorkLogController {
-  async create(req, res) {
-    const workLog = await WorkLog.create(
-      { id: util.createId(), worker_id: req.user.user_id, ...req.body },
-      { new: true }
-    );
-    res.status(201).json({ workLog });
-  }
-
-  async select(req, res) {
-    const { work_order_id } = req.body;
-
-    const workOrder = await WorkOrder.selectById(work_order_id);
-    if (!workOrder) {
-      throw new CustomError.NotFoundError("Work-order not found");
-    }
-
-    const workLogs = await WorkLog.select({ work_order_id });
-    res.status(200).json({ workLogs });
-  }
-}
-
-class ItemController {
-  async create(req, res) {
-    const { name } = req.body;
-
-    if (!name) {
-      throw new CustomError.BadRequestError("Provide name");
-    }
-
-    const existingItem = await Item.selectOne({ name });
-    if (existingItem) {
-      throw new CustomError.BadRequestError("Item name duplicate");
-    }
-
-    const item = await Item.create(
-      { id: util.createId(), name },
-      { new: true }
-    );
-    res.status(201).json({ item });
-  }
-
-  async select(req, res) {
-    const items = await Item.select({});
-    res.status(200).json({ items });
-  }
-}
 
 class ImageController {
   async create(req, res) {
@@ -219,6 +63,13 @@ class VideoController {
       throw new CustomError.NotFoundError("video not found");
     }
     res.status(200).json({ video, user: req.user });
+  }
+}
+
+class MonitorController {
+  memory(req, res) {
+    const data = memInfo.used;
+    res.status(200).json(data);
   }
 }
 
@@ -309,19 +160,171 @@ class AuthController {
   }
 }
 
-class MonitorController {
-  memory(req, res) {
-    const data = memInfo.used;
-    res.status(200).json(data);
+class ItemController {
+  async create(req, res) {
+    const item = await Item.create(
+      { id: util.createId(), ...req.body },
+      { new: true }
+    );
+    res.status(201).json({ item });
+  }
+
+  async select(req, res) {
+    const items = await Item.select({});
+    res.status(200).json({ items });
+  }
+
+  async selectById(req, res) {
+    const { id } = req.params;
+
+    const item = await Item.selectById(id);
+    if (!item) {
+      throw new CustomError.NotFoundError("Item not found");
+    }
+    res.status(200).json({ item });
   }
 }
 
-export const authController = new AuthController();
-export const workOrderController = new WorkOrderController();
-export const monitorController = new MonitorController();
+class WorkOrderController {
+  async create(req, res) {
+    const workOrder = await WorkOrder.create(
+      { id: util.createId(), orderer_id: req.user.user_id, ...req.body },
+      { new: true }
+    );
+    res.status(201).json({ workOrder });
+  }
+
+  async select(req, res) {
+    const workOrders = await WorkOrder.select({});
+    res.status(200).json({ workOrders });
+  }
+
+  async selectById(req, res) {
+    const { id } = req.params;
+
+    const workOrder = await WorkOrder.selectById(id);
+    if (!workOrder) {
+      throw new CustomError.NotFoundError("Work-order not found");
+    }
+    res.status(200).json({ workOrder });
+  }
+
+  async update(req, res) {
+    const { id } = req.params;
+
+    const workOrder = await WorkOrder.selectByIdAndUpdate(
+      id,
+      { worker_id: req.user.user_id, ...req.body },
+      { new: true }
+    );
+    res.status(200).json({ workOrder });
+  }
+
+  async delete(req, res) {
+    const { id } = req.params;
+
+    await WorkOrder.selectByIdAndDelete(id);
+    res.status(200).json({ message: "Delete success" });
+  }
+}
+
+class WorkDetailController {
+  async create(req, res) {
+    const workDetail = await WorkDetail.create(
+      { id: util.createId(), ...req.body },
+      { new: true }
+    );
+    res.status(201).json({ workDetail });
+  }
+
+  async selectByWorkOrderId(req, res) {
+    const { id: work_order_id } = req.params;
+
+    const workDetails = await WorkDetail.select({ work_order_id });
+    res.status(200).json({ workDetails });
+  }
+
+  async update(req, res) {
+    const { id } = req.params;
+
+    const workDetail = await WorkDetail.selectByIdAndUpdate(id, req.body, {
+      new: true,
+    });
+    res.status(200).json({ workDetail });
+  }
+
+  async delete(req, res) {
+    const { id } = req.params;
+
+    await WorkDetail.selectByIdAndDelete(id);
+    res.status(200).json({ message: "Delete success" });
+  }
+}
+
+class WorkLogController {
+  async create(req, res) {
+    const workLog = await WorkLog.create(
+      { id: util.createId(), worker_id: req.user.user_id, ...req.body },
+      { new: true }
+    );
+    res.status(201).json({ workLog });
+  }
+
+  async selectByWorkOrderId(req, res) {
+    const { id: work_order_id } = req.params;
+
+    const workLogs = await WorkLog.select({ work_order_id });
+    res.status(200).json({ workLogs });
+  }
+}
+
+class ClientController {
+  async create(req, res) {
+    const client = await Client.create(
+      { id: util.createId(), creator_id: req.user.user_id, ...req.body },
+      { new: true }
+    );
+    res.status(201).json({ client });
+  }
+
+  async select(req, res) {
+    const clients = await Client.select({});
+    res.status(200).json({ clients });
+  }
+
+  async selectById(req, res) {
+    const { id } = req.params;
+
+    const client = await Client.selectById(id);
+    if (!client) {
+      throw new CustomError.NotFoundError("Client not found");
+    }
+    res.status(200).json({ client });
+  }
+
+  async update(req, res) {
+    const { id } = req.params;
+
+    const client = await Client.selectByIdAndUpdate(id, req.body, {
+      new: true,
+    });
+    res.status(200).json({ client });
+  }
+
+  async delete(req, res) {
+    const { id } = req.params;
+
+    await Client.selectByIdAndDelete(id);
+    res.status(200).json({ message: "Delete success" });
+  }
+}
+
 export const imageController = new ImageController();
 export const videoController = new VideoController();
+export const monitorController = new MonitorController();
+export const authController = new AuthController();
+export const itemController = new ItemController();
+export const workOrderController = new WorkOrderController();
 export const workDetailController = new WorkDetailController();
 export const workLogController = new WorkLogController();
-export const itemController = new ItemController();
 export const clientController = new ClientController();
