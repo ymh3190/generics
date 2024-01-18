@@ -24,8 +24,8 @@ class Util {
   }
 
   createId() {
-    const hex = crypto.randomBytes(16).toString("hex");
-    return hex;
+    const id = crypto.randomUUID().replaceAll("-", "");
+    return id;
   }
 
   createToken() {

@@ -124,14 +124,14 @@ const writeLocalStorageAndDB = async (files) => {
       continue;
     }
 
-    const id = crypto.randomBytes(16).toString("hex");
-    let path = `/static/images/${id}.jpg`;
+    const id = crypto.randomUUID().replaceAll("-", "");
+    let path = `/static/images/${id}.png`;
     await FetchAPI.post("/images", { id, path });
-    renameSync(`static/images/${file}.jpg`, `static/images/${id}.jpg`);
+    renameSync(`static/images/${file}.png`, `static/images/${id}.png`);
 
-    path = `/static/videos/${id}.mp4`;
+    path = `/static/videos/${id}.mov`;
     await FetchAPI.post("/videos", { id, path });
-    renameSync(`static/videos/${file}.mp4`, `static/videos/${id}.mp4`);
+    renameSync(`static/videos/${file}.mov`, `static/videos/${id}.mov`);
   }
 };
 
