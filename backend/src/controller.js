@@ -200,15 +200,21 @@ class ItemController {
     }
     res.status(200).json({ item });
   }
+
+  async update(req, res) {
+    const { id } = req.params;
+
+    const item = await Item.selectByIdAndUpdate(id, req.body, { new: true });
+    res.status(200).json({ item });
+  }
+
+  async delete(req, res) {}
 }
 
 class WorkOrderController {
   async create(req, res) {
-    req.body.orderer_id = req.user.user_id;
-    req.body.worker_id = req.user.user_id;
-
     const workOrder = await WorkOrder.create(
-      { id: util.createId(), ...req.body },
+      { id: util.createId(), orderer_id: req.user.user_id, ...req.body },
       { new: true }
     );
     res.status(201).json({ workOrder });

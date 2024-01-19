@@ -108,7 +108,8 @@ class ItemRouter extends Router {
 
     this.router
       .route("/:id(\\d|\\w{32})")
-      .get(middleware.authenticateUser, itemController.selectById);
+      .get(middleware.authenticateUser, itemController.selectById)
+      .patch(middleware.authenticateUser, itemController.update);
   }
 }
 
