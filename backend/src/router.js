@@ -32,7 +32,13 @@ class ImageRouter extends Router {
         imageController.select
       );
 
-    this.router.route("/:id(\\d|\\w{32})").get(imageController.selectOne);
+    this.router
+      .route("/:id(\\d|\\w{32})")
+      .get(
+        middleware.authenticateUser,
+        middleware.authorizePermissions("admin"),
+        imageController.selectOne
+      );
   }
 }
 
