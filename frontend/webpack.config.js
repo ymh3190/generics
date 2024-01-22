@@ -5,6 +5,7 @@ module.exports = {
   entry: {
     main: path.join(__dirname, "client/js", "main"),
     bars: path.join(__dirname, "client/js/header", "bars"),
+    state: path.join(__dirname, "client/js/header", "state"),
     signout: path.join(__dirname, "client/js/header", "signout"),
     nav: path.join(__dirname, "client/js/navs", "nav"),
     signin: path.join(__dirname, "client/js/contents", "signin"),

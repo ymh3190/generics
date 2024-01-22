@@ -12,16 +12,8 @@
             </form>
         </div>
     </div>
-    <div>
-        <% if (user) {%>
-            <a href="/api/auth/signout" id="signout">
-                <i class="fa-solid fa-arrow-right-from-bracket"></i>
-            </a>
-            <%} else {%>
-                <a href="/signin">
-                    <i class="fa-solid fa-arrow-right-to-bracket"></i>
-                </a>
-                <%}%>
+    <div id="auth">
     </div>
 </header>
+<script src="/public/js/state.js"></script>
 <script src="/public/js/signout.js"></script>

@@ -141,43 +141,35 @@ class FetchAPI {
   }
 }
 
-const writeDiskAndDB = async ([images, videos]) => {
+const writeDiskAndDB = async (files) => {
   const url = `${process.env.REMOTE_ORIGIN}/api/v1/images`;
 
-  for (const image of images) {
-    const [name, imgExt] = image.split(".");
-
-    const response = await fetch(url + `/${name}`);
+  for (const file of files) {
+    const response = await fetch(url + `/${file}`);
     if (response.ok) {
       continue;
     }
 
     const id = crypto.randomUUID().replaceAll("-", "");
-    let path = `/static/images/${id}.${imgExt}`;
+    let path = `/static/images/${id}.png`;
     await FetchAPI.post("/images", { id, path });
-    renameSync(`static/images/${image}`, `static/images/${id}.${imgExt}`);
+    renameSync(`static/images/${file}.png`, `static/images/${id}.png`);
 
-    const video = videos.find((video) => video.includes(name));
-    const videoExt = video.split(".")[1];
-    path = `/static/videos/${id}.${videoExt}`;
+    path = `/static/videos/${id}.mov`;
     await FetchAPI.post("/videos", { id, path });
-    renameSync(`static/videos/${video}`, `static/videos/${id}.${videoExt}`);
+    renameSync(`static/videos/${file}.mov`, `static/videos/${id}.mov`);
   }
 };
 
 function readDisk() {
-  const images = readdirSync("static/images").filter((file) => {
-    if (!file.includes(".DS_Store")) {
-      return file;
-    }
-  });
-
-  const videos = readdirSync("static/videos").filter((file) => {
-    if (!file.includes(".DS_Store")) {
-      return file;
-    }
-  });
-  return [images, videos];
+  const files = readdirSync("static/images")
+    .filter((file) => {
+      if (!file.includes(".DS_Store")) {
+        return file;
+      }
+    })
+    .map((file) => file.split(".")[0]);
+  return files;
 }
 
 (async () => {

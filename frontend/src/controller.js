@@ -109,14 +109,15 @@ class AuthController {
       { username, password },
       { ip, userAgent }
     );
+    const data = await response.json();
 
     const cookies = response.headers.raw()["set-cookie"];
     const access_token = cookies.find((el) => el.includes("access_token"));
     const refresh_token = cookies.find((el) => el.includes("refresh_token"));
     res.cookie(access_token);
     res.cookie(refresh_token);
-    // res.locals.user = req.user;
-    res.status(200).end();
+
+    res.status(200).json({ data: data.user.user_id });
   }
 
   async signout(req, res) {

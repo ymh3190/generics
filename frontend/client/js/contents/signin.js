@@ -17,6 +17,8 @@ signinFormDOM.addEventListener("submit", async (event) => {
 
   const response = await FetchAPI.post("/auth/signin", { username, password });
   if (response) {
+    const data = await response.json();
+    localStorage.setItem("device-id", JSON.stringify(data));
     window.location.href = "/";
   }
 });
