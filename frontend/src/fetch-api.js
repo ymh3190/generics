@@ -37,6 +37,12 @@ const catchResponseError = async (response) => {
 class FetchAPI {
   static #url = `${process.env.REMOTE_ORIGIN}/api/v1`;
 
+  /**
+   *
+   * @param {string} path
+   * @param {{}} options
+   * @returns
+   */
   static async get(path, options) {
     if (options) {
       const response = await fetch(FetchAPI.#url + path, options);
@@ -53,14 +59,21 @@ class FetchAPI {
     await catchResponseError(response);
   }
 
+  /**
+   *
+   * @param {string} path
+   * @param {{}} data
+   * @param {{}} options
+   * @returns
+   */
   static async post(path, data, options) {
     if (options) {
       const response = await fetch(FetchAPI.#url + path, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-forwared-for": options.ip,
-          "user-agent": options.userAgent,
+          "X-Forwared-For": options.ip,
+          "User-Agent": options.userAgent,
         },
         body: JSON.stringify(data),
       });
@@ -83,6 +96,12 @@ class FetchAPI {
     await catchResponseError(response);
   }
 
+  /**
+   *
+   * @param {string} path
+   * @param {{}} data
+   * @returns
+   */
   static async patch(path, data) {
     const response = await fetch(FetchAPI.#url + path, {
       method: "PATCH",
@@ -97,6 +116,12 @@ class FetchAPI {
     await catchResponseError(response);
   }
 
+  /**
+   *
+   * @param {string} path
+   * @param {{}} options
+   * @returns
+   */
   static async delete(path, options) {
     if (options) {
       const response = await fetch(FetchAPI.#url + path, options);
@@ -116,36 +141,47 @@ class FetchAPI {
   }
 }
 
-const writeLocalStorageAndDB = async (files) => {
+const writeDiskAndDB = async ([images, videos]) => {
   const url = `${process.env.REMOTE_ORIGIN}/api/v1/images`;
-  for (const file of files) {
-    const response = await fetch(url + `/${file}`);
+
+  for (const image of images) {
+    const [name, imgExt] = image.split(".");
+
+    const response = await fetch(url + `/${name}`);
     if (response.ok) {
       continue;
     }
 
     const id = crypto.randomUUID().replaceAll("-", "");
-    let path = `/static/images/${id}.png`;
+    let path = `/static/images/${id}.${imgExt}`;
     await FetchAPI.post("/images", { id, path });
-    renameSync(`static/images/${file}.png`, `static/images/${id}.png`);
+    renameSync(`static/images/${image}`, `static/images/${id}.${imgExt}`);
 
-    path = `/static/videos/${id}.mov`;
+    const video = videos.find((video) => video.includes(name));
+    const videoExt = video.split(".")[1];
+    path = `/static/videos/${id}.${videoExt}`;
     await FetchAPI.post("/videos", { id, path });
-    renameSync(`static/videos/${file}.mov`, `static/videos/${id}.mov`);
+    renameSync(`static/videos/${video}`, `static/videos/${id}.${videoExt}`);
   }
 };
 
-function readLocalStorage() {
-  const files = readdirSync("static/videos")
-    .filter((file) => {
-      if (!file.includes(".DS_Store")) return file;
-    })
-    .map((file) => file.split(".")[0]);
-  return files;
+function readDisk() {
+  const images = readdirSync("static/images").filter((file) => {
+    if (!file.includes(".DS_Store")) {
+      return file;
+    }
+  });
+
+  const videos = readdirSync("static/videos").filter((file) => {
+    if (!file.includes(".DS_Store")) {
+      return file;
+    }
+  });
+  return [images, videos];
 }
 
 (async () => {
-  await writeLocalStorageAndDB(readLocalStorage());
+  await writeDiskAndDB(readDisk());
 })();
 
 export default FetchAPI;

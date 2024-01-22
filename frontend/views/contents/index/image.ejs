@@ -1,0 +1,11 @@
+<%- include('../../layouts/index') %>
+
+    <div class="content" id="content">
+        <% for (const image of images) {%>
+            <a href="/watch/<%= image.id %>">
+                <img src="<%= image.path %>" alt="">
+            </a>
+            <%}%>
+    </div>
+    <script src="/public/js/bars.js"></script>
+    <%- include('../../footers/index') %>

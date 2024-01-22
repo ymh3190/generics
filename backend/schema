@@ -34,7 +34,7 @@ create table user(
     id char(32) primary key,
     username varchar(10) not null unique,
     password char(60) not null,
-    role enum('admin','user') not null default 'user',
+    role enum('admin', 'user') not null default 'user',
     created_at datetime not null default current_timestamp
 );
 
@@ -118,6 +118,7 @@ create table remnant_detail(
     remnant_zone_id char(32) not null,
     creator_id char(32) not null,
     created_at datetime not null default current_timestamp,
+    unique key (item_id, remnant_zone_id),
     foreign key (item_id) references item(id),
     foreign key (remnant_zone_id) references remnant_zone(id),
     foreign key (creator_id) references user(id)

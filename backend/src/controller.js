@@ -9,6 +9,8 @@ import {
   WorkLog,
   Client,
   Item,
+  RemnantDetail,
+  RemnantZone,
 } from "./db";
 import * as CustomError from "./error";
 import memInfo from "./ssh";
@@ -22,7 +24,7 @@ class ImageController {
       throw new CustomError.BadRequestError("Provide id and path");
     }
 
-    await Image.create({ id, path });
+    await Image.createByManualId({ id, path });
     res.status(201).end();
   }
 
@@ -31,10 +33,10 @@ class ImageController {
     res.status(200).json({ images, user: req.user });
   }
 
-  async selectOne(req, res) {
+  async selectById(req, res) {
     const { id } = req.params;
 
-    const image = await Image.selectOne({ id });
+    const image = await Image.selectById(id);
     if (!image) {
       throw new CustomError.NotFoundError("Image not found");
     }
@@ -46,7 +48,7 @@ class VideoController {
   async create(req, res) {
     const { id, path } = req.body;
 
-    await Video.create({ id, path });
+    await Video.createByManualId({ id, path });
     res.status(201).end();
   }
 
@@ -55,10 +57,10 @@ class VideoController {
     res.status(200).json({ videos });
   }
 
-  async selectOne(req, res) {
+  async selectById(req, res) {
     const { id } = req.params;
 
-    const video = await Video.selectOne({ id });
+    const video = await Video.selectById(id);
     if (!video) {
       throw new CustomError.NotFoundError("video not found");
     }
@@ -103,11 +105,10 @@ class AuthController {
       throw new CustomError.BadRequestError("User already exists");
     }
 
-    const id = util.createId();
     const hash = await bcrypt.hash(password, 10);
     const role = (await User.select({})).length === 0 ? "admin" : "user";
 
-    await User.create({ id, username, password: hash, role });
+    await User.create({ username, password: hash, role });
     res.status(201).json({ message: "Signup success" });
   }
 
@@ -146,7 +147,6 @@ class AuthController {
       return res.status(200).json({ user: tokenUser });
     }
 
-    const id = util.createId();
     const refresh_token = util.createToken();
     const ip = req.ip;
     // const ip = req.headers["x-forwared-for"];
@@ -154,7 +154,7 @@ class AuthController {
     const user_agent = req.headers["user-agent"];
     const user_id = user.id;
 
-    await Token.create({ id, refresh_token, ip, user_agent, user_id });
+    await Token.create({ refresh_token, ip, user_agent, user_id });
 
     util.attachCookiesToResponse({ res, user: tokenUser, refresh_token });
     res.status(200).json({ user: tokenUser });
@@ -179,10 +179,7 @@ class AuthController {
 
 class ItemController {
   async create(req, res) {
-    const item = await Item.create(
-      { id: util.createId(), ...req.body },
-      { new: true }
-    );
+    const item = await Item.create(req.body, { new: true });
     res.status(201).json({ item });
   }
 
@@ -208,15 +205,18 @@ class ItemController {
     res.status(200).json({ item });
   }
 
-  async delete(req, res) {}
+  async delete(req, res) {
+    const { id } = req.params;
+
+    await Item.selectByIdAndDelete(id);
+    res.status(200).json({ message: "Delete success" });
+  }
 }
 
 class WorkOrderController {
   async create(req, res) {
-    const workOrder = await WorkOrder.create(
-      { id: util.createId(), orderer_id: req.user.user_id, ...req.body },
-      { new: true }
-    );
+    req.body.orderer_id = req.user.user_id;
+    const workOrder = await WorkOrder.create(req.body, { new: true });
     res.status(201).json({ workOrder });
   }
 
@@ -238,11 +238,10 @@ class WorkOrderController {
   async update(req, res) {
     const { id } = req.params;
 
-    const workOrder = await WorkOrder.selectByIdAndUpdate(
-      id,
-      { worker_id: req.user.user_id, ...req.body },
-      { new: true }
-    );
+    req.body.worker_id = req.user.user_id;
+    const workOrder = await WorkOrder.selectByIdAndUpdate(id, req.body, {
+      new: true,
+    });
     res.status(200).json({ workOrder });
   }
 
@@ -256,10 +255,7 @@ class WorkOrderController {
 
 class WorkDetailController {
   async create(req, res) {
-    const workDetail = await WorkDetail.create(
-      { id: util.createId(), ...req.body },
-      { new: true }
-    );
+    const workDetail = await WorkDetail.create(req.body, { new: true });
     res.status(201).json({ workDetail });
   }
 
@@ -289,10 +285,8 @@ class WorkDetailController {
 
 class WorkLogController {
   async create(req, res) {
-    const workLog = await WorkLog.create(
-      { id: util.createId(), worker_id: req.user.user_id, ...req.body },
-      { new: true }
-    );
+    req.body.worker_id = req.user.user_id;
+    const workLog = await WorkLog.create(req.body, { new: true });
     res.status(201).json({ workLog });
   }
 
@@ -306,10 +300,8 @@ class WorkLogController {
 
 class ClientController {
   async create(req, res) {
-    const client = await Client.create(
-      { id: util.createId(), creator_id: req.user.user_id, ...req.body },
-      { new: true }
-    );
+    req.body.creator_id = req.user.user_id;
+    const client = await Client.create(req.body, { new: true });
     res.status(201).json({ client });
   }
 
@@ -345,6 +337,85 @@ class ClientController {
   }
 }
 
+class RemnantZoneController {
+  async create(req, res) {
+    const remnantZone = await RemnantZone.create(req.body, { new: true });
+    res.status(201).json({ remnantZone });
+  }
+
+  async select(req, res) {
+    const remnantZones = await RemnantZone.select({});
+    res.status(200).json({ remnantZones });
+  }
+
+  async selectById(req, res) {
+    const { id } = req.params;
+
+    const remnantZone = await RemnantZone.selectById(id);
+    if (!remnantZone) {
+      throw new CustomError.NotFoundError("Remnant-Zone not found");
+    }
+    res.status(200).json({ remnantZone });
+  }
+
+  async update(req, res) {
+    const { id } = req.params;
+
+    const remnantZone = await RemnantZone.selectByIdAndUpdate(id, req.body, {
+      new: true,
+    });
+    res.status(200).json({ remnantZone });
+  }
+
+  async delete(req, res) {
+    const { id } = req.params;
+
+    await RemnantZone.selectByIdAndDelete(id);
+    res.status(200).json({ message: "Delete success" });
+  }
+}
+
+class RemnantDetailController {
+  async create(req, res) {
+    req.body.creator_id = req.user.user_id;
+    const remnantDetail = await RemnantDetail.create(req.body, { new: true });
+    res.status(201).json({ remnantDetail });
+  }
+
+  async select(req, res) {
+    const RemnantDetails = await RemnantDetail.select({});
+    res.status(200).json({ RemnantDetails });
+  }
+
+  async selectById(req, res) {
+    const { id } = req.params;
+
+    const remnantDetail = await RemnantDetail.selectById(id);
+    if (!remnantDetail) {
+      throw new CustomError.NotFoundError("Remnant-Detail not found");
+    }
+    res.status(200).json({ remnantDetail });
+  }
+
+  async update(req, res) {
+    const { id } = req.params;
+
+    const remnantDetail = await RemnantDetail.selectByIdAndUpdate(
+      id,
+      req.body,
+      { new: true }
+    );
+    res.status(200).json({ remnantDetail });
+  }
+
+  async delete(req, res) {
+    const { id } = req.params;
+
+    await RemnantDetail.selectByIdAndDelete(id);
+    res.status(200).json({ message: "Delete success" });
+  }
+}
+
 export const imageController = new ImageController();
 export const videoController = new VideoController();
 export const monitorController = new MonitorController();
@@ -355,3 +426,5 @@ export const workDetailController = new WorkDetailController();
 export const workLogController = new WorkLogController();
 export const clientController = new ClientController();
 export const userController = new UserController();
+export const remnantZoneController = new RemnantZoneController();
+export const remnantDetailController = new RemnantDetailController();

@@ -16,7 +16,6 @@ signinFormDOM.addEventListener("submit", async (event) => {
   }
 
   const response = await FetchAPI.post("/auth/signin", { username, password });
-  // const response = await FetchAPI.post("/auth/test", { username, password });
   if (response) {
     window.location.href = "/";
   }

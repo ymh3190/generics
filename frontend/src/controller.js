@@ -3,6 +3,31 @@ import * as CustomError from "./error";
 
 class RootController {
   async getIndex(req, res) {
+    const response = await FetchAPI.get("/work-orders", {
+      headers: { cookie: req.headers.cookie },
+    });
+
+    const data = await response.json();
+    const user = data.user;
+    const workOrders = data.workOrders;
+
+    const cookies = response.headers.raw()["set-cookie"];
+    if (!cookies) {
+      return res
+        .status(200)
+        .render("index", { pageTitle: "Generics", user, workOrders });
+    }
+
+    const access_token = cookies.find((el) => el.includes("access_token"));
+    const refresh_token = cookies.find((el) => el.includes("refresh_token"));
+    res.cookie(access_token);
+    res.cookie(refresh_token);
+    res
+      .status(200)
+      .render("index", { pageTitle: "Generics", user, workOrders });
+  }
+
+  async getImage(req, res) {
     const response = await FetchAPI.get("/images", {
       headers: { cookie: req.headers.cookie },
     });
@@ -12,13 +37,17 @@ class RootController {
     const user = data.user;
 
     const cookies = response.headers.raw()["set-cookie"];
-    if (cookies) {
-      const access_token = cookies.find((el) => el.includes("access_token"));
-      const refresh_token = cookies.find((el) => el.includes("refresh_token"));
-      res.cookie(access_token);
-      res.cookie(refresh_token);
+    if (!cookies) {
+      return res
+        .status(200)
+        .render("image", { pageTitle: "Generics", images, user });
     }
-    res.status(200).render("index", { pageTitle: "Generics", images, user });
+
+    const access_token = cookies.find((el) => el.includes("access_token"));
+    const refresh_token = cookies.find((el) => el.includes("refresh_token"));
+    res.cookie(access_token);
+    res.cookie(refresh_token);
+    res.status(200).render("image", { pageTitle: "Generics", images, user });
   }
 
   async getWatch(req, res) {
@@ -82,12 +111,11 @@ class AuthController {
     );
 
     const cookies = response.headers.raw()["set-cookie"];
-    if (cookies) {
-      const access_token = cookies.find((el) => el.includes("access_token"));
-      const refresh_token = cookies.find((el) => el.includes("refresh_token"));
-      res.cookie(access_token);
-      res.cookie(refresh_token);
-    }
+    const access_token = cookies.find((el) => el.includes("access_token"));
+    const refresh_token = cookies.find((el) => el.includes("refresh_token"));
+    res.cookie(access_token);
+    res.cookie(refresh_token);
+    // res.locals.user = req.user;
     res.status(200).end();
   }
 
@@ -98,16 +126,14 @@ class AuthController {
     });
 
     const cookies = response.headers.raw()["set-cookie"];
-    if (cookies) {
-      const access_token = cookies.find((el) => el.includes("access_token"));
-      const refresh_token = cookies.find((el) => el.includes("refresh_token"));
-      res.cookie(access_token);
-      res.cookie(refresh_token);
-    }
+    const access_token = cookies.find((el) => el.includes("access_token"));
+    const refresh_token = cookies.find((el) => el.includes("refresh_token"));
+    res.cookie(access_token);
+    res.cookie(refresh_token);
     res.status(200).end();
   }
 
-  async test(req, res) {
+  async testSession(req, res) {
     const { username, password } = req.body;
 
     if (!username || !password) {

@@ -1,5 +1,6 @@
 import mysql from "mysql2/promise";
 import * as CustomError from "./error";
+import util from "./util";
 
 class MySQLAPI {
   static pool = mysql.createPool({
@@ -42,9 +43,8 @@ class MySQLAPI {
   /**
    *
    * @param {{}} filter
-   * @param {{}} options
    */
-  static async create(filter, options) {
+  static async createByManualId(filter) {
     if (!filter) {
       throw new CustomError.BadRequestError("Provide filter");
     }
@@ -69,6 +69,39 @@ class MySQLAPI {
     }
     const values = Object.values(filter);
     await MySQLAPI.pool.execute(sql, values);
+  }
+
+  /**
+   *
+   * @param {{}} filter
+   * @param {{}} options
+   */
+  static async create(filter, options) {
+    if (!filter) {
+      throw new CustomError.BadRequestError("Provide filter");
+    }
+
+    const table = this.getTable();
+    const id = util.createId();
+
+    let sql = `INSERT INTO ${table}(`.concat("id, ");
+    const keys = Object.keys(filter);
+    for (let i = 0, len = keys.length; i < len; ++i) {
+      if (i !== len - 1) {
+        sql = sql.concat(keys[i], ", ");
+        continue;
+      }
+      sql = sql.concat(keys[i], ") VALUES(").concat("?, ");
+    }
+    for (let i = 0, len = keys.length; i < len; ++i) {
+      if (i !== len - 1) {
+        sql = sql.concat("?, ");
+        continue;
+      }
+      sql = sql.concat("?)");
+    }
+    const values = [id, ...Object.values(filter)];
+    await MySQLAPI.pool.execute(sql, values);
 
     if (!options) {
       return;
@@ -76,9 +109,8 @@ class MySQLAPI {
 
     for (const [key, value] of Object.entries(options)) {
       if (key.includes("new") && value) {
-        const id = [values[0]];
         const sql = `SELECT * FROM ${table} WHERE id = ?`;
-        const [[result]] = await MySQLAPI.pool.execute(sql, id);
+        const [[result]] = await MySQLAPI.pool.execute(sql, [id]);
         return result;
       }
     }
@@ -102,15 +134,15 @@ class MySQLAPI {
 
     const keys = Object.keys(filter);
     if (!keys.length) {
-      const sql = `
-      SELECT *, ${createdAt} FROM ${table}
-      `;
+      const sql = `SELECT *, ${createdAt} FROM ${table}`;
 
       const [result] = await MySQLAPI.pool.execute(sql);
-      if (column) {
-        for (let i = 0, len = result.length; i < len; ++i) {
-          delete result[i][`${column.replace("-", "")}`];
-        }
+      if (!column) {
+        return result;
+      }
+
+      for (let i = 0, len = result.length; i < len; ++i) {
+        delete result[i][`${column.replace("-", "")}`];
       }
       return result;
     }
@@ -131,8 +163,9 @@ class MySQLAPI {
   /**
    *
    * @param {string} id
+   * @param {string} column
    */
-  static async selectById(id) {
+  static async selectById(id, column) {
     if (!id) {
       throw new CustomError.BadRequestError("Provide id");
     }
@@ -140,8 +173,13 @@ class MySQLAPI {
     const table = this.getTable();
 
     const sql = `SELECT * FROM ${table} WHERE id = ?`;
-    const values = [id];
-    const [[result]] = await MySQLAPI.pool.execute(sql, values);
+    const [[result]] = await MySQLAPI.pool.execute(sql, [id]);
+
+    if (!column) {
+      return result;
+    }
+
+    delete result[`${column.replace("-", "")}`];
     return result;
   }
 
@@ -234,7 +272,7 @@ class MySQLAPI {
       sql = sql.concat(" ", keys[i], " = ? WHERE").concat(" ", "id = ?");
     }
 
-    let values = [...Object.values(filter), id];
+    const values = [...Object.values(filter), id];
     await MySQLAPI.pool.execute(sql, values);
 
     if (!options) {
@@ -243,7 +281,6 @@ class MySQLAPI {
 
     for (const [key, value] of Object.entries(options)) {
       if (key.includes("new") && value) {
-        const id = values.at(-1);
         const result = await this.selectById(id);
         return result;
       }
@@ -267,8 +304,7 @@ class MySQLAPI {
     }
 
     const sql = `DELETE FROM ${table} WHERE id = ?`;
-    const values = [id];
-    await MySQLAPI.pool.execute(sql, values);
+    await MySQLAPI.pool.execute(sql, [id]);
   }
 }
 
@@ -284,3 +320,5 @@ export class Video extends MySQLAPI {}
 export class Image extends MySQLAPI {}
 export class Item extends MySQLAPI {}
 export class Client extends MySQLAPI {}
+export class RemnantDetail extends MySQLAPI {}
+export class RemnantZone extends MySQLAPI {}

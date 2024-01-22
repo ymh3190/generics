@@ -9,11 +9,9 @@ import middleware from "./middleware";
 
 class Server {
   #app;
-  #port;
 
   constructor() {
     this.#app = express();
-    this.#port = process.env.PORT || 3000;
 
     this.#setConfig();
     this.#useMiddleware();
@@ -22,8 +20,9 @@ class Server {
   }
 
   listen() {
-    this.#app.listen(this.#port, () => {
-      console.log(`Server is listening port ${this.#port}`);
+    const port = process.env.PORT || 3000;
+    this.#app.listen(port, () => {
+      console.log(`Server is listening port ${port}`);
     });
   }
 

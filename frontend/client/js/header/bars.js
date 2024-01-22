@@ -2,6 +2,7 @@ const barsDOM = document.getElementById("bars");
 const navDOM = document.getElementById("nav");
 const anchorDOMs = navDOM.querySelectorAll("a");
 const contentDOM = document.getElementById("content");
+const workOrderStatusDOM = document.getElementById("workOrderStatus");
 
 const isMobile = window.innerWidth <= 400;
 const isTablet = window.innerWidth <= 850;
@@ -26,6 +27,7 @@ barsDOM.addEventListener("click", () => {
       iconDOM.classList.remove("margin-bottom");
       iconDOM.classList.add("margin-right");
       contentDOM?.classList.remove("padding-left");
+      workOrderStatusDOM?.classList.remove("position-left");
       continue;
     }
     anchorDOM.classList.remove("flex");
@@ -34,5 +36,6 @@ barsDOM.addEventListener("click", () => {
     iconDOM.classList.remove("margin-right");
     iconDOM.classList.add("margin-bottom");
     contentDOM?.classList.add("padding-left");
+    workOrderStatusDOM?.classList.add("position-left");
   }
 });

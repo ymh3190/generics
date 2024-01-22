@@ -10,6 +10,8 @@ import {
   clientController,
   itemController,
   userController,
+  remnantZoneController,
+  remnantDetailController,
 } from "./controller";
 import middleware from "./middleware";
 
@@ -32,13 +34,7 @@ class ImageRouter extends Router {
         imageController.select
       );
 
-    this.router
-      .route("/:id(\\d|\\w{32})")
-      .get(
-        middleware.authenticateUser,
-        middleware.authorizePermissions("admin"),
-        imageController.selectOne
-      );
+    this.router.route("/:id(\\d|\\w{32})").get(imageController.selectById);
   }
 }
 
@@ -60,7 +56,7 @@ class VideoRouter extends Router {
       .get(
         middleware.authenticateUser,
         middleware.authorizePermissions("admin"),
-        videoController.selectOne
+        videoController.selectById
       );
   }
 }
@@ -115,7 +111,8 @@ class ItemRouter extends Router {
     this.router
       .route("/:id(\\d|\\w{32})")
       .get(middleware.authenticateUser, itemController.selectById)
-      .patch(middleware.authenticateUser, itemController.update);
+      .patch(middleware.authenticateUser, itemController.update)
+      .delete(middleware.authenticateUser, itemController.delete);
   }
 }
 
@@ -197,15 +194,37 @@ class WorkLogRouter extends Router {
   }
 }
 
-class RemnantDetailRouter extends Router {
-  constructor() {
-    super();
-  }
-}
-
 class RemnantZoneRouter extends Router {
   constructor() {
     super();
+
+    this.router
+      .route("/")
+      .post(middleware.authenticateUser, remnantZoneController.create)
+      .get(middleware.authenticateUser, remnantZoneController.select);
+
+    this.router
+      .route("/:id(\\d|\\w{32})")
+      .get(remnantZoneController.selectById)
+      .patch(remnantZoneController.update)
+      .delete(remnantZoneController.delete);
+  }
+}
+
+class RemnantDetailRouter extends Router {
+  constructor() {
+    super();
+
+    this.router
+      .route("/")
+      .post(middleware.authenticateUser, remnantDetailController.create)
+      .get(remnantDetailController.select);
+
+    this.router
+      .route("/:id(\\d|\\w{32})")
+      .get(remnantDetailController.selectById)
+      .patch(remnantDetailController.update)
+      .delete(remnantDetailController.delete);
   }
 }
 
@@ -218,6 +237,6 @@ export const { router: itemRouter } = new ItemRouter();
 export const { router: workOrderRouter } = new WorkOrderRouter();
 export const { router: workDetailRouter } = new WorkDetailRouter();
 export const { router: workLogRouter } = new WorkLogRouter();
-export const { router: remnantDetailRouter } = new RemnantDetailRouter();
 export const { router: remnantZoneRouter } = new RemnantZoneRouter();
+export const { router: remnantDetailRouter } = new RemnantDetailRouter();
 export const { router: userRouter } = new UserRouter();

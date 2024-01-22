@@ -1,18 +1,21 @@
 .nav {
-  padding-right: 20px;
   position: fixed;
   z-index: 1;
   top: 7vh;
 
-  ul {
-    padding-left: 0;
-  }
-  li {
-    display: inline-block;
-  }
-  a {
-    span {
-      text-transform: capitalize;
+  &-list {
+    &:not(:last-child) {
+      margin-bottom: 10px;
+    }
+
+    a {
+      i {
+        margin-right: 24px;
+      }
+
+      span {
+        text-transform: capitalize;
+      }
     }
   }
 }
@@ -22,11 +25,14 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
+  i {
+    margin-right: 0 !important;
+  }
 }
 
 .flex {
   display: flex;
-  justify-content: center;
   align-items: center;
 }
 

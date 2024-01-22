@@ -19,6 +19,12 @@ class RootRouter extends Router {
     );
 
     this.router.get(
+      "/images",
+      middleware.refreshTokenExists,
+      rootController.getImage
+    );
+
+    this.router.get(
       "/signin",
       middleware.refreshTokenNotExists,
       rootController.getSignin
@@ -52,7 +58,7 @@ class AuthRouter extends Router {
       authController.signout
     );
 
-    this.router.post("/test", authController.test);
+    this.router.post("/test", authController.testSession);
   }
 }
 

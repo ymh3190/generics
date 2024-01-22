@@ -11,6 +11,11 @@ const catchResponseError = async (response) => {
 };
 
 class FetchAPI {
+  /**
+   *
+   * @param {string} path
+   * @returns
+   */
   static async get(path) {
     const response = await fetch("/api/v1" + path);
     if (response?.ok) {
@@ -19,6 +24,12 @@ class FetchAPI {
     await catchResponseError(response);
   }
 
+  /**
+   *
+   * @param {string} path
+   * @param {{}} data
+   * @returns
+   */
   static async post(path, data) {
     const response = await fetch("/api/v1" + path, {
       method: "POST",
@@ -33,6 +44,12 @@ class FetchAPI {
     await catchResponseError(response);
   }
 
+  /**
+   *
+   * @param {string} path
+   * @param {{}} data
+   * @returns
+   */
   static async patch(path, data) {
     const response = await fetch("/api/v1" + path, {
       method: "PATCH",
@@ -47,6 +64,11 @@ class FetchAPI {
     await catchResponseError(response);
   }
 
+  /**
+   *
+   * @param {string} path
+   * @returns
+   */
   static async delete(path) {
     const response = await fetch("/api/v1" + path, {
       method: "DELETE",
