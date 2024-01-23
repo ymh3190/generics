@@ -1,7 +1,7 @@
 class Middleware {
   refreshTokenExists(req, res, next) {
     const cookies = req.headers.cookie?.split("; ");
-    const refresh_token = cookies?.find((el) => el.includes("refresh_token"));
+    const refresh_token = cookies?.find((el) => el.startsWith("refresh_token"));
     if (refresh_token) {
       return next();
     }
@@ -10,7 +10,7 @@ class Middleware {
 
   refreshTokenNotExists(req, res, next) {
     const cookies = req.headers.cookie?.split("; ");
-    const refresh_token = cookies?.find((el) => el.includes("refresh_token"));
+    const refresh_token = cookies?.find((el) => el.startsWith("refresh_token"));
     if (refresh_token) {
       return res.redirect("/");
     }
@@ -19,7 +19,7 @@ class Middleware {
 
   sIdExists(req, res, next) {
     const cookies = req.headers.cookie?.split("; ");
-    const sId = cookies?.find((el) => el.includes("sId"));
+    const sId = cookies?.find((el) => el.startsWith("sId"));
     if (sId) {
       return next();
     }

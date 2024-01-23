@@ -4,7 +4,12 @@ import express from "express";
 import helmet from "helmet";
 import cors from "cors";
 
-import { authRouter, rootRouter } from "./router";
+import {
+  authRouter,
+  clientRouter,
+  rootRouter,
+  workOrderRouter,
+} from "./router";
 import middleware from "./middleware";
 
 class Server {
@@ -28,7 +33,7 @@ class Server {
 
   #setConfig() {
     this.#app.set("view engine", "ejs");
-    this.#app.set("views", process.cwd() + "/views/contents/index");
+    this.#app.set("views", process.cwd() + "/views/contents");
   }
 
   #useMiddleware() {
@@ -48,6 +53,8 @@ class Server {
   #useRouter() {
     this.#app.use("/", rootRouter);
     this.#app.use("/api/v1/auth", authRouter);
+    this.#app.use("/api/v1/work-orders", workOrderRouter);
+    this.#app.use("/api/v1/clients", clientRouter);
   }
 
   #errorHandler() {

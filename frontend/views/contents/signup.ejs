@@ -1,12 +1,12 @@
-<%- include('../../layouts/auth') %>
+<%- include('../layouts/auth') %>
 
-    <div class="content signin">
+    <div class="content signup">
         <div>
             <span>sign </span>
-            <span>in</span>
+            <span>up</span>
         </div>
         <div>
-            <form id="signinForm">
+            <form id="signupForm">
                 <div>
                     <div>
                         <span>username</span>
@@ -16,17 +16,21 @@
                         <span>password</span>
                         <input type="password" id="password">
                     </div>
+                    <div>
+                        <span>confirm</span>
+                        <input type="password" id="rePassword">
+                    </div>
                 </div>
                 <div>
                     <div>
-                        <a href="/signup"><span>create </span><span>account</span> &rarr;</a>
+                        <a href="/signin"><span>sign </span><span>in</span> &rarr;</a>
                     </div>
                     <div>
-                        <button id="signinButton"><span>sign </span><span>in</span></button>
+                        <button id="signupButton"><span>sign </span><span>up</span></button>
                     </div>
                 </div>
             </form>
         </div>
     </div>
-    <script src="/public/js/signin.js"></script>
-    <%- include('../../footers/index') %>
+    <script src="/public/js/signup.js"></script>
+    <%- include('../partials/footer') %>

@@ -8,7 +8,7 @@ if (signoutDOM) {
 
     const response = await FetchAPI.delete("/auth/signout");
     if (response) {
-      localStorage.removeItem("device-id");
+      // localStorage.removeItem("device-id");
       window.location.href = "/signin";
     }
   });

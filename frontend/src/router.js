@@ -1,5 +1,10 @@
 import express from "express";
-import { authController, rootController } from "./controller";
+import {
+  authController,
+  clientController,
+  rootController,
+  workOrderController,
+} from "./controller";
 import middleware from "./middleware";
 
 class Router {
@@ -15,7 +20,7 @@ class RootRouter extends Router {
     this.router.get(
       "/",
       middleware.refreshTokenExists,
-      rootController.getIndex
+      rootController.getWorkOrder
     );
 
     this.router.get(
@@ -62,6 +67,21 @@ class AuthRouter extends Router {
   }
 }
 
-const { router: rootRouter } = new RootRouter();
-const { router: authRouter } = new AuthRouter();
-export { rootRouter, authRouter };
+class ClientRouter extends Router {
+  constructor() {
+    super();
+
+    this.router.route("/:id(\\d|\\w{32})").get(clientController.selectById);
+  }
+}
+
+class WorkOrderRouter extends Router {
+  constructor() {
+    super();
+  }
+}
+
+export const { router: rootRouter } = new RootRouter();
+export const { router: authRouter } = new AuthRouter();
+export const { router: workOrderRouter } = new WorkOrderRouter();
+export const { router: clientRouter } = new ClientRouter();

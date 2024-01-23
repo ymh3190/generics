@@ -2,7 +2,7 @@ import FetchAPI from "./fetch-api";
 import * as CustomError from "./error";
 
 class RootController {
-  async getIndex(req, res) {
+  async getWorkOrder(req, res) {
     const response = await FetchAPI.get("/work-orders", {
       headers: { cookie: req.headers.cookie },
     });
@@ -15,16 +15,16 @@ class RootController {
     if (!cookies) {
       return res
         .status(200)
-        .render("index", { pageTitle: "Generics", user, workOrders });
+        .render("work-order", { pageTitle: "Generics", workOrders, user });
     }
 
-    const access_token = cookies.find((el) => el.includes("access_token"));
-    const refresh_token = cookies.find((el) => el.includes("refresh_token"));
+    const access_token = cookies.find((el) => el.startsWith("access_token"));
+    const refresh_token = cookies.find((el) => el.startsWith("refresh_token"));
     res.cookie(access_token);
     res.cookie(refresh_token);
     res
       .status(200)
-      .render("index", { pageTitle: "Generics", user, workOrders });
+      .render("work-order", { pageTitle: "Generics", workOrders, user });
   }
 
   async getImage(req, res) {
@@ -33,8 +33,8 @@ class RootController {
     });
 
     const data = await response.json();
-    const images = data.images;
     const user = data.user;
+    const images = data.images;
 
     const cookies = response.headers.raw()["set-cookie"];
     if (!cookies) {
@@ -43,8 +43,8 @@ class RootController {
         .render("image", { pageTitle: "Generics", images, user });
     }
 
-    const access_token = cookies.find((el) => el.includes("access_token"));
-    const refresh_token = cookies.find((el) => el.includes("refresh_token"));
+    const access_token = cookies.find((el) => el.startsWith("access_token"));
+    const refresh_token = cookies.find((el) => el.startsWith("refresh_token"));
     res.cookie(access_token);
     res.cookie(refresh_token);
     res.status(200).render("image", { pageTitle: "Generics", images, user });
@@ -58,8 +58,8 @@ class RootController {
     });
 
     let data = await response.json();
-    const video = data.video;
     const user = data.user;
+    const video = data.video;
 
     response = await FetchAPI.get(`/images/${id}`, {
       headers: { cookie: req.headers.cookie },
@@ -67,7 +67,8 @@ class RootController {
 
     data = await response.json();
     const image = data.image;
-    res.status(200).render("watch", { pageTitle: id, image, user, video });
+
+    res.status(200).render("watch", { pageTitle: id, image, video, user });
   }
 
   async getSignup(req, res) {
@@ -87,10 +88,7 @@ class AuthController {
       throw new CustomError.BadRequestError("Provide username and password");
     }
 
-    await FetchAPI.post("/auth/signup", {
-      username,
-      password,
-    });
+    await FetchAPI.post("/auth/signup", { username, password });
     res.status(201).end();
   }
 
@@ -109,15 +107,24 @@ class AuthController {
       { username, password },
       { ip, userAgent }
     );
-    const data = await response.json();
+    // const data = await response.json();
 
     const cookies = response.headers.raw()["set-cookie"];
-    const access_token = cookies.find((el) => el.includes("access_token"));
-    const refresh_token = cookies.find((el) => el.includes("refresh_token"));
+    const access_token = cookies.find((el) => el.startsWith("access_token"));
+    const refresh_token = cookies.find((el) => el.startsWith("refresh_token"));
+
+    // const reg = /Expires=((\w|\,|\s|\:)+)/;
+    // const expiration = refresh_token.match(reg)[1];
+
     res.cookie(access_token);
     res.cookie(refresh_token);
+    res.status(200).end();
 
-    res.status(200).json({ data: data.user.user_id });
+    // res.status(200).json({
+    //   data: data.user.user_id,
+    //   expiration: new Date(expiration).getTime(),
+    //   creation: new Date().getTime(),
+    // });
   }
 
   async signout(req, res) {
@@ -127,8 +134,8 @@ class AuthController {
     });
 
     const cookies = response.headers.raw()["set-cookie"];
-    const access_token = cookies.find((el) => el.includes("access_token"));
-    const refresh_token = cookies.find((el) => el.includes("refresh_token"));
+    const access_token = cookies.find((el) => el.startsWith("access_token"));
+    const refresh_token = cookies.find((el) => el.startsWith("refresh_token"));
     res.cookie(access_token);
     res.cookie(refresh_token);
     res.status(200).end();
@@ -151,14 +158,33 @@ class AuthController {
     );
 
     const cookies = response.headers.raw()["set-cookie"];
-    if (cookies) {
-      const sId = cookies.find((el) => el.includes("sId"));
-      res.cookie(sId);
+    if (!cookies) {
+      return res.status(200).end();
     }
+
+    const sId = cookies.find((el) => el.startsWith("sId"));
+    res.cookie(sId);
     res.status(200).end();
   }
 }
 
-const rootController = new RootController();
-const authController = new AuthController();
-export { rootController, authController };
+class ClientController {
+  async selectById(req, res) {
+    const { id } = req.params;
+
+    const response = await FetchAPI.get(`/clients/${id}`, {
+      headers: { cookie: req.headers.cookie },
+    });
+    const data = await response.json();
+    const association = data.client.association;
+    const name = data.client.name;
+    res.status(200).json({ association, name });
+  }
+}
+
+class WorkOrderController {}
+
+export const rootController = new RootController();
+export const authController = new AuthController();
+export const workOrderController = new WorkOrderController();
+export const clientController = new ClientController();

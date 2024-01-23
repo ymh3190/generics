@@ -163,12 +163,12 @@ class AuthController {
   async signout(req, res) {
     await Token.selectOneAndDelete({ user_id: req.user.user_id });
 
-    res.cookie("access_token", "logout", {
+    res.cookie("access_token", "signout", {
       httpOnly: true,
       expires: new Date(Date.now()),
     });
 
-    res.cookie("refresh_token", "logout", {
+    res.cookie("refresh_token", "signout", {
       httpOnly: true,
       expires: new Date(Date.now()),
     });
@@ -222,7 +222,8 @@ class WorkOrderController {
 
   async select(req, res) {
     const workOrders = await WorkOrder.select({});
-    res.status(200).json({ workOrders });
+    res.locals.user = req.user;
+    res.status(200).json({ workOrders, user: req.user });
   }
 
   async selectById(req, res) {

@@ -1,6 +1,4 @@
-class Util {
-  attachCookiesToResponse({ res, token }) {}
-}
+class Util {}
 
 const util = new Util();
 export default util;

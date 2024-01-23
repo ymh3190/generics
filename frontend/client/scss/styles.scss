@@ -3,17 +3,19 @@
 @import "./variable.scss";
 @import "./normalize.scss";
 
-@import "./layouts/index.scss";
+@import "./layouts/base.scss";
 @import "./layouts/auth.scss";
 
-@import "./header/index.scss";
-@import "./nav/index.scss";
-@import "./footer/index.scss";
+@import "./partials/header.scss";
+@import "./partials/nav.scss";
+@import "./partials/footer.scss";
 
 @import "./contents/watch.scss";
 @import "./contents/video.scss";
 @import "./contents/signin.scss";
 @import "./contents/signup.scss";
+@import "./contents/image.scss";
+@import "./contents/work-order.scss";
 
 body {
   font-family: "Open Sans", sans-serif;

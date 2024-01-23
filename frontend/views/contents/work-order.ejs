@@ -1,0 +1,57 @@
+<%- include('../layouts/base') %>
+
+    <div class="status" id="workOrderStatus">
+        <div class="status-text">
+            <span>all</span>
+        </div>
+        <div class="status-text">
+            <span>order</span>
+        </div>
+        <div class="status-text">
+            <span>resolving</span>
+        </div>
+        <div class="status-text">
+            <span>complete</span>
+        </div>
+    </div>
+
+    <div class="content workorder" id="content">
+        <% for (const workOrder of workOrders) {%>
+            <div class="workorder-container" id="workorderContainer" data-client_id="<%= workOrder.client_id %>">
+                <div style="display: flex; justify-content: space-between;">
+                    <div>
+                        <span>
+                            <% if (!workOrder.is_complete){%>
+                                진행중
+                                <%} else {%>
+                                    완료
+                                    <%}%>
+                        </span>
+                    </div>
+                    <div>
+                        <span>
+                            <% if (!workOrder.is_urgent){%>
+                                일반
+                                <%} else {%>
+                                    긴급
+                                    <%}%>
+                        </span>
+                    </div>
+                </div>
+                <div id="client"></div>
+                <div></div>
+                <div>
+                    <span>
+                        생성일자 <%= workOrder.created_at %>
+                    </span>
+                </div>
+                <!-- 
+                    data-id="<%= workOrder.id %>"
+                    orderer_id= <%= workOrder.orderer_id %>
+                    worker_id= <%= workOrder.worker_id %> -->
+            </div>
+            <%}%>
+    </div>
+    <script src="/public/js/bars.js"></script>
+    <script src="/public/js/place.js"></script>
+    <%- include('../partials/footer') %>

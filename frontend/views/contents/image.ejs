@@ -1,6 +1,6 @@
-<%- include('../../layouts/index') %>
+<%- include('../layouts/base') %>
 
-    <div class="content" id="content">
+    <div class="content image" id="content">
         <% for (const image of images) {%>
             <a href="/watch/<%= image.id %>">
                 <img src="<%= image.path %>" alt="">
@@ -8,4 +8,4 @@
             <%}%>
     </div>
     <script src="/public/js/bars.js"></script>
-    <%- include('../../footers/index') %>
+    <%- include('../partials/footer') %>
