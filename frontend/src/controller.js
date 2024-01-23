@@ -132,7 +132,6 @@ class AuthController {
       method: "DELETE",
       headers: { cookie: req.headers.cookie },
     });
-
     const cookies = response.headers.raw()["set-cookie"];
     const access_token = cookies.find((el) => el.startsWith("access_token"));
     const refresh_token = cookies.find((el) => el.startsWith("refresh_token"));

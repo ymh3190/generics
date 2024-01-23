@@ -57,11 +57,7 @@ class AuthRouter extends Router {
 
     this.router.post("/signin", authController.signin);
 
-    this.router.delete(
-      "/signout",
-      middleware.refreshTokenExists,
-      authController.signout
-    );
+    this.router.delete("/signout", authController.signout);
 
     this.router.post("/test", authController.testSession);
   }

@@ -141,39 +141,52 @@ class FetchAPI {
   }
 }
 
-const writeDiskAndDB = async (files) => {
+const writeDiskAndDB = async ({ images, videoExts }) => {
   const url = `${process.env.REMOTE_ORIGIN}/api/v1/images`;
 
-  for (const file of files) {
-    const response = await fetch(url + `/${file}`);
-    if (response.ok) {
+  for (let i = 0, len = images.length; i < len; ++i) {
+    const [name, imgExt] = images[i].split(".");
+    const response = await fetch(url + `/${name}`);
+    if (response?.ok) {
       continue;
     }
 
     const id = crypto.randomUUID().replaceAll("-", "");
-    let path = `/static/images/${id}.png`;
-    await FetchAPI.post("/images", { id, path });
-    renameSync(`static/images/${file}.png`, `static/images/${id}.png`);
+    const imageBasePath = `static/images/`;
+    const videoBasePath = `static/videos/`;
+    const imagePath = "/" + imageBasePath + `${id}.${imgExt}`;
+    const videoPath = "/" + videoBasePath + `${id}.${videoExts[i]}`;
 
-    path = `/static/videos/${id}.mov`;
-    await FetchAPI.post("/videos", { id, path });
-    renameSync(`static/videos/${file}.mov`, `static/videos/${id}.mov`);
+    await FetchAPI.post("/images", { id, path: imagePath });
+    await FetchAPI.post("/videos", { id, path: videoPath });
+
+    const oldImagePath = imageBasePath + `${name}.${imgExt}`;
+    const newImagePath = imageBasePath + `${id}.${imgExt}`;
+    const oldVideoPath = videoBasePath + `${name}.${videoExts[i]}`;
+    const newVideoPath = videoBasePath + `${id}.${videoExts[i]}`;
+    renameSync(oldImagePath, newImagePath);
+    renameSync(oldVideoPath, newVideoPath);
   }
 };
 
 function readDisk() {
-  const files = readdirSync("static/images")
+  const images = readdirSync("static/images").filter((file) => {
+    if (!file.includes(".DS_Store")) {
+      return file;
+    }
+  });
+  const videoExts = readdirSync("static/videos")
     .filter((file) => {
       if (!file.includes(".DS_Store")) {
         return file;
       }
     })
-    .map((file) => file.split(".")[0]);
-  return files;
+    .map((file) => file.split(".")[1]);
+  return { images, videoExts };
 }
 
 (async () => {
-  // await writeDiskAndDB(readDisk());
+  await writeDiskAndDB(readDisk());
 })();
 
 export default FetchAPI;
