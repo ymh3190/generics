@@ -6,8 +6,8 @@ class Util {
     const accessToken = this.#createJWT({ user });
     const refreshToken = this.#createJWT({ user, refresh_token });
 
-    const shortExp = 1000;
-    const longerExp = 1000 * 2;
+    const shortExp = 1000 * 60 * 10;
+    const longerExp = 1000 * 60 * 30;
 
     res.cookie("access_token", accessToken, {
       httpOnly: true,

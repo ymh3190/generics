@@ -12,16 +12,17 @@
             </form>
         </div>
     </div>
-    <div>
-        <% if (user) {%>
-            <a href="/api/auth/signout" id="signout">
+    <div class="end">
+        <div class="end-create">
+            <a class="end-create__endpoint" id="createWorkOrder">
+                <i class="fa-regular fa-square-plus"></i>
+            </a>
+        </div>
+        <div class="end-signout">
+            <a class="end-signout__endpoint" id="signout">
                 <i class="fa-solid fa-arrow-right-from-bracket"></i>
             </a>
-            <%} else {%>
-                <a href="/signin">
-                    <i class="fa-solid fa-arrow-right-to-bracket"></i>
-                </a>
-                <%}%>
+        </div>
     </div>
     <!-- <div id="auth">
     </div> -->

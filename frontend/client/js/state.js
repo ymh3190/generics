@@ -1,4 +1,4 @@
-// import FetchAPI from "../fetch-api";
+// import FetchAPI from "./fetch-api";
 
 // const authDOM = document.getElementById("auth");
 

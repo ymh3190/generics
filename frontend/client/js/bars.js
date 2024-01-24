@@ -27,7 +27,6 @@ barsDOM.addEventListener("click", () => {
       iconDOM.classList.remove("margin-bottom");
       iconDOM.classList.add("margin-right");
       contentDOM?.classList.remove("padding-left");
-      workOrderStatusDOM?.classList.remove("position-left");
       continue;
     }
     anchorDOM.classList.remove("flex");
@@ -36,6 +35,12 @@ barsDOM.addEventListener("click", () => {
     iconDOM.classList.remove("margin-right");
     iconDOM.classList.add("margin-bottom");
     contentDOM?.classList.add("padding-left");
-    workOrderStatusDOM?.classList.add("position-left");
   }
+
+  if (workOrderStatusDOM?.classList.contains("position-left")) {
+    workOrderStatusDOM?.classList.remove("position-left");
+    return;
+  }
+
+  workOrderStatusDOM?.classList.add("position-left");
 });

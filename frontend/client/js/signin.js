@@ -1,4 +1,4 @@
-import FetchAPI from "../fetch-api";
+import FetchAPI from "./fetch-api";
 
 const signinFormDOM = document.getElementById("signinForm");
 const usernameDOM = document.getElementById("username");

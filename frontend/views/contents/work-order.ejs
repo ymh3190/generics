@@ -15,9 +15,30 @@
         </div>
     </div>
 
-    <div class="content workorder" id="content">
+    <div class="popup" id="popup">
+        <div>
+            <label for="urgent">urgent</label>
+            <input type="checkbox" id="urgent">
+        </div>
+        <div>
+            <button>x</button>
+        </div>
+        <div>
+            <input type="text">
+            <button>client search</button>
+            <!-- TODO: 클라이언트 선택할 수 있게 -->
+        </div>
+        <div>
+            <!-- TODO: 작업 상세 추가할 수 있게 -->
+        </div>
+        <div>
+            <!-- TODO: 작업 로그 -->
+        </div>
+    </div>
+
+    <div class="content work-order" id="content">
         <% for (const workOrder of workOrders) {%>
-            <div class="workorder-container" id="workorderContainer" data-client_id="<%= workOrder.client_id %>">
+            <div class="work-order-container" id="workorderContainer" data-client_id="<%= workOrder.client_id %>">
                 <div style="display: flex; justify-content: space-between;">
                     <div>
                         <span>
@@ -54,4 +75,5 @@
     </div>
     <script src="/public/js/bars.js"></script>
     <script src="/public/js/place.js"></script>
+    <script src="/public/js/popup.js"></script>
     <%- include('../partials/footer') %>

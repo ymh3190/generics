@@ -1,7 +1,8 @@
 @import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap");
 
 @import "./variable.scss";
-@import "./normalize.scss";
+@import "./reset.scss";
+// @import "./normalize.scss";
 
 @import "./layouts/base.scss";
 @import "./layouts/auth.scss";
@@ -9,6 +10,7 @@
 @import "./partials/header.scss";
 @import "./partials/nav.scss";
 @import "./partials/footer.scss";
+@import "./partials/popup.scss";
 
 @import "./contents/watch.scss";
 @import "./contents/video.scss";
@@ -40,12 +42,16 @@ button {
   cursor: pointer;
 }
 
-li {
-  list-style: none;
+.hidden {
+  display: none;
 }
 
-.hide {
-  display: none;
+.padding-left {
+  padding-left: 100px;
+}
+
+.position-left {
+  left: 100px + $rootLeftMargin;
 }
 
 @media screen and (max-width: $desktop) {

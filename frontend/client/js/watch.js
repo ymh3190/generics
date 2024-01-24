@@ -1,11 +1,11 @@
 const barsDOM = document.getElementById("bars");
 const navDOM = document.getElementById("nav");
 
-navDOM.classList.add("hide");
+navDOM.classList.add("hidden");
 barsDOM.addEventListener("click", () => {
-  if (navDOM.classList.contains("hide")) {
-    navDOM.classList.remove("hide");
+  if (navDOM.classList.contains("hidden")) {
+    navDOM.classList.remove("hidden");
     return;
   }
-  navDOM.classList.add("hide");
+  navDOM.classList.add("hidden");
 });
