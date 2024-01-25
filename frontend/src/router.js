@@ -17,33 +17,25 @@ class RootRouter extends Router {
   constructor() {
     super();
 
-    this.router.get(
-      "/",
-      middleware.refreshTokenExists,
-      rootController.getWorkOrder
-    );
+    this.router.get("/", middleware.tokenExists, rootController.getWorkOrder);
 
-    this.router.get(
-      "/images",
-      middleware.refreshTokenExists,
-      rootController.getImage
-    );
+    this.router.get("/images", middleware.tokenExists, rootController.getImage);
 
     this.router.get(
       "/signin",
-      middleware.refreshTokenNotExists,
+      middleware.tokenNotExists,
       rootController.getSignin
     );
 
     this.router.get(
       "/signup",
-      middleware.refreshTokenNotExists,
+      middleware.tokenNotExists,
       rootController.getSignup
     );
 
     this.router.get(
       "/watch/:id(\\d|\\w{32})",
-      middleware.refreshTokenExists,
+      middleware.tokenExists,
       rootController.getWatch
     );
   }
@@ -57,7 +49,11 @@ class AuthRouter extends Router {
 
     this.router.post("/signin", authController.signin);
 
-    this.router.delete("/signout", authController.signout);
+    this.router.delete(
+      "/signout",
+      middleware.tokenExists,
+      authController.signout
+    );
 
     this.router.post("/test", authController.testSession);
   }
@@ -66,6 +62,8 @@ class AuthRouter extends Router {
 class ClientRouter extends Router {
   constructor() {
     super();
+
+    this.router.route("/").get(clientController.select);
 
     this.router.route("/:id(\\d|\\w{32})").get(clientController.selectById);
   }

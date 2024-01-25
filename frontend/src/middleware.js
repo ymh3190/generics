@@ -1,17 +1,27 @@
 class Middleware {
-  refreshTokenExists(req, res, next) {
+  locals(req, res, next) {
     const cookies = req.headers.cookie?.split("; ");
+    const access_token = cookies?.find((el) => el.startsWith("access_token"));
     const refresh_token = cookies?.find((el) => el.startsWith("refresh_token"));
-    if (refresh_token) {
+    if (access_token || refresh_token) {
+      res.locals.auth = true;
+      return next();
+    }
+    res.locals.auth = false;
+    next();
+  }
+
+  tokenExists(req, res, next) {
+    const isAuth = res.locals.auth;
+    if (isAuth) {
       return next();
     }
     res.redirect("/signin");
   }
 
-  refreshTokenNotExists(req, res, next) {
-    const cookies = req.headers.cookie?.split("; ");
-    const refresh_token = cookies?.find((el) => el.startsWith("refresh_token"));
-    if (refresh_token) {
+  tokenNotExists(req, res, next) {
+    const isAuth = res.locals.auth;
+    if (isAuth) {
       return res.redirect("/");
     }
     next();

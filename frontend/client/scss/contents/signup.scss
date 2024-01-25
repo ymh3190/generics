@@ -1,7 +1,14 @@
 .signup {
+  padding: initial;
+  gap: initial;
   grid-template-columns: none;
   border: 1px solid rgba(0, 0, 0, 1);
-  padding: 40px 30px 80px 30px;
+
+  position: fixed;
+  left: $leftSign;
+  top: $topSign;
+  width: $widthSign;
+  height: $heightSign;
 
   & > div:first-child {
     margin-bottom: 20px;

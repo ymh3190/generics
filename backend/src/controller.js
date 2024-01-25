@@ -30,7 +30,7 @@ class ImageController {
 
   async select(req, res) {
     const images = await Image.select({});
-    res.status(200).json({ images, user: req.user });
+    res.status(200).json({ images });
   }
 
   async selectById(req, res) {
@@ -64,7 +64,7 @@ class VideoController {
     if (!video) {
       throw new CustomError.NotFoundError("video not found");
     }
-    res.status(200).json({ video, user: req.user });
+    res.status(200).json({ video });
   }
 }
 
@@ -144,7 +144,8 @@ class AuthController {
         user: tokenUser,
         refresh_token: refreshToken,
       });
-      return res.status(200).json({ user: tokenUser });
+      return res.status(200).end();
+      // return res.status(200).json({ user: tokenUser });
     }
 
     const refresh_token = util.createToken();
@@ -157,7 +158,8 @@ class AuthController {
     await Token.create({ refresh_token, ip, user_agent, user_id });
 
     util.attachCookiesToResponse({ res, user: tokenUser, refresh_token });
-    res.status(200).json({ user: tokenUser });
+    res.status(200).end();
+    // res.status(200).json({ user: tokenUser });
   }
 
   async signout(req, res) {
@@ -222,8 +224,7 @@ class WorkOrderController {
 
   async select(req, res) {
     const workOrders = await WorkOrder.select({});
-    res.locals.user = req.user;
-    res.status(200).json({ workOrders, user: req.user });
+    res.status(200).json({ workOrders });
   }
 
   async selectById(req, res) {

@@ -4,61 +4,54 @@ import * as CustomError from "./error";
 class RootController {
   async getWorkOrder(req, res) {
     const response = await FetchAPI.get("/work-orders", {
-      headers: { cookie: req.headers.cookie },
+      cookie: req.headers.cookie,
     });
 
     const data = await response.json();
-    const user = data.user;
     const workOrders = data.workOrders;
 
     const cookies = response.headers.raw()["set-cookie"];
     if (!cookies) {
       return res
         .status(200)
-        .render("work-order", { pageTitle: "Generics", workOrders, user });
+        .render("work-order", { pageTitle: "Generics", workOrders });
     }
 
     const access_token = cookies.find((el) => el.startsWith("access_token"));
     const refresh_token = cookies.find((el) => el.startsWith("refresh_token"));
     res.cookie(access_token);
     res.cookie(refresh_token);
-    res
-      .status(200)
-      .render("work-order", { pageTitle: "Generics", workOrders, user });
+    res.status(200).render("work-order", { pageTitle: "Generics", workOrders });
   }
 
   async getImage(req, res) {
     const response = await FetchAPI.get("/images", {
-      headers: { cookie: req.headers.cookie },
+      cookie: req.headers.cookie,
     });
 
     const data = await response.json();
-    const user = data.user;
     const images = data.images;
 
     const cookies = response.headers.raw()["set-cookie"];
     if (!cookies) {
-      return res
-        .status(200)
-        .render("image", { pageTitle: "Generics", images, user });
+      return res.status(200).render("image", { pageTitle: "Generics", images });
     }
 
     const access_token = cookies.find((el) => el.startsWith("access_token"));
     const refresh_token = cookies.find((el) => el.startsWith("refresh_token"));
     res.cookie(access_token);
     res.cookie(refresh_token);
-    res.status(200).render("image", { pageTitle: "Generics", images, user });
+    res.status(200).render("image", { pageTitle: "Generics", images });
   }
 
   async getWatch(req, res) {
     const { id } = req.params;
 
     let response = await FetchAPI.get(`/videos/${id}`, {
-      headers: { cookie: req.headers.cookie },
+      cookie: req.headers.cookie,
     });
 
     let data = await response.json();
-    const user = data.user;
     const video = data.video;
 
     response = await FetchAPI.get(`/images/${id}`, {
@@ -68,7 +61,7 @@ class RootController {
     data = await response.json();
     const image = data.image;
 
-    res.status(200).render("watch", { pageTitle: id, image, video, user });
+    res.status(200).render("watch", { pageTitle: id, image, video });
   }
 
   async getSignup(req, res) {
@@ -129,8 +122,7 @@ class AuthController {
 
   async signout(req, res) {
     const response = await FetchAPI.delete("/auth/signout", {
-      method: "DELETE",
-      headers: { cookie: req.headers.cookie },
+      cookie: req.headers.cookie,
     });
     const cookies = response.headers.raw()["set-cookie"];
     const access_token = cookies.find((el) => el.startsWith("access_token"));
@@ -168,16 +160,22 @@ class AuthController {
 }
 
 class ClientController {
+  async select(req, res) {
+    const response = await FetchAPI.get("/clients", {
+      cookie: req.headers.cookie,
+    });
+    const data = await response.json();
+    res.status(200).json({ clients: data.clients });
+  }
+
   async selectById(req, res) {
     const { id } = req.params;
 
     const response = await FetchAPI.get(`/clients/${id}`, {
-      headers: { cookie: req.headers.cookie },
+      cookie: req.headers.cookie,
     });
     const data = await response.json();
-    const association = data.client.association;
-    const name = data.client.name;
-    res.status(200).json({ association, name });
+    res.status(200).json({ client: data.client });
   }
 }
 

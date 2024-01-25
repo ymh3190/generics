@@ -7,7 +7,10 @@ const catchResponseError = async (response) => {
 
   if (!response) {
     alert("Network response error");
+    return;
   }
+
+  alert("Undefined response error");
 };
 
 class FetchAPI {

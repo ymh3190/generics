@@ -1,6 +1,6 @@
 const barsDOM = document.getElementById("bars");
 const navDOM = document.getElementById("nav");
-const anchorDOMs = navDOM.querySelectorAll("a");
+const anchorDOMs = navDOM?.querySelectorAll("a");
 const contentDOM = document.getElementById("content");
 const workOrderStatusDOM = document.getElementById("workOrderStatus");
 
@@ -18,7 +18,7 @@ if (isMobileOrTable) {
   }
 }
 
-barsDOM.addEventListener("click", () => {
+barsDOM?.addEventListener("click", () => {
   for (const anchorDOM of anchorDOMs) {
     if (anchorDOM.classList.contains("column")) {
       anchorDOM.classList.remove("column");

@@ -48,6 +48,7 @@ class Server {
     this.#app.use(express.json());
     this.#app.use("/static", express.static("static"));
     this.#app.use("/public", express.static("public"));
+    this.#app.use(middleware.locals);
   }
 
   #useRouter() {

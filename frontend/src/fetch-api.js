@@ -45,7 +45,9 @@ class FetchAPI {
    */
   static async get(path, options) {
     if (options) {
-      const response = await fetch(FetchAPI.#url + path, options);
+      const response = await fetch(FetchAPI.#url + path, {
+        headers: { cookie: options.cookie },
+      });
       if (response?.ok) {
         return response;
       }
@@ -124,7 +126,10 @@ class FetchAPI {
    */
   static async delete(path, options) {
     if (options) {
-      const response = await fetch(FetchAPI.#url + path, options);
+      const response = await fetch(FetchAPI.#url + path, {
+        method: "DELETE",
+        headers: { cookie: options.cookie },
+      });
       if (response?.ok) {
         return response;
       }
