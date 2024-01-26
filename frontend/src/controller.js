@@ -50,14 +50,12 @@ class RootController {
     let response = await FetchAPI.get(`/videos/${id}`, {
       cookie: req.headers.cookie,
     });
-
     let data = await response.json();
     const video = data.video;
 
     response = await FetchAPI.get(`/images/${id}`, {
-      headers: { cookie: req.headers.cookie },
+      cookie: req.headers.cookie,
     });
-
     data = await response.json();
     const image = data.image;
 
@@ -179,9 +177,49 @@ class ClientController {
   }
 }
 
-class WorkOrderController {}
+class WorkOrderController {
+  async create(req, res) {
+    const response = await FetchAPI.post("/work-orders", req.body, {
+      cookie: req.headers.cookie,
+    });
+    const data = await response.json();
+    res.status(201).json({ workOrder: data.workOrder });
+  }
+}
+
+class WorkDetailController {
+  async create(req, res) {
+    const response = await FetchAPI.post("/work-details", req.body, {
+      cookie: req.headers.cookie,
+    });
+    const data = await response.json();
+    res.status(201).json({ workDetail: data.workDetail });
+  }
+}
+
+class ItemController {
+  async select(req, res) {
+    const response = await FetchAPI.get("/items", {
+      cookie: req.headers.cookie,
+    });
+    const data = await response.json();
+    res.status(200).json({ items: data.items });
+  }
+
+  async selectById(req, res) {
+    const { id } = req.params;
+
+    const response = await FetchAPI.get(`/items/${id}`, {
+      cookie: req.headers.cookie,
+    });
+    const data = await response.json();
+    res.status(200).json({ item: data.item });
+  }
+}
 
 export const rootController = new RootController();
 export const authController = new AuthController();
 export const workOrderController = new WorkOrderController();
 export const clientController = new ClientController();
+export const workDetailController = new WorkDetailController();
+export const itemController = new ItemController();

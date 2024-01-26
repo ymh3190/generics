@@ -15,8 +15,8 @@
         </div>
     </div>
 
-    <div class="popup-container" id="popup">
-        <div class="work-order-popup">
+    <div class="popup-container hidden" id="popup">
+        <div class="primary work-order-popup">
             <div>
                 <label for="urgent">urgent</label>
                 <input type="checkbox" id="urgent">
@@ -56,7 +56,8 @@
                     </div>
                 </div>
                 <div class="rows">
-                    <div id="workDetails"></div>
+                    <div id="workDetails">
+                    </div>
                     <div>
                         <button id="add">add</button>
                     </div>
@@ -64,14 +65,14 @@
             </div>
             <div>
                 <div>
-                    <button>register</button>
+                    <button id="place">place</button>
                 </div>
                 <div>
-                    <button>cancel</button>
+                    <button id="cancel">cancel</button>
                 </div>
             </div>
         </div>
-        <div class="clients-popup hidden" id="secondary">
+        <div class="secondary clients-popup hidden" id="clientsPopup">
             <div>
                 <div>
                     <form id="searchClientForm">
@@ -82,10 +83,26 @@
                     </form>
                 </div>
                 <div>
-                    <button id='close'>x</button>
+                    <button id='closeClientsPopup'>x</button>
                 </div>
             </div>
             <div id="clients"></div>
+        </div>
+        <div class="secondary items-popup hidden" id="itemsPopup">
+            <div>
+                <div>
+                    <form id="searchItemForm">
+                        <input type="text" id="searchItem">
+                        <button>
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </button>
+                    </form>
+                </div>
+                <div>
+                    <button id='closeItemsPopup'>x</button>
+                </div>
+            </div>
+            <div id="items"></div>
         </div>
     </div>
 
@@ -113,7 +130,6 @@
                     </div>
                 </div>
                 <div id="client"></div>
-                <div></div>
                 <div>
                     <span>
                         생성일자 <%= workOrder.created_at %>
@@ -124,5 +140,4 @@
     </div>
     <script src="/public/js/popup.js"></script>
     <script src="/public/js/workOrder.js"></script>
-    <script src="/public/js/workDetail.js"></script>
     <%- include('../partials/footer') %>

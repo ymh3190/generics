@@ -8,11 +8,14 @@
   border: 1px solid rgba(0, 0, 0, 0.5);
   z-index: 1;
 
-  .clients-popup {
-    position: inherit;
+  .secondary {
+    position: fixed;
     left: $leftSecondaryPopup;
     top: $topSecondaryPopup;
     width: $widthSecondaryPopup;
     height: $heightSecondaryPopup;
+    background-color: white;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    z-index: 1;
   }
 }

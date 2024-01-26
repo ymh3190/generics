@@ -70,13 +70,21 @@ class FetchAPI {
    */
   static async post(path, data, options) {
     if (options) {
+      const headers = {
+        "Content-Type": "application/json",
+      };
+      if (options.ip) {
+        headers["X-Forwared-For"] = options.ip;
+      }
+      if (options.userAgent) {
+        headers["User-Agent"] = options.userAgent;
+      }
+      if (options.cookie) {
+        headers.cookie = options.cookie;
+      }
       const response = await fetch(FetchAPI.#url + path, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Forwared-For": options.ip,
-          "User-Agent": options.userAgent,
-        },
+        headers,
         body: JSON.stringify(data),
       });
       if (response?.ok) {

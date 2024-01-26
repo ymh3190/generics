@@ -15,7 +15,6 @@ module.exports = {
     signup: path.join(__dirname, contentsPath, "signup"),
     watch: path.join(__dirname, contentsPath, "watch"),
     workOrder: path.join(__dirname, contentsPath, "workOrder"),
-    workDetail: path.join(__dirname, contentsPath, "workDetail"),
   },
   output: {
     path: path.resolve(__dirname, "./public"),

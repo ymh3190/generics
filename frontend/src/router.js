@@ -2,7 +2,9 @@ import express from "express";
 import {
   authController,
   clientController,
+  itemController,
   rootController,
+  workDetailController,
   workOrderController,
 } from "./controller";
 import middleware from "./middleware";
@@ -72,6 +74,33 @@ class ClientRouter extends Router {
 class WorkOrderRouter extends Router {
   constructor() {
     super();
+
+    this.router.route("/").post(workOrderController.create);
+  }
+}
+
+class WorkDetailRouter extends Router {
+  constructor() {
+    super();
+
+    this.router.route("/").post(workDetailController.create);
+
+    // this.router
+    //   .route("/:id(\\d|\\w{32})")
+    //   .patch(workDetailController.update)
+    //   .delete(workDetailController.delete);
+  }
+}
+
+class ItemRouter extends Router {
+  constructor() {
+    super();
+
+    this.router.route("/").get(middleware.tokenExists, itemController.select);
+
+    this.router
+      .route("/:id(\\d|\\w{32})")
+      .get(middleware.tokenExists, itemController.selectById);
   }
 }
 
@@ -79,3 +108,5 @@ export const { router: rootRouter } = new RootRouter();
 export const { router: authRouter } = new AuthRouter();
 export const { router: workOrderRouter } = new WorkOrderRouter();
 export const { router: clientRouter } = new ClientRouter();
+export const { router: workDetailRouter } = new WorkDetailRouter();
+export const { router: itemRouter } = new ItemRouter();

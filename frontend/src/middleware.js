@@ -2,8 +2,12 @@ class Middleware {
   locals(req, res, next) {
     const cookies = req.headers.cookie?.split("; ");
     const access_token = cookies?.find((el) => el.startsWith("access_token"));
+    if (access_token) {
+      res.locals.auth = true;
+      return next();
+    }
     const refresh_token = cookies?.find((el) => el.startsWith("refresh_token"));
-    if (access_token || refresh_token) {
+    if (refresh_token) {
       res.locals.auth = true;
       return next();
     }

@@ -6,16 +6,16 @@
 .rows {
   display: flex;
   flex-direction: column;
+}
 
-  .work-detail-row {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
+.work-detail {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
 
-    input {
-      width: 100%;
-    }
-    button {
-      width: 100%;
-    }
+  input {
+    width: 100%;
+  }
+  button {
+    width: 100%;
   }
 }

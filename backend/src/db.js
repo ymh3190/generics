@@ -26,7 +26,7 @@ class MySQLAPI {
 
   static getTable() {
     let name = "";
-    for (let i = 0, len = this.name.length; i < len; ++i) {
+    for (let i = 0; i < this.name.length; ++i) {
       if (this.name[i] !== this.name[i].toUpperCase()) {
         name += this.name[i];
         continue;
@@ -53,15 +53,15 @@ class MySQLAPI {
 
     let sql = `INSERT INTO ${table}(`;
     const keys = Object.keys(filter);
-    for (let i = 0, len = keys.length; i < len; ++i) {
-      if (i !== len - 1) {
+    for (let i = 0; i < keys.length; ++i) {
+      if (i !== keys.length - 1) {
         sql = sql.concat(keys[i], ", ");
         continue;
       }
       sql = sql.concat(keys[i], ") VALUES(");
     }
-    for (let i = 0, len = keys.length; i < len; ++i) {
-      if (i !== len - 1) {
+    for (let i = 0; i < keys.length; ++i) {
+      if (i !== keys.length - 1) {
         sql = sql.concat("?, ");
         continue;
       }
@@ -86,15 +86,15 @@ class MySQLAPI {
 
     let sql = `INSERT INTO ${table}(`.concat("id, ");
     const keys = Object.keys(filter);
-    for (let i = 0, len = keys.length; i < len; ++i) {
-      if (i !== len - 1) {
+    for (let i = 0; i < keys.length; ++i) {
+      if (i !== keys.length - 1) {
         sql = sql.concat(keys[i], ", ");
         continue;
       }
       sql = sql.concat(keys[i], ") VALUES(").concat("?, ");
     }
-    for (let i = 0, len = keys.length; i < len; ++i) {
-      if (i !== len - 1) {
+    for (let i = 0; i < keys.length; ++i) {
+      if (i !== keys.length - 1) {
         sql = sql.concat("?, ");
         continue;
       }
@@ -126,30 +126,30 @@ class MySQLAPI {
       throw new CustomError.BadRequestError("Provide filter");
     }
 
-    const createdAt = `
-    DATE_FORMAT(created_at, '%Y-%m-%d %H:%m:%s') AS created_at
-    `;
+    // const createdAt = `
+    // DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') AS created_at
+    // `;
 
     const table = this.getTable();
 
     const keys = Object.keys(filter);
     if (!keys.length) {
-      const sql = `SELECT *, ${createdAt} FROM ${table}`;
+      const sql = `SELECT * FROM ${table}`;
 
       const [result] = await MySQLAPI.pool.execute(sql);
       if (!column) {
         return result;
       }
 
-      for (let i = 0, len = result.length; i < len; ++i) {
+      for (let i = 0; i < result.length; ++i) {
         delete result[i][`${column.replace("-", "")}`];
       }
       return result;
     }
 
-    let sql = `SELECT *, ${createdAt} FROM ${table} WHERE`;
-    for (let i = 0, len = keys.length; i < len; ++i) {
-      if (i !== len - 1) {
+    let sql = `SELECT * FROM ${table} WHERE`;
+    for (let i = 0; i < keys.length; ++i) {
+      if (i !== keys.length - 1) {
         sql = sql.concat(" ", keys[i], " = ? AND");
         continue;
       }
@@ -200,8 +200,8 @@ class MySQLAPI {
     }
 
     let sql = `SELECT * FROM ${table} WHERE`;
-    for (let i = 0, len = keys.length; i < len; ++i) {
-      if (i !== len - 1) {
+    for (let i = 0; i < keys.length; ++i) {
+      if (i !== keys.length - 1) {
         sql = sql.concat(" ", keys[i], " = ? AND");
         continue;
       }
@@ -229,8 +229,8 @@ class MySQLAPI {
     }
 
     let sql = `DELETE FROM ${table} WHERE`;
-    for (let i = 0, len = keys.length; i < len; ++i) {
-      if (i !== len - 1) {
+    for (let i = 0; i < keys.length; ++i) {
+      if (i !== keys.length - 1) {
         sql = sql.concat(" ", keys[i], " = ? AND");
         continue;
       }
@@ -264,8 +264,8 @@ class MySQLAPI {
     }
 
     let sql = `UPDATE ${table} SET`;
-    for (let i = 0, len = keys.length; i < len; ++i) {
-      if (i !== len - 1) {
+    for (let i = 0; i < keys.length; ++i) {
+      if (i !== keys.length - 1) {
         sql = sql.concat(" ", keys[i], " = ?,");
         continue;
       }

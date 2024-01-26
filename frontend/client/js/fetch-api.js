@@ -16,7 +16,7 @@ const catchResponseError = async (response) => {
 class FetchAPI {
   /**
    *
-   * @param {string} path
+   * @param {string} path /api/v1 + path
    * @returns
    */
   static async get(path) {
@@ -29,7 +29,7 @@ class FetchAPI {
 
   /**
    *
-   * @param {string} path
+   * @param {string} path /api/v1 + path
    * @param {{}} data
    * @returns
    */
@@ -49,7 +49,7 @@ class FetchAPI {
 
   /**
    *
-   * @param {string} path
+   * @param {string} path /api/v1 + path
    * @param {{}} data
    * @returns
    */
@@ -69,7 +69,7 @@ class FetchAPI {
 
   /**
    *
-   * @param {string} path
+   * @param {string} path /api/v1 + path
    * @returns
    */
   static async delete(path) {

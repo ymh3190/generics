@@ -7,7 +7,9 @@ import cors from "cors";
 import {
   authRouter,
   clientRouter,
+  itemRouter,
   rootRouter,
+  workDetailRouter,
   workOrderRouter,
 } from "./router";
 import middleware from "./middleware";
@@ -55,7 +57,9 @@ class Server {
     this.#app.use("/", rootRouter);
     this.#app.use("/api/v1/auth", authRouter);
     this.#app.use("/api/v1/work-orders", workOrderRouter);
+    this.#app.use("/api/v1/work-details", workDetailRouter);
     this.#app.use("/api/v1/clients", clientRouter);
+    this.#app.use("/api/v1/items", itemRouter);
   }
 
   #errorHandler() {

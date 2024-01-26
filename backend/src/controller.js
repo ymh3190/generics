@@ -144,22 +144,18 @@ class AuthController {
         user: tokenUser,
         refresh_token: refreshToken,
       });
-      return res.status(200).end();
-      // return res.status(200).json({ user: tokenUser });
+      return res.status(200).json({ user: tokenUser });
     }
 
     const refresh_token = util.createToken();
-    const ip = req.ip;
-    // const ip = req.headers["x-forwared-for"];
-    // const ip = req.headers["host"];
+    const ip = req.headers["x-forwared-for"];
     const user_agent = req.headers["user-agent"];
     const user_id = user.id;
 
     await Token.create({ refresh_token, ip, user_agent, user_id });
 
     util.attachCookiesToResponse({ res, user: tokenUser, refresh_token });
-    res.status(200).end();
-    // res.status(200).json({ user: tokenUser });
+    res.status(200).json({ user: tokenUser });
   }
 
   async signout(req, res) {
