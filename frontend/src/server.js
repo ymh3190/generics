@@ -13,9 +13,11 @@ import {
   workOrderRouter,
 } from "./router";
 import middleware from "./middleware";
+import socket from "./socket";
 
 class Server {
   #app;
+  #server;
 
   constructor() {
     this.#app = express();
@@ -28,9 +30,17 @@ class Server {
 
   listen() {
     const port = process.env.PORT || 3000;
-    this.#app.listen(port, () => {
+    // this.#app.listen(port, () => {
+    //   console.log(`Server is listening port ${port}`);
+    // });
+    this.#server = this.#app.listen(port, () => {
       console.log(`Server is listening port ${port}`);
     });
+    socket(this.#server);
+
+    /**
+     * status 426: upgrade required
+     */
   }
 
   #setConfig() {

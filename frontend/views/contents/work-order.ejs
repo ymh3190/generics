@@ -1,16 +1,13 @@
 <%- include('../layouts/base') %>
 
     <div class="status" id="workOrderStatus">
-        <div class="status-text">
+        <div class="status-text" id="all">
             <span>all</span>
         </div>
-        <div class="status-text">
-            <span>order</span>
-        </div>
-        <div class="status-text">
+        <div class="status-text" id="resolving">
             <span>resolving</span>
         </div>
-        <div class="status-text">
+        <div class="status-text" id="complete">
             <span>complete</span>
         </div>
     </div>
@@ -29,7 +26,7 @@
                 <button id="searchClients">search clients</button>
             </div>
             <div>
-                <textarea name="comment" cols="30" rows="10"></textarea>
+                <textarea id="comment" cols="30" rows="10"></textarea>
             </div>
             <div class="work-detail-container">
                 <div class="columns">
@@ -108,25 +105,20 @@
 
     <div class="content work-order" id="content">
         <% for (const workOrder of workOrders) {%>
-            <div class="work-order-container" id="workorderContainer" data-client_id="<%= workOrder.client_id %>">
-                <div style="display: flex; justify-content: space-between;">
+            <div class="work-order-container" id="workorderContainer" data-client_id="<%= workOrder.client_id %>"
+                data-is_complete="<%=workOrder.is_complete %>">
+                <div style=" display: flex; justify-content: space-between;">
                     <div>
-                        <span>
-                            <% if (!workOrder.is_complete){%>
-                                진행중
-                                <%} else {%>
-                                    완료
-                                    <%}%>
-                        </span>
+                        <% if (!workOrder.is_complete) { %>
+                            <span>resolving</span>
+                            <% } else { %>
+                                <span>complete</span>
+                                <% } %>
                     </div>
                     <div>
-                        <span>
-                            <% if (!workOrder.is_urgent){%>
-                                일반
-                                <%} else {%>
-                                    긴급
-                                    <%}%>
-                        </span>
+                        <% if (workOrder.is_urgent) { %>
+                            <span>urgent</span>
+                            <% } %>
                     </div>
                 </div>
                 <div id="client"></div>

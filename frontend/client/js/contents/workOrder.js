@@ -1,6 +1,6 @@
 import FetchAPI from "../fetch-api";
 
-const workOrderContainerDOMs = document.querySelectorAll("#workorderContainer");
+let workOrderContainerDOMs = document.querySelectorAll("#workorderContainer");
 const clientsDOM = document.getElementById("clients");
 const searchClientsDOM = document.getElementById("searchClients");
 const clientsPopupDOM = document.getElementById("clientsPopup");
@@ -19,9 +19,42 @@ const searchItemFormDOM = document.getElementById("searchItemForm");
 const searchItemDOM = document.getElementById("searchItem");
 
 const urgentDOM = document.getElementById("urgent");
+const commentDOM = document.getElementById("comment");
 const popupDOM = document.getElementById("popup");
 
 const contentDOM = document.getElementById("content");
+
+const allDOM = document.getElementById("all");
+const resolvingDOM = document.getElementById("resolving");
+const completeDOM = document.getElementById("complete");
+
+completeDOM.addEventListener("click", () => {
+  for (const workOrderContainerDOM of workOrderContainerDOMs) {
+    const is_complete = workOrderContainerDOM.dataset.is_complete;
+    if (is_complete !== "1") {
+      workOrderContainerDOM.classList.add("hidden");
+      continue;
+    }
+    workOrderContainerDOM.classList.remove("hidden");
+  }
+});
+
+resolvingDOM.addEventListener("click", async () => {
+  for (const workOrderContainerDOM of workOrderContainerDOMs) {
+    const is_complete = workOrderContainerDOM.dataset.is_complete;
+    if (is_complete !== "0") {
+      workOrderContainerDOM.classList.add("hidden");
+      continue;
+    }
+    workOrderContainerDOM.classList.remove("hidden");
+  }
+});
+
+allDOM.addEventListener("click", () => {
+  for (const workOrderContainerDOM of workOrderContainerDOMs) {
+    workOrderContainerDOM.classList.remove("hidden");
+  }
+});
 
 searchItemFormDOM.addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -74,6 +107,7 @@ placeDOM.addEventListener("click", async () => {
     const remnant = inputDOMs[5].value;
 
     if (!item_id || !depth || !width || !length || !quantity) {
+      alert("Provide all values");
       return;
     }
 
@@ -81,6 +115,7 @@ placeDOM.addEventListener("click", async () => {
     let response = await FetchAPI.post("/work-orders", {
       client_id,
       is_urgent: urgentDOM.checked,
+      comment: commentDOM.value,
     });
     if (response) {
       const data = await response.json();
@@ -111,29 +146,33 @@ placeDOM.addEventListener("click", async () => {
     });
 
     if (response) {
-      popupDOM.classList.add("hidden");
-
       const html = `
       <div class="work-order-container" id="workorderContainer" data-client_id="${
         workOrder.client_id
-      }">
-      <div>
+      }" data-is_complete="${workOrder.is_complete}">
         <div>
-            <span>${workOrder.is_complete ? "완료" : "진행중"}</span>
+          <div>
+              <span>${workOrder.is_complete ? "complete" : "resolving"}</span>
+          </div>
+          <div>
+              <span>${workOrder.is_urgent ? "urgent" : ""}</span>
+          </div>
         </div>
+        <div id="client">${clientHtml}</div>
         <div>
-            <span>${workOrder.is_urgent ? "긴급" : "일반"}</span>
+          <span>생성일자 ${workOrder.created_at}</span>
         </div>
-      </div>
-      <div id="client">${clientHtml}</div>
-      <div>
-        <span>생성일자 ${workOrder.created_at}</span>
-      </div>
       </div>
       `;
-      contentDOM.insertAdjacentHTML("beforeend", html);
+      contentDOM.insertAdjacentHTML("afterbegin", html);
+      workOrderContainerDOMs = document.querySelectorAll("#workorderContainer");
     }
   }
+
+  popupDOM.classList.add("hidden");
+  const createWorkOrderDOM = document.getElementById("createWorkOrder");
+  const icon = createWorkOrderDOM.querySelector("i");
+  icon.className = icon.className.replace("solid", "regular");
 });
 
 addDOM.addEventListener("click", async () => {
@@ -172,12 +211,21 @@ addDOM.addEventListener("click", async () => {
       <input type='text' name='remnant'>
     </div>
     <div>
-      <button>delete</button>
+      <button id='delete'>delete</button>
     </div>
   </div>
   `;
 
   workDetailsDOM.insertAdjacentHTML("beforeend", html);
+  const newWorkDetailDOMs = workDetailsDOM.querySelectorAll("#workDetail");
+  for (let i = 0; i < newWorkDetailDOMs.length; ++i) {
+    if (i === newWorkDetailDOMs.length - 1) {
+      const deleteDOM = newWorkDetailDOMs[i].querySelector("#delete");
+      deleteDOM.addEventListener("click", () => {
+        newWorkDetailDOMs[i].remove();
+      });
+    }
+  }
 
   const response = await FetchAPI.get("/items");
   if (response) {
@@ -330,4 +378,12 @@ async function clickClientHandler() {
       clientDOM.insertAdjacentHTML("beforeend", html);
     }
   }
+
+  const webSocket = new WebSocket(`ws://${window.location.host}`);
+  webSocket.onopen = () => {
+    console.log("connection success");
+  };
+  webSocket.onmessage = (event) => {
+    console.log(event.data);
+  };
 })();

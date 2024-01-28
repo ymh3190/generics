@@ -2,7 +2,6 @@
 
 @import "./variable.scss";
 @import "./reset.scss";
-// @import "./normalize.scss";
 
 @import "./layouts/base.scss";
 @import "./layouts/auth.scss";
@@ -56,6 +55,30 @@ button {
 }
 
 @media screen and (max-width: $desktop) {
+  .header {
+    height: 7vh;
+  }
+
+  .nav {
+    padding-right: 15px;
+    top: 7vh;
+  }
+
+  .content {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .watch {
+    grid-template-columns: 2fr 1fr;
+  }
+
+  .signin,
+  .signup {
+    grid-template-columns: none;
+  }
+}
+
+@media screen and (max-width: $laptop) {
   .header {
     height: 7vh;
   }

@@ -76,6 +76,7 @@ class WorkOrderRouter extends Router {
     super();
 
     this.router.route("/").post(workOrderController.create);
+    // .get(middleware.tokenExists, workOrderController.select);
   }
 }
 

@@ -3,27 +3,27 @@
   gap: initial;
   grid-template-columns: none;
   border: 1px solid rgba(0, 0, 0, 1);
-
   position: fixed;
   left: $leftSign;
   top: $topSign;
   width: $widthSign;
   height: $heightSign;
 
-  & > div:first-child {
-    margin-bottom: 20px;
+  .top {
+    align-self: center;
     justify-self: center;
+    margin-bottom: 20px;
 
-    span:first-child {
+    span {
       text-transform: capitalize;
     }
   }
 
-  & > div:nth-child(2) {
+  .bottom {
     margin-bottom: 20px;
 
     form {
-      & > div:first-child {
+      .signup-form-top {
         display: grid;
         grid-template-rows: repeat(2, 1fr);
         row-gap: 2vh;
@@ -39,7 +39,7 @@
         }
       }
 
-      & > div:last-child {
+      .signup-form-bottom {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
 
@@ -55,17 +55,6 @@
             text-transform: capitalize;
           }
         }
-      }
-    }
-  }
-  & > div:last-child {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-
-    & > div:first-child {
-      a {
-        color: blue;
       }
     }
   }

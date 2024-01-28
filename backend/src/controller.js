@@ -30,6 +30,12 @@ class ImageController {
 
   async select(req, res) {
     const images = await Image.select({});
+
+    // TODO: sort ORM 구현
+    // const images = (await Image.select({})).toSorted((a, b) => {
+    //   return b.created_at - a.created_at;
+    // });
+
     res.status(200).json({ images });
   }
 
@@ -220,6 +226,10 @@ class WorkOrderController {
 
   async select(req, res) {
     const workOrders = await WorkOrder.select({});
+    // TODO: sort ORM 구현
+    // workOrders.sort((a, b) => {
+    //   return b.created_at - a.created_at;
+    // });
     res.status(200).json({ workOrders });
   }
 

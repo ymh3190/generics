@@ -8,7 +8,10 @@ class RootController {
     });
 
     const data = await response.json();
-    const workOrders = data.workOrders;
+    const workOrders = data.workOrders.toSorted((a, b) => {
+      // order by desc
+      return new Date(b.created_at) - new Date(a.created_at);
+    });
 
     const cookies = response.headers.raw()["set-cookie"];
     if (!cookies) {
@@ -30,7 +33,10 @@ class RootController {
     });
 
     const data = await response.json();
-    const images = data.images;
+    const images = data.images.toSorted((a, b) => {
+      // order by desc
+      return new Date(b.created_at) - new Date(a.created_at);
+    });
 
     const cookies = response.headers.raw()["set-cookie"];
     if (!cookies) {
@@ -185,6 +191,14 @@ class WorkOrderController {
     const data = await response.json();
     res.status(201).json({ workOrder: data.workOrder });
   }
+
+  // async select(req, res) {
+  //   const response = await FetchAPI.get("/work-orders", {
+  //     cookie: req.headers.cookie,
+  //   });
+  //   const data = await response.json();
+  //   res.status(200).json({ workOrders: data.workOrders });
+  // }
 }
 
 class WorkDetailController {
