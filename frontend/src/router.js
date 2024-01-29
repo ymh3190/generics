@@ -126,7 +126,7 @@ class RemnantZoneRouter extends Router {
 
     this.router
       .route("/")
-      // .post(middleware.authenticateUser, remnantZoneController.create)
+      .post(middleware.tokenExists, remnantZoneController.create)
       .get(middleware.tokenExists, remnantZoneController.select);
 
     this.router

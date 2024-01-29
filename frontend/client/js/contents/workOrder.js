@@ -1,6 +1,5 @@
 import FetchAPI from "../fetch-api";
 
-let workOrderContainerDOMs = document.querySelectorAll("#workOrderContainer");
 const clientsDOM = document.getElementById("clients");
 const searchClientsDOM = document.getElementById("searchClients");
 const clientsPopupDOM = document.getElementById("clientsPopup");
@@ -271,7 +270,7 @@ const placeHandler = async () => {
 
     if (response) {
       const html = `
-      <div class="work-order-container" id="workorderContainer" data-client_id="${
+      <div class="work-order-container" id="workOrderContainer" data-client_id="${
         workOrder.client_id
       }" data-is_complete="${workOrder.is_complete}" data-is_urgent="${
         workOrder.is_urgent
@@ -291,7 +290,6 @@ const placeHandler = async () => {
       </div>
       `;
       contentDOM.insertAdjacentHTML("afterbegin", html);
-      workOrderContainerDOMs = document.querySelectorAll("#workOrderContainer");
     }
   }
 
@@ -343,6 +341,10 @@ searchClientFormDOM.addEventListener("submit", searchClientFormHandler);
 searchClientsDOM.addEventListener("click", searchClientsHandler);
 
 (async () => {
+  const workOrderContainerDOMs = document.querySelectorAll(
+    "#workOrderContainer"
+  );
+
   for (const workOrderContainerDOM of workOrderContainerDOMs) {
     const id = workOrderContainerDOM.dataset.client_id;
 

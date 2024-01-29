@@ -268,10 +268,13 @@ class ItemController {
   }
 }
 class RemnantZoneController {
-  // async create(req, res) {
-  //   const remnantZone = await RemnantZone.create(req.body, { new: true });
-  //   res.status(201).json({ remnantZone });
-  // }
+  async create(req, res) {
+    const response = await FetchAPI.post("/remnant-zones", req.body, {
+      cookie: req.headers.cookie,
+    });
+    const data = await response.json();
+    res.status(201).json({ remnantZone: data.remnantZone });
+  }
 
   async select(req, res) {
     const response = await FetchAPI.get("/remnant-zones", {

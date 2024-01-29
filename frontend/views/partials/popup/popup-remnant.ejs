@@ -39,8 +39,20 @@
         </div>
     </div>
 </div>
-<div class="secondary zones-popup hidden" id="zonesPopup">
+<div class="secondary zones-popup" id="zonesPopup">
     <div>
+        <a id="newZone">
+            <i class="fa-regular fa-square-plus"></i>
+        </a>
+    </div>
+    <div>
+        <div>
+            <form id="createZoneForm">
+                <input type="text" placeholder="name" id="name" autocomplete="on">
+                <input type="text" placeholder="comment" id="comment">
+                <button id="createZone">create</button>
+            </form>
+        </div>
         <div>
             <form id="searchZonesForm">
                 <input type="text" id="searchZones">

@@ -1,5 +1,3 @@
-let workOrderContainerDOMs = document.querySelectorAll("#workOrderContainer");
-
 const allChipDOM = document.getElementById("allChip");
 const resolvingChipDOM = document.getElementById("resolvingChip");
 const completeChipDOM = document.getElementById("completeChip");
@@ -10,6 +8,8 @@ const itemChipDOM = document.getElementById("itemChip");
 const itemSelectDOM = document.getElementById("itemSelect");
 const zoneChipDOM = document.getElementById("zoneChip");
 const zoneSelectDOM = document.getElementById("zoneSelect");
+
+let workOrderContainerDOMs;
 
 const allChipHandler = () => {
   workOrderContainerDOMs = document.querySelectorAll("#workOrderContainer");
