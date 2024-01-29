@@ -203,7 +203,7 @@ function readDisk() {
 }
 
 (async () => {
-  // await writeDiskAndDB(readDisk());
+  await writeDiskAndDB(readDisk());
 })();
 
 export default FetchAPI;

@@ -79,8 +79,8 @@ const createZoneFormHandler = async (event) => {
   }
 };
 
-createZoneFormDOM.addEventListener("submit", createZoneFormHandler);
-newZoneDOM.addEventListener("click", newZoneHandler);
+createZoneFormDOM?.addEventListener("submit", createZoneFormHandler);
+newZoneDOM?.addEventListener("click", newZoneHandler);
 createRemnantDOM?.addEventListener("click", createRemnantHandler);
 createWorkOrderDOM?.addEventListener("click", createWorkOrderHandler);
 
