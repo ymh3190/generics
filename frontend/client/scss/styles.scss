@@ -10,6 +10,7 @@
 @import "./partials/nav.scss";
 @import "./partials/footer.scss";
 @import "./partials/popup.scss";
+@import "./partials/status.scss";
 
 @import "./contents/watch.scss";
 @import "./contents/video.scss";
@@ -17,7 +18,9 @@
 @import "./contents/signup.scss";
 @import "./contents/image.scss";
 @import "./contents/work-order.scss";
-@import "./contents/work-detail.scss";
+@import "./contents/remnant.scss";
+
+@import "./screen.scss";
 
 body {
   font-family: "Open Sans", sans-serif;
@@ -42,7 +45,9 @@ button {
   cursor: pointer;
 }
 
-.hidden {
+.hidden,
+.item-hidden,
+.zone-hidden {
   display: none;
 }
 
@@ -52,100 +57,4 @@ button {
 
 .position-left {
   left: 100px + $rootLeftMargin;
-}
-
-@media screen and (max-width: $desktop) {
-  .header {
-    height: 7vh;
-  }
-
-  .nav {
-    padding-right: 15px;
-    top: 7vh;
-  }
-
-  .content {
-    grid-template-columns: repeat(4, 1fr);
-  }
-
-  .watch {
-    grid-template-columns: 2fr 1fr;
-  }
-
-  .signin,
-  .signup {
-    grid-template-columns: none;
-  }
-}
-
-@media screen and (max-width: $laptop) {
-  .header {
-    height: 7vh;
-  }
-
-  .nav {
-    padding-right: 15px;
-    top: 7vh;
-  }
-
-  .content {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  .watch {
-    grid-template-columns: 2fr 1fr;
-  }
-
-  .signin,
-  .signup {
-    grid-template-columns: none;
-  }
-}
-
-@media screen and (max-width: $tablet) {
-  .header {
-    height: 5vh;
-  }
-
-  .nav {
-    padding-right: 10px;
-    top: 5vh;
-  }
-
-  .content {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .watch {
-    grid-template-columns: 2fr 1fr;
-  }
-
-  .signin,
-  .signup {
-    grid-template-columns: none;
-  }
-}
-
-@media screen and (max-width: $mobile) {
-  .header {
-    height: 7vh;
-  }
-
-  .nav {
-    padding-right: 5px;
-    top: 7vh;
-  }
-
-  .content {
-    grid-template-columns: 1fr;
-  }
-
-  .watch {
-    grid-template-columns: 2fr 1fr;
-  }
-
-  .signin,
-  .signup {
-    grid-template-columns: none;
-  }
 }

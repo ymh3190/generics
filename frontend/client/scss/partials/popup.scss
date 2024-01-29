@@ -6,7 +6,7 @@
   height: $heightPrimaryPopup;
   background-color: white;
   border: 1px solid rgba(0, 0, 0, 0.5);
-  z-index: 1;
+  z-index: 2;
 
   .secondary {
     position: fixed;
@@ -16,6 +16,41 @@
     height: $heightSecondaryPopup;
     background-color: white;
     border: 1px solid rgba(0, 0, 0, 0.5);
-    z-index: 1;
+    z-index: 2;
+  }
+}
+
+.remnant-detail-columns {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+}
+
+.work-detail-columns {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+}
+
+.work-detail {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+
+  input,
+  button {
+    width: 100%;
+  }
+}
+
+.remnant-detail {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+
+  input,
+  button {
+    width: 100%;
   }
 }

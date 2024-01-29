@@ -3,7 +3,10 @@ import {
   authController,
   clientController,
   itemController,
+  remnantDetailController,
+  remnantZoneController,
   rootController,
+  userController,
   workDetailController,
   workOrderController,
 } from "./controller";
@@ -20,6 +23,18 @@ class RootRouter extends Router {
     super();
 
     this.router.get("/", middleware.tokenExists, rootController.getWorkOrder);
+
+    this.router.get(
+      "/work-order",
+      middleware.tokenExists,
+      rootController.getWorkOrder
+    );
+
+    this.router.get(
+      "/remnant",
+      middleware.tokenExists,
+      rootController.getRemnant
+    );
 
     this.router.get("/images", middleware.tokenExists, rootController.getImage);
 
@@ -105,9 +120,64 @@ class ItemRouter extends Router {
   }
 }
 
+class RemnantZoneRouter extends Router {
+  constructor() {
+    super();
+
+    this.router
+      .route("/")
+      // .post(middleware.authenticateUser, remnantZoneController.create)
+      .get(middleware.tokenExists, remnantZoneController.select);
+
+    this.router
+      .route("/:id(\\d|\\w{32})")
+      .get(middleware.tokenExists, remnantZoneController.selectById);
+    // .patch(remnantZoneController.update)
+    // .delete(remnantZoneController.delete);
+  }
+}
+
+class RemnantDetailRouter extends Router {
+  constructor() {
+    super();
+
+    this.router
+      .route("/")
+      .post(middleware.tokenExists, remnantDetailController.create)
+      .get(middleware.tokenExists, remnantDetailController.select);
+
+    // this.router
+    //   .route("/:id(\\d|\\w{32})")
+    //   .get(remnantDetailController.selectById)
+    //   .patch(remnantDetailController.update)
+    //   .delete(remnantDetailController.delete);
+  }
+}
+
+class UserRouter extends Router {
+  constructor() {
+    super();
+
+    // this.router
+    //   .route("/")
+    //   .get(
+    //     middleware.authenticateUser,
+    //     middleware.authorizePermissions("admin"),
+    //     userController.select
+    //   );
+
+    this.router
+      .route("/:id(\\d|\\w{32})")
+      .get(middleware.tokenExists, userController.selectById);
+  }
+}
+
 export const { router: rootRouter } = new RootRouter();
 export const { router: authRouter } = new AuthRouter();
 export const { router: workOrderRouter } = new WorkOrderRouter();
 export const { router: clientRouter } = new ClientRouter();
 export const { router: workDetailRouter } = new WorkDetailRouter();
 export const { router: itemRouter } = new ItemRouter();
+export const { router: remnantDetailRouter } = new RemnantDetailRouter();
+export const { router: remnantZoneRouter } = new RemnantZoneRouter();
+export const { router: userRouter } = new UserRouter();

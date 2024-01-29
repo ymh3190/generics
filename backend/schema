@@ -73,7 +73,7 @@ create table work_order(
     worker_id char(32),
     is_complete boolean not null default false,
     is_urgent boolean not null,
-    comment varchar(100),
+    comment varchar(100) not null,
     end_date datetime on update current_timestamp,
     created_at datetime not null default current_timestamp,
     foreign key (client_id) references client(id),

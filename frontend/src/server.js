@@ -8,7 +8,10 @@ import {
   authRouter,
   clientRouter,
   itemRouter,
+  remnantDetailRouter,
+  remnantZoneRouter,
   rootRouter,
+  userRouter,
   workDetailRouter,
   workOrderRouter,
 } from "./router";
@@ -63,6 +66,9 @@ class Server {
     this.#app.use("/api/v1/work-details", workDetailRouter);
     this.#app.use("/api/v1/clients", clientRouter);
     this.#app.use("/api/v1/items", itemRouter);
+    this.#app.use("/api/v1/remnant-details", remnantDetailRouter);
+    this.#app.use("/api/v1/remnant-zones", remnantZoneRouter);
+    this.#app.use("/api/v1/users", userRouter);
   }
 
   #errorHandler() {

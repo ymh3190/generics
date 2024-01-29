@@ -45,6 +45,10 @@ class FetchAPI {
    */
   static async get(path, options) {
     if (options) {
+      // const headers = { cookie: options.cookie };
+      // if (options.created_at) {
+      //   headers.created_at = options.created_at;
+      // }
       const response = await fetch(FetchAPI.#url + path, {
         headers: { cookie: options.cookie },
       });

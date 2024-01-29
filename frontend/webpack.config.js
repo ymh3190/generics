@@ -11,10 +11,12 @@ module.exports = {
     bars: path.join(__dirname, partialsPath, "bars"),
     signout: path.join(__dirname, partialsPath, "signout"),
     popup: path.join(__dirname, partialsPath, "popup"),
+    status: path.join(__dirname, partialsPath, "status"),
     signin: path.join(__dirname, contentsPath, "signin"),
     signup: path.join(__dirname, contentsPath, "signup"),
     watch: path.join(__dirname, contentsPath, "watch"),
     workOrder: path.join(__dirname, contentsPath, "workOrder"),
+    remnant: path.join(__dirname, contentsPath, "remnant"),
   },
   output: {
     path: path.resolve(__dirname, "./public"),

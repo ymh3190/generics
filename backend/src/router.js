@@ -72,6 +72,10 @@ class UserRouter extends Router {
         middleware.authorizePermissions("admin"),
         userController.select
       );
+
+    this.router
+      .route("/:id(\\d|\\w{32})")
+      .get(middleware.authenticateUser, userController.selectById);
   }
 }
 
@@ -205,9 +209,9 @@ class RemnantZoneRouter extends Router {
 
     this.router
       .route("/:id(\\d|\\w{32})")
-      .get(remnantZoneController.selectById)
-      .patch(remnantZoneController.update)
-      .delete(remnantZoneController.delete);
+      .get(middleware.authenticateUser, remnantZoneController.selectById)
+      .patch(middleware.authenticateUser, remnantZoneController.update)
+      .delete(middleware.authenticateUser, remnantZoneController.delete);
   }
 }
 
@@ -218,13 +222,13 @@ class RemnantDetailRouter extends Router {
     this.router
       .route("/")
       .post(middleware.authenticateUser, remnantDetailController.create)
-      .get(remnantDetailController.select);
+      .get(middleware.authenticateUser, remnantDetailController.select);
 
     this.router
       .route("/:id(\\d|\\w{32})")
-      .get(remnantDetailController.selectById)
-      .patch(remnantDetailController.update)
-      .delete(remnantDetailController.delete);
+      .get(middleware.authenticateUser, remnantDetailController.selectById)
+      .patch(middleware.authenticateUser, remnantDetailController.update)
+      .delete(middleware.authenticateUser, remnantDetailController.delete);
   }
 }
 

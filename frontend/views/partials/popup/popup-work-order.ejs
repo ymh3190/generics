@@ -1,0 +1,72 @@
+<div class="primary work-order-popup">
+    <div>
+        <label for="urgent">urgent</label>
+        <input type="checkbox" id="urgent">
+    </div>
+    <div>
+        <button id="close">x</button>
+    </div>
+    <div>
+        <input type="text" id="selectedClient" readonly>
+        <button id="searchClients">search clients</button>
+    </div>
+    <div>
+        <textarea id="comment" cols="30" rows="10"></textarea>
+    </div>
+    <div class="work-detail-container">
+        <div class="work-detail-columns">
+            <div>
+                <span>item</span>
+            </div>
+            <div>
+                <span>depth</span>
+            </div>
+            <div>
+                <span>width</span>
+            </div>
+            <div>
+                <span>length</span>
+            </div>
+            <div>
+                <span>quantity</span>
+            </div>
+            <div>
+                <span>remnant</span>
+            </div>
+            <div>
+                <span>notes</span>
+            </div>
+        </div>
+        <div class="rows">
+            <div id="workDetails">
+            </div>
+            <div>
+                <button id="add">add</button>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div>
+            <button id="place">place</button>
+        </div>
+        <div>
+            <button id="cancel">cancel</button>
+        </div>
+    </div>
+</div>
+<div class="secondary clients-popup hidden" id="clientsPopup">
+    <div>
+        <div>
+            <form id="searchClientForm">
+                <input type="text" id="searchClient">
+                <button>
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </form>
+        </div>
+        <div>
+            <button id='closeClientsPopup'>x</button>
+        </div>
+    </div>
+    <div id="clients"></div>
+</div>

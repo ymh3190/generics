@@ -1,112 +1,9 @@
 <%- include('../layouts/base') %>
 
-    <div class="status" id="workOrderStatus">
-        <div class="status-text" id="all">
-            <span>all</span>
-        </div>
-        <div class="status-text" id="resolving">
-            <span>resolving</span>
-        </div>
-        <div class="status-text" id="complete">
-            <span>complete</span>
-        </div>
-    </div>
-
-    <div class="popup-container hidden" id="popup">
-        <div class="primary work-order-popup">
-            <div>
-                <label for="urgent">urgent</label>
-                <input type="checkbox" id="urgent">
-            </div>
-            <div>
-                <button id="close">x</button>
-            </div>
-            <div>
-                <input type="text" id="selectedClient" readonly>
-                <button id="searchClients">search clients</button>
-            </div>
-            <div>
-                <textarea id="comment" cols="30" rows="10"></textarea>
-            </div>
-            <div class="work-detail-container">
-                <div class="columns">
-                    <div>
-                        <span>item</span>
-                    </div>
-                    <div>
-                        <span>depth</span>
-                    </div>
-                    <div>
-                        <span>width</span>
-                    </div>
-                    <div>
-                        <span>length</span>
-                    </div>
-                    <div>
-                        <span>quantity</span>
-                    </div>
-                    <div>
-                        <span>remnant</span>
-                    </div>
-                    <div>
-                        <span>notes</span>
-                    </div>
-                </div>
-                <div class="rows">
-                    <div id="workDetails">
-                    </div>
-                    <div>
-                        <button id="add">add</button>
-                    </div>
-                </div>
-            </div>
-            <div>
-                <div>
-                    <button id="place">place</button>
-                </div>
-                <div>
-                    <button id="cancel">cancel</button>
-                </div>
-            </div>
-        </div>
-        <div class="secondary clients-popup hidden" id="clientsPopup">
-            <div>
-                <div>
-                    <form id="searchClientForm">
-                        <input type="text" id="searchClient">
-                        <button>
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                        </button>
-                    </form>
-                </div>
-                <div>
-                    <button id='closeClientsPopup'>x</button>
-                </div>
-            </div>
-            <div id="clients"></div>
-        </div>
-        <div class="secondary items-popup hidden" id="itemsPopup">
-            <div>
-                <div>
-                    <form id="searchItemForm">
-                        <input type="text" id="searchItem">
-                        <button>
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                        </button>
-                    </form>
-                </div>
-                <div>
-                    <button id='closeItemsPopup'>x</button>
-                </div>
-            </div>
-            <div id="items"></div>
-        </div>
-    </div>
-
     <div class="content work-order" id="content">
-        <% for (const workOrder of workOrders) {%>
-            <div class="work-order-container" id="workorderContainer" data-client_id="<%= workOrder.client_id %>"
-                data-is_complete="<%=workOrder.is_complete %>">
+        <% for (const workOrder of workOrders) { %>
+            <div class="work-order-container" id="workOrderContainer" data-client_id="<%= workOrder.client_id %>"
+                data-is_complete="<%=workOrder.is_complete %>" data-is_urgent="<%=workOrder.is_urgent %>">
                 <div style=" display: flex; justify-content: space-between;">
                     <div>
                         <% if (!workOrder.is_complete) { %>
@@ -128,8 +25,9 @@
                     </span>
                 </div>
             </div>
-            <%}%>
+            <% } %>
     </div>
-    <script src="/public/js/popup.js"></script>
-    <script src="/public/js/workOrder.js"></script>
-    <%- include('../partials/footer') %>
+    <%- include('../partials/status') %>
+        <%- include('../partials/popup') %>
+            <script src="/public/js/workOrder.js"></script>
+            <%- include('../partials/footer') %>

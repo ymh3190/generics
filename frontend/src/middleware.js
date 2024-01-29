@@ -4,14 +4,17 @@ class Middleware {
     const access_token = cookies?.find((el) => el.startsWith("access_token"));
     if (access_token) {
       res.locals.auth = true;
+      res.locals.url = req.url;
       return next();
     }
     const refresh_token = cookies?.find((el) => el.startsWith("refresh_token"));
     if (refresh_token) {
       res.locals.auth = true;
+      res.locals.url = req.url;
       return next();
     }
     res.locals.auth = false;
+    res.locals.url = req.url;
     next();
   }
 

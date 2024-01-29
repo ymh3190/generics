@@ -29,8 +29,7 @@ class ImageController {
   }
 
   async select(req, res) {
-    const images = await Image.select({});
-
+    const images = await Image.select({}, "desc");
     // TODO: sort ORM 구현
     // const images = (await Image.select({})).toSorted((a, b) => {
     //   return b.created_at - a.created_at;
@@ -95,6 +94,16 @@ class UserController {
     // sol #3
     const users = await User.select({}, "-password");
     res.status(201).json({ users });
+  }
+
+  async selectById(req, res) {
+    const { id } = req.params;
+
+    const user = await User.selectById(id, "-password");
+    if (!user) {
+      throw new CustomError.NotFoundError("User not found");
+    }
+    res.status(200).json({ user });
   }
 }
 
@@ -225,7 +234,8 @@ class WorkOrderController {
   }
 
   async select(req, res) {
-    const workOrders = await WorkOrder.select({});
+    // const workOrders = await WorkOrder.select({});
+    const workOrders = await WorkOrder.select({}, "desc");
     // TODO: sort ORM 구현
     // workOrders.sort((a, b) => {
     //   return b.created_at - a.created_at;
@@ -391,8 +401,8 @@ class RemnantDetailController {
   }
 
   async select(req, res) {
-    const RemnantDetails = await RemnantDetail.select({});
-    res.status(200).json({ RemnantDetails });
+    const remnantDetails = await RemnantDetail.select({});
+    res.status(200).json({ remnantDetails });
   }
 
   async selectById(req, res) {

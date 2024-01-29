@@ -1,0 +1,45 @@
+<%- include('../layouts/base') %>
+
+    <div class="content remnant" id="content">
+        <% for (const remnantDetail of remnantDetails) { %>
+            <div class="remnant-container" id="remnantContainer" data-id="<%= remnantDetail.id %>"
+                data-item_id="<%= remnantDetail.item_id %>" data-zone_id="<%= remnantDetail.remnant_zone_id %>"
+                data-creator_id="<%= remnantDetail.creator_id %>">
+                <div id="item"></div>
+                <div>
+                    <div>
+                        <span>depth</span>
+                        <span>
+                            <%= remnantDetail.depth %>
+                        </span>
+                    </div>
+                    <div>
+                        <span>size</span>
+                        <div>
+                            <span>
+                                <%= remnantDetail.width %>
+                            </span>
+                            <span>x</span>
+                            <span>
+                                <%= remnantDetail.length %>
+                            </span>
+                        </div>
+                    </div>
+                    <div>
+                        <span>quantity</span>
+                        <span>
+                            <%= remnantDetail.quantity %>
+                        </span>
+                    </div>
+                </div>
+                <div>
+                    <div id="zone"></div>
+                    <div id="creator"></div>
+                </div>
+            </div>
+            <% } %>
+    </div>
+    <%- include('../partials/status') %>
+        <%- include('../partials/popup') %>
+            <script src="/public/js/remnant.js"></script>
+            <%- include('../partials/footer') %>

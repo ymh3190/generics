@@ -1,4 +1,4 @@
-import { Server, WebSocketServer } from "ws";
+import { WebSocketServer } from "ws";
 
 export default (server) => {
   const wss = new WebSocketServer({ server });
@@ -10,7 +10,7 @@ export default (server) => {
     ws.on("error", console.error);
 
     ws.on("close", () => {
-      console.log("connection close");
+      // console.log("connection close");
     });
   });
 };

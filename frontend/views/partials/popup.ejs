@@ -1,0 +1,24 @@
+<div class="popup-container" id="popup">
+    <% if (url==='/' || url==='/work-order' ) { %>
+        <%- include('popup/popup-work-order') %>
+            <% } else if (url==='/remnant' ) { %>
+                <%- include('popup/popup-remnant') %>
+                    <% } %>
+                        <div class="secondary items-popup hidden" id="itemsPopup">
+                            <div>
+                                <div>
+                                    <form id="searchItemForm">
+                                        <input type="text" id="searchItem">
+                                        <button>
+                                            <i class="fa-solid fa-magnifying-glass"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                                <div>
+                                    <button id='closeItemsPopup'>x</button>
+                                </div>
+                            </div>
+                            <div id="items"></div>
+                        </div>
+</div>
+<script src="/public/js/popup.js"></script>

@@ -1,30 +1,67 @@
 import FetchAPI from "./fetch-api";
 import * as CustomError from "./error";
+import util from "./util";
 
 class RootController {
   async getWorkOrder(req, res) {
+    const { years, months, dates } = util.getDateTime();
+    const date = `${years}-${months}-${dates}`;
+
     const response = await FetchAPI.get("/work-orders", {
       cookie: req.headers.cookie,
+      // created_at: date,
     });
 
     const data = await response.json();
-    const workOrders = data.workOrders.toSorted((a, b) => {
-      // order by desc
-      return new Date(b.created_at) - new Date(a.created_at);
-    });
+    const workOrders = data.workOrders;
+
+    // const workOrders = data.workOrders.toSorted((a, b) => {
+    //   // order by desc
+    //   return new Date(b.created_at) - new Date(a.created_at);
+    // });
 
     const cookies = response.headers.raw()["set-cookie"];
     if (!cookies) {
       return res
         .status(200)
-        .render("work-order", { pageTitle: "Generics", workOrders });
+        .render("work-order", { pageTitle: "Generics", workOrders, date });
     }
 
     const access_token = cookies.find((el) => el.startsWith("access_token"));
     const refresh_token = cookies.find((el) => el.startsWith("refresh_token"));
     res.cookie(access_token);
     res.cookie(refresh_token);
-    res.status(200).render("work-order", { pageTitle: "Generics", workOrders });
+    res
+      .status(200)
+      .render("work-order", { pageTitle: "Generics", workOrders, date });
+  }
+
+  async getRemnant(req, res) {
+    let response = await FetchAPI.get("/remnant-details", {
+      cookie: req.headers.cookie,
+    });
+
+    let data = await response.json();
+    const remnantDetails = data.remnantDetails;
+
+    response = await FetchAPI.get("/items", {
+      cookie: req.headers.cookie,
+    });
+    data = await response.json();
+    const items = data.items;
+
+    response = await FetchAPI.get("/remnant-zones", {
+      cookie: req.headers.cookie,
+    });
+    data = await response.json();
+    const remnantZones = data.remnantZones;
+
+    res.status(200).render("remnant", {
+      pageTitle: "Generics",
+      remnantDetails,
+      items,
+      remnantZones,
+    });
   }
 
   async getImage(req, res) {
@@ -230,6 +267,104 @@ class ItemController {
     res.status(200).json({ item: data.item });
   }
 }
+class RemnantZoneController {
+  // async create(req, res) {
+  //   const remnantZone = await RemnantZone.create(req.body, { new: true });
+  //   res.status(201).json({ remnantZone });
+  // }
+
+  async select(req, res) {
+    const response = await FetchAPI.get("/remnant-zones", {
+      cookie: req.headers.cookie,
+    });
+    const data = await response.json();
+    res.status(200).json({ remnantZones: data.remnantZones });
+  }
+
+  async selectById(req, res) {
+    const { id } = req.params;
+
+    const response = await FetchAPI.get(`/remnant-zones/${id}`, {
+      cookie: req.headers.cookie,
+    });
+    const data = await response.json();
+    res.status(200).json({ remnantZone: data.remnantZone });
+  }
+
+  // async update(req, res) {
+  //   const { id } = req.params;
+
+  //   const remnantZone = await RemnantZone.selectByIdAndUpdate(id, req.body, {
+  //     new: true,
+  //   });
+  //   res.status(200).json({ remnantZone });
+  // }
+
+  // async delete(req, res) {
+  //   const { id } = req.params;
+
+  //   await RemnantZone.selectByIdAndDelete(id);
+  //   res.status(200).json({ message: "Delete success" });
+  // }
+}
+
+class RemnantDetailController {
+  async create(req, res) {
+    const response = await FetchAPI.post("/remnant-details", req.body, {
+      cookie: req.headers.cookie,
+    });
+    const data = await response.json();
+    res.status(201).json({ remnantDetail: data.remnantDetail });
+  }
+
+  async select(req, res) {
+    const response = await FetchAPI.get("/remnant-details", {
+      cookie: req.headers.cookie,
+    });
+    const data = await response.json();
+    res.status(200).json({ RemnantDetails: data.RemnantDetails });
+  }
+
+  // async selectById(req, res) {
+  //   const { id } = req.params;
+
+  //   const response = await FetchAPI.get(`/remnant-details/${id}`, {
+  //     cookie: req.headers.cookie,
+  //   });
+  //   const data = await response.json();
+  //   res.status(200).json({ remnantDetail: data.remnantDetail });
+  // }
+
+  // async update(req, res) {
+  //   const { id } = req.params;
+
+  //   const remnantDetail = await RemnantDetail.selectByIdAndUpdate(
+  //     id,
+  //     req.body,
+  //     { new: true }
+  //   );
+  //   res.status(200).json({ remnantDetail });
+  // }
+
+  // async delete(req, res) {
+  //   const { id } = req.params;
+
+  //   await RemnantDetail.selectByIdAndDelete(id);
+  //   res.status(200).json({ message: "Delete success" });
+  // }
+}
+
+class UserController {
+  async selectById(req, res) {
+    const { id } = req.params;
+
+    const response = await FetchAPI.get(`/users/${id}`, {
+      cookie: req.headers.cookie,
+    });
+    const data = await response.json();
+    res.status(200).json({ user: data.user });
+  }
+}
 
 export const rootController = new RootController();
 export const authController = new AuthController();
@@ -237,3 +372,6 @@ export const workOrderController = new WorkOrderController();
 export const clientController = new ClientController();
 export const workDetailController = new WorkDetailController();
 export const itemController = new ItemController();
+export const remnantDetailController = new RemnantDetailController();
+export const remnantZoneController = new RemnantZoneController();
+export const userController = new UserController();
