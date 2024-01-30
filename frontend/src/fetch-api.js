@@ -24,14 +24,11 @@ const catchResponseError = async (response) => {
     throw new CustomError.NotFoundError(data.message);
   }
 
-  if (response?.status === 500) {
-    const data = await response.json();
-    throw new CustomError.InternalServerError(data.message);
-  }
-
   if (!response) {
     throw new Error("Network response error");
   }
+
+  throw new Error("Undefined response error");
 };
 
 class FetchAPI {
@@ -45,10 +42,6 @@ class FetchAPI {
    */
   static async get(path, options) {
     if (options) {
-      // const headers = { cookie: options.cookie };
-      // if (options.created_at) {
-      //   headers.created_at = options.created_at;
-      // }
       const response = await fetch(FetchAPI.#url + path, {
         headers: { cookie: options.cookie },
       });
@@ -161,7 +154,7 @@ class FetchAPI {
 const writeDiskAndDB = async ({ images, videoExts }) => {
   const url = `${process.env.REMOTE_ORIGIN}/api/v1/images`;
 
-  for (let i = 0, len = images.length; i < len; ++i) {
+  for (let i = 0; i < images.length; i++) {
     const [name, imgExt] = images[i].split(".");
     const response = await fetch(url + `/${name}`);
     if (response?.ok) {

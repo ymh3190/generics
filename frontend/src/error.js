@@ -32,17 +32,9 @@ class UnauthorizedError extends CustomError {
   }
 }
 
-class InternalServerError extends CustomError {
-  constructor(message) {
-    super(message);
-    this.statusCode = 500;
-  }
-}
-
 export {
   BadRequestError,
   NotFoundError,
   UnauthenticatedError,
   UnauthorizedError,
-  InternalServerError,
 };

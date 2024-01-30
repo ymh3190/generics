@@ -119,36 +119,37 @@ class MySQLAPI {
   /**
    *
    * @param {{}} filter
-   * @param {string} column
+   * @param {string} projection
    */
-  static async select(filter, column) {
+  static async select(filter, projection) {
     if (!filter) {
       throw new CustomError.BadRequestError("Provide filter");
     }
 
-    // const createdAt = `
-    // DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') AS created_at
-    // `;
+    const asCreatedAt = `
+    DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') AS created_at
+    `;
 
     const table = this.getTable();
 
     const keys = Object.keys(filter);
     if (!keys.length) {
-      const sql = `SELECT * FROM ${table}`;
-
+      const sql = `SELECT *, ${asCreatedAt} FROM ${table}`;
       const [result] = await MySQLAPI.pool.execute(sql);
-      if (!column) {
+
+      if (!projection) {
         return result;
       }
 
-      if (column.startsWith("-")) {
+      if (projection.startsWith("-")) {
+        const query = projection.replace("-", "");
         for (let i = 0; i < result.length; i++) {
-          delete result[i][`${column.replace("-", "")}`];
+          delete result[i][`${query}`];
         }
         return result;
       }
 
-      if (column.startsWith("desc")) {
+      if (projection.startsWith("desc")) {
         result.sort((a, b) => {
           return b.created_at - a.created_at;
         });
@@ -156,24 +157,21 @@ class MySQLAPI {
       }
     }
 
-    let sql = `SELECT * FROM ${table} WHERE`;
+    let sql = `SELECT *, ${asCreatedAt} FROM ${table} WHERE`;
+    let values = Object.values(filter);
     for (let i = 0; i < keys.length; i++) {
       if (i !== keys.length - 1) {
         sql = sql.concat(" ", keys[i], " = ? AND");
         continue;
       }
-      // if (keys[i] === "created_at") {
-      //   sql = sql.concat(" ", keys[i], ` >= ? AND ${keys[i]} < ?`);
-      //   continue;
-      // }
       if (keys[i] === "created_at") {
         sql = sql.concat(" ", `DATE(${keys[i]})`, ` BETWEEN ? AND ?`);
-        continue;
+        const { years, months, dates } = util.getDateTime();
+        values.push(`${years}-${months}-${dates}`);
+        break;
       }
       sql = sql.concat(" ", keys[i], " = ?");
     }
-    const { years, months, dates } = util.getDateTime();
-    const values = [...Object.values(filter), `${years}-${months}-${dates}`];
     const [result] = await MySQLAPI.pool.execute(sql, values);
     return result;
   }
@@ -181,9 +179,9 @@ class MySQLAPI {
   /**
    *
    * @param {string} id
-   * @param {string} column
+   * @param {string} projection
    */
-  static async selectById(id, column) {
+  static async selectById(id, projection) {
     if (!id) {
       throw new CustomError.BadRequestError("Provide id");
     }
@@ -193,12 +191,13 @@ class MySQLAPI {
     const sql = `SELECT * FROM ${table} WHERE id = ?`;
     const [[result]] = await MySQLAPI.pool.execute(sql, [id]);
 
-    if (!column) {
+    if (!projection) {
       return result;
     }
 
-    if (column.startsWith("-")) {
-      delete result[`${column.replace("-", "")}`];
+    if (projection.startsWith("-")) {
+      const query = projection.replace("-", "");
+      delete result[`${query}`];
       return result;
     }
   }
@@ -278,10 +277,11 @@ class MySQLAPI {
 
     const table = this.getTable();
 
-    const result = await this.selectById(id);
-    if (!result) {
-      throw new CustomError.NotFoundError(`${table} not found`);
-    }
+    // 1.30 delete
+    // const result = await this.selectById(id);
+    // if (!result) {
+    //   throw new CustomError.NotFoundError(`${table} not found`);
+    // }
 
     let sql = `UPDATE ${table} SET`;
     for (let i = 0; i < keys.length; i++) {
@@ -300,7 +300,7 @@ class MySQLAPI {
     }
 
     for (const [key, value] of Object.entries(options)) {
-      if (key.includes("new") && value) {
+      if (key === "new" && value) {
         const result = await this.selectById(id);
         return result;
       }
@@ -318,10 +318,11 @@ class MySQLAPI {
 
     const table = this.getTable();
 
-    const result = await this.selectById(id);
-    if (!result) {
-      throw new CustomError.NotFoundError(`${table} not found`);
-    }
+    // 1.30 delete
+    // const result = await this.selectById(id);
+    // if (!result) {
+    //   throw new CustomError.NotFoundError(`${table} not found`);
+    // }
 
     const sql = `DELETE FROM ${table} WHERE id = ?`;
     await MySQLAPI.pool.execute(sql, [id]);

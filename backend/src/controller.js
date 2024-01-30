@@ -29,7 +29,7 @@ class ImageController {
   }
 
   async select(req, res) {
-    const images = await Image.select({}, "desc");
+    const images = await Image.select({}, "-created_at");
     // TODO: sort ORM 구현
     // const images = (await Image.select({})).toSorted((a, b) => {
     //   return b.created_at - a.created_at;
@@ -82,16 +82,6 @@ class MonitorController {
 
 class UserController {
   async select(req, res) {
-    // sol #1
-    // const users = (await User.select({})).map((user) => {
-    //   delete user.password;
-    //   return user;
-    // });
-
-    // sol #2 mongoose
-    // const users = await User.select({}).filter('-password')
-
-    // sol #3
     const users = await User.select({}, "-password");
     res.status(201).json({ users });
   }
@@ -159,7 +149,7 @@ class AuthController {
         user: tokenUser,
         refresh_token: refreshToken,
       });
-      return res.status(200).json({ user: tokenUser });
+      return res.status(200).json({ message: "Signin success" });
     }
 
     const refresh_token = util.createToken();
@@ -170,7 +160,7 @@ class AuthController {
     await Token.create({ refresh_token, ip, user_agent, user_id });
 
     util.attachCookiesToResponse({ res, user: tokenUser, refresh_token });
-    res.status(200).json({ user: tokenUser });
+    res.status(200).json({ message: "Signin success" });
   }
 
   async signout(req, res) {
@@ -235,11 +225,6 @@ class WorkOrderController {
 
   async select(req, res) {
     const { created_at } = req.body;
-    // const workOrders = await WorkOrder.select({});
-    // TODO: sort ORM 구현
-    // workOrders.sort((a, b) => {
-    //   return b.created_at - a.created_at;
-    // });
 
     if (!created_at) {
       const workOrders = await WorkOrder.select({}, "desc");

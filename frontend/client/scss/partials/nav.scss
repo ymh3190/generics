@@ -2,6 +2,8 @@
   position: fixed;
   z-index: 1;
   top: 7vh;
+  background-color: white;
+  height: 100vh;
 
   &-list {
     &:not(:last-child) {

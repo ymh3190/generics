@@ -4,7 +4,14 @@ const anchorDOMs = navDOM?.querySelectorAll("a");
 const contentDOM = document.getElementById("content");
 const statusDOM = document.getElementById("status");
 
+const isMobile = window.innerWidth <= 400;
+const isTablet = window.innerWidth <= 850;
+
 const barsHandler = () => {
+  if (!isMobile) {
+    contentDOM?.classList.add("padding-left");
+  }
+
   for (const anchorDOM of anchorDOMs) {
     if (anchorDOM.classList.contains("column")) {
       anchorDOM.classList.remove("column");
@@ -12,7 +19,6 @@ const barsHandler = () => {
       const iconDOM = anchorDOM.querySelector("i");
       iconDOM.classList.remove("margin-bottom");
       iconDOM.classList.add("margin-right");
-      contentDOM?.classList.remove("padding-left");
       continue;
     }
     anchorDOM.classList.remove("flex");
@@ -20,7 +26,6 @@ const barsHandler = () => {
     const iconDOM = anchorDOM.querySelector("i");
     iconDOM.classList.remove("margin-right");
     iconDOM.classList.add("margin-bottom");
-    contentDOM?.classList.add("padding-left");
   }
 
   if (statusDOM?.classList.contains("position-left")) {
@@ -33,8 +38,6 @@ const barsHandler = () => {
 
 barsDOM?.addEventListener("click", barsHandler);
 
-const isMobile = window.innerWidth <= 400;
-const isTablet = window.innerWidth <= 850;
 if ((isMobile || isTablet) && anchorDOMs) {
   for (const anchorDOM of anchorDOMs) {
     anchorDOM.classList.remove("flex");
@@ -44,4 +47,6 @@ if ((isMobile || isTablet) && anchorDOMs) {
     iconDOM.classList.add("margin-bottom");
     contentDOM?.classList.add("padding-left");
   }
+
+  statusDOM?.classList.add("position-left");
 }

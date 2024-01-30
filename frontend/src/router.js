@@ -30,7 +30,7 @@ class RootRouter extends Router {
       rootController.getRemnant
     );
 
-    this.router.get("/images", middleware.tokenExists, rootController.getImage);
+    this.router.get("/image", middleware.tokenExists, rootController.getImage);
 
     this.router.get(
       "/signin",
