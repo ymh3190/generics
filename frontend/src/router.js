@@ -25,12 +25,6 @@ class RootRouter extends Router {
     this.router.get("/", middleware.tokenExists, rootController.getWorkOrder);
 
     this.router.get(
-      "/work-order",
-      middleware.tokenExists,
-      rootController.getWorkOrder
-    );
-
-    this.router.get(
       "/remnant",
       middleware.tokenExists,
       rootController.getRemnant
@@ -55,6 +49,12 @@ class RootRouter extends Router {
       middleware.tokenExists,
       rootController.getWatch
     );
+
+    this.router.get(
+      "/client",
+      middleware.tokenExists,
+      rootController.getClient
+    );
   }
 }
 
@@ -71,8 +71,6 @@ class AuthRouter extends Router {
       middleware.tokenExists,
       authController.signout
     );
-
-    this.router.post("/test", authController.testSession);
   }
 }
 
@@ -90,8 +88,16 @@ class WorkOrderRouter extends Router {
   constructor() {
     super();
 
-    this.router.route("/").post(workOrderController.create);
+    this.router
+      .route("/")
+      .post(middleware.tokenExists, workOrderController.create);
     // .get(middleware.tokenExists, workOrderController.select);
+
+    this.router.post(
+      "/date",
+      middleware.tokenExists,
+      workOrderController.select
+    );
   }
 }
 

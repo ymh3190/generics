@@ -1,11 +1,11 @@
 import FetchAPI from "./fetch-api";
 import * as CustomError from "./error";
-import util from "./util";
+// import util from "./util";
 
 class RootController {
   async getWorkOrder(req, res) {
-    const { years, months, dates } = util.getDateTime();
-    const date = `${years}-${months}-${dates}`;
+    // const { years, months, dates } = util.getDateTime();
+    // const date = `${years}-${months}-${dates}`;
 
     const response = await FetchAPI.get("/work-orders", {
       cookie: req.headers.cookie,
@@ -24,7 +24,7 @@ class RootController {
     if (!cookies) {
       return res
         .status(200)
-        .render("work-order", { pageTitle: "Generics", workOrders, date });
+        .render("work-order", { pageTitle: "Generics", workOrders /* date */ });
     }
 
     const access_token = cookies.find((el) => el.startsWith("access_token"));
@@ -33,7 +33,7 @@ class RootController {
     res.cookie(refresh_token);
     res
       .status(200)
-      .render("work-order", { pageTitle: "Generics", workOrders, date });
+      .render("work-order", { pageTitle: "Generics", workOrders /* date */ });
   }
 
   async getRemnant(req, res) {
@@ -56,6 +56,20 @@ class RootController {
     data = await response.json();
     const remnantZones = data.remnantZones;
 
+    const cookies = response.headers.raw()["set-cookie"];
+    if (!cookies) {
+      return res.status(200).render("remnant", {
+        pageTitle: "Generics",
+        remnantDetails,
+        items,
+        remnantZones,
+      });
+    }
+
+    const access_token = cookies.find((el) => el.startsWith("access_token"));
+    const refresh_token = cookies.find((el) => el.startsWith("refresh_token"));
+    res.cookie(access_token);
+    res.cookie(refresh_token);
     res.status(200).render("remnant", {
       pageTitle: "Generics",
       remnantDetails,
@@ -70,10 +84,7 @@ class RootController {
     });
 
     const data = await response.json();
-    const images = data.images.toSorted((a, b) => {
-      // order by desc
-      return new Date(b.created_at) - new Date(a.created_at);
-    });
+    const images = data.images;
 
     const cookies = response.headers.raw()["set-cookie"];
     if (!cookies) {
@@ -105,12 +116,16 @@ class RootController {
     res.status(200).render("watch", { pageTitle: id, image, video });
   }
 
-  async getSignup(req, res) {
+  getSignup(req, res) {
     res.status(200).render("signup", { pageTitle: "Sign up" });
   }
 
-  async getSignin(req, res) {
+  getSignin(req, res) {
     res.status(200).render("signin", { pageTitle: "Sign in" });
+  }
+
+  getClient(req, res) {
+    res.status(200).render("client", { pageTitle: "Generics" });
   }
 }
 
@@ -172,32 +187,6 @@ class AuthController {
     res.cookie(refresh_token);
     res.status(200).end();
   }
-
-  async testSession(req, res) {
-    const { username, password } = req.body;
-
-    if (!username || !password) {
-      throw new CustomError.BadRequestError("Provide username and password");
-    }
-
-    const ip = req.ip;
-    const userAgent = req.headers["user-agent"];
-
-    const response = await FetchAPI.post(
-      "/auth/test",
-      { username, password },
-      { ip, userAgent }
-    );
-
-    const cookies = response.headers.raw()["set-cookie"];
-    if (!cookies) {
-      return res.status(200).end();
-    }
-
-    const sId = cookies.find((el) => el.startsWith("sId"));
-    res.cookie(sId);
-    res.status(200).end();
-  }
 }
 
 class ClientController {
@@ -229,13 +218,13 @@ class WorkOrderController {
     res.status(201).json({ workOrder: data.workOrder });
   }
 
-  // async select(req, res) {
-  //   const response = await FetchAPI.get("/work-orders", {
-  //     cookie: req.headers.cookie,
-  //   });
-  //   const data = await response.json();
-  //   res.status(200).json({ workOrders: data.workOrders });
-  // }
+  async select(req, res) {
+    const response = await FetchAPI.post("/work-orders/date", req.body, {
+      cookie: req.headers.cookie,
+    });
+    const data = await response.json();
+    res.status(200).json({ workOrders: data.workOrders });
+  }
 }
 
 class WorkDetailController {

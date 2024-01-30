@@ -1,96 +1,93 @@
-import FetchAPI from "../fetch-api";
+const createWorkOrderDOM = document.getElementById("createWorkOrder");
+const createRemnantDOM = document.getElementById("createRemnant");
 
-const contentDOM = document.getElementById("content");
 const popupDOM = document.getElementById("popup");
 const closeDOM = document.getElementById("close");
 const cancelDOM = document.getElementById("cancel");
+const itemsPopupDOM = document.getElementById("itemsPopup");
+const searchItemFormDOM = document.getElementById("searchItemForm");
+const searchItemDOM = document.getElementById("searchItem");
+const itemsDOM = document.getElementById("items");
 
-const createWorkOrderDOM = document.getElementById("createWorkOrder");
-const urgentDOM = document.getElementById("urgent");
-const selectedClientDOM = document.getElementById("selectedClient");
-const workDetailsDOM = document.getElementById("workDetails");
-// const commentDOM = document.getElementById("comment");
-const commentDOM = document.querySelector(".work-order-popup #comment");
-
-const createRemnantDOM = document.getElementById("createRemnant");
-const newZoneDOM = document.getElementById("newZone");
-const createZoneFormDOM = document.getElementById("createZoneForm");
-const nameDOM = document.getElementById("name");
-const zoneCommentDOM = document.querySelector("#zonesPopup #comment");
-const zonesDOM = document.getElementById("zones");
-
-const zoneList = (zone) => {
-  return `
-  <div data-id=${zone.id} id='zone' style="display: grid; grid-template-columns: repeat(2, 1fr);">
-    <div>
-      <span>${zone.name}</span>
-    </div>
-    <div>
-      <span>${zone.comment}</span>
-    </div>
-  </div>
-  `;
-};
-
-const createWorkOrderHandler = () => {
-  const icon = createWorkOrderDOM.querySelector("i");
-  if (popupDOM.classList.contains("hidden")) {
-    popupDOM.classList.remove("hidden");
-    icon.className = icon.className.replace("regular", "solid");
-    urgentDOM.checked = false;
-    selectedClientDOM.value = "";
-    commentDOM.value = "";
-    const workDetailsDOMs = workDetailsDOM.querySelectorAll("#workDetail");
-    for (const workDetailsDOM of workDetailsDOMs) {
-      workDetailsDOM.remove();
-    }
-    return;
-  }
-
-  popupDOM.classList.add("hidden");
-  icon.className = icon.className.replace("solid", "regular");
-};
-
-const createRemnantHandler = () => {
-  const icon = createRemnantDOM.querySelector("i");
-  if (popupDOM.classList.contains("hidden")) {
-    popupDOM.classList.remove("hidden");
-    icon.className = icon.className.replace("regular", "solid");
-    return;
-  }
-
-  popupDOM.classList.add("hidden");
-  icon.className = icon.className.replace("solid", "regular");
-};
-
-const newZoneHandler = () => {};
-
-const createZoneFormHandler = async (event) => {
+const searchItemFormHandler = (event) => {
   event.preventDefault();
 
-  const name = nameDOM.value;
-  const comment = zoneCommentDOM.value;
+  const searchItem = searchItemDOM.value;
+  const regExp = new RegExp(searchItem, "i");
 
-  const response = await FetchAPI.post("/remnant-zones", { name, comment });
-  if (response) {
-    const data = await response.json();
-    const html = zoneList(data.remnantZone);
-    zonesDOM.insertAdjacentHTML("beforeend", html);
+  const itemDOMs = itemsDOM.querySelectorAll("#item");
+  for (const itemDOM of itemDOMs) {
+    const name = itemDOM.querySelector("#name").textContent;
+    const isName = regExp.test(name);
+    if (isName) {
+      itemDOM.classList.remove("hidden");
+      continue;
+    }
+    itemDOM.classList.add("hidden");
   }
 };
 
-createZoneFormDOM?.addEventListener("submit", createZoneFormHandler);
-newZoneDOM?.addEventListener("click", newZoneHandler);
-createRemnantDOM?.addEventListener("click", createRemnantHandler);
-createWorkOrderDOM?.addEventListener("click", createWorkOrderHandler);
+searchItemFormDOM.addEventListener("submit", searchItemFormHandler);
 
-for (const dom of [closeDOM, cancelDOM]) {
-  if (createWorkOrderDOM) {
+if (createWorkOrderDOM) {
+  const urgentDOM = document.getElementById("urgent");
+  const selectedClientDOM = document.getElementById("selectedClient");
+  const workDetailsDOM = document.getElementById("workDetails");
+  const commentDOM = document.getElementById("comment");
+  const clientsPopupDOM = document.getElementById("clientsPopup");
+
+  const createWorkOrderHandler = () => {
+    const icon = createWorkOrderDOM.querySelector("i");
+    if (popupDOM.classList.contains("hidden")) {
+      popupDOM.classList.remove("hidden");
+      icon.className = icon.className.replace("regular", "solid");
+      urgentDOM.checked = false;
+      selectedClientDOM.value = "";
+      commentDOM.value = "";
+      const workDetailsDOMs = workDetailsDOM.querySelectorAll("#workDetail");
+      for (const workDetailsDOM of workDetailsDOMs) {
+        workDetailsDOM.remove();
+      }
+      return;
+    }
+
+    popupDOM.classList.add("hidden");
+    itemsPopupDOM.classList.add("hidden");
+    clientsPopupDOM.classList.add("hidden");
+    icon.className = icon.className.replace("solid", "regular");
+  };
+
+  createWorkOrderDOM.addEventListener("click", createWorkOrderHandler);
+
+  for (const dom of [closeDOM, cancelDOM]) {
     dom.addEventListener("click", createWorkOrderHandler);
-    continue;
   }
+}
 
-  if (createRemnantDOM) {
+if (createRemnantDOM) {
+  const remnantDetailsDOM = document.getElementById("remnantDetails");
+
+  const createRemnantHandler = () => {
+    const icon = createRemnantDOM.querySelector("i");
+    if (popupDOM.classList.contains("hidden")) {
+      popupDOM.classList.remove("hidden");
+      icon.className = icon.className.replace("regular", "solid");
+      const remnantDetailsDOMs =
+        remnantDetailsDOM.querySelectorAll("#remnantDetail");
+      for (const remnantDetailsDOM of remnantDetailsDOMs) {
+        remnantDetailsDOM.remove();
+      }
+      return;
+    }
+
+    popupDOM.classList.add("hidden");
+    itemsPopupDOM.classList.add("hidden");
+    icon.className = icon.className.replace("solid", "regular");
+  };
+
+  createRemnantDOM.addEventListener("click", createRemnantHandler);
+
+  for (const dom of [closeDOM, cancelDOM]) {
     dom.addEventListener("click", createRemnantHandler);
   }
 }

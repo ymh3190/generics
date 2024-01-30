@@ -150,6 +150,12 @@ class WorkOrderRouter extends Router {
       )
       .get(middleware.authenticateUser, workOrderController.select);
 
+    this.router.post(
+      "/date",
+      middleware.authenticateUser,
+      workOrderController.select
+    );
+
     this.router
       .route("/:id(\\d|\\w{32})")
       .get(middleware.authenticateUser, workOrderController.selectById)

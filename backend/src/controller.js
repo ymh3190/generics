@@ -234,12 +234,19 @@ class WorkOrderController {
   }
 
   async select(req, res) {
+    const { created_at } = req.body;
     // const workOrders = await WorkOrder.select({});
-    const workOrders = await WorkOrder.select({}, "desc");
     // TODO: sort ORM 구현
     // workOrders.sort((a, b) => {
     //   return b.created_at - a.created_at;
     // });
+
+    if (!created_at) {
+      const workOrders = await WorkOrder.select({}, "desc");
+      return res.status(200).json({ workOrders });
+    }
+
+    const workOrders = await WorkOrder.select({ created_at }, "desc");
     res.status(200).json({ workOrders });
   }
 

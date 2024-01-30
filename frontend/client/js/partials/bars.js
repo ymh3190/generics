@@ -35,7 +35,7 @@ barsDOM?.addEventListener("click", barsHandler);
 
 const isMobile = window.innerWidth <= 400;
 const isTablet = window.innerWidth <= 850;
-if (isMobile || isTablet) {
+if ((isMobile || isTablet) && anchorDOMs) {
   for (const anchorDOM of anchorDOMs) {
     anchorDOM.classList.remove("flex");
     anchorDOM.classList.add("column");

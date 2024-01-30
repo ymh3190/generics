@@ -135,7 +135,6 @@ class MySQLAPI {
     const keys = Object.keys(filter);
     if (!keys.length) {
       const sql = `SELECT * FROM ${table}`;
-      // const sql = `SELECT * FROM ${table} ORDER BY created_at desc`;
 
       const [result] = await MySQLAPI.pool.execute(sql);
       if (!column) {
@@ -163,9 +162,18 @@ class MySQLAPI {
         sql = sql.concat(" ", keys[i], " = ? AND");
         continue;
       }
+      // if (keys[i] === "created_at") {
+      //   sql = sql.concat(" ", keys[i], ` >= ? AND ${keys[i]} < ?`);
+      //   continue;
+      // }
+      if (keys[i] === "created_at") {
+        sql = sql.concat(" ", `DATE(${keys[i]})`, ` BETWEEN ? AND ?`);
+        continue;
+      }
       sql = sql.concat(" ", keys[i], " = ?");
     }
-    const values = Object.values(filter);
+    const { years, months, dates } = util.getDateTime();
+    const values = [...Object.values(filter), `${years}-${months}-${dates}`];
     const [result] = await MySQLAPI.pool.execute(sql, values);
     return result;
   }

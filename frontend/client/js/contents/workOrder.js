@@ -14,8 +14,8 @@ const placeDOM = document.getElementById("place");
 const itemsDOM = document.getElementById("items");
 const itemsPopupDOM = document.getElementById("itemsPopup");
 const closeItemsPopupDOM = document.getElementById("closeItemsPopup");
-const searchItemFormDOM = document.getElementById("searchItemForm");
-const searchItemDOM = document.getElementById("searchItem");
+// const searchItemFormDOM = document.getElementById("searchItemForm");
+// const searchItemDOM = document.getElementById("searchItem");
 
 const urgentDOM = document.getElementById("urgent");
 const commentDOM = document.getElementById("comment");
@@ -26,7 +26,7 @@ const contentDOM = document.getElementById("content");
 const itemList = (item) => {
   return `
   <div data-id=${item.id} id='item'>
-    <span>${item.name}</span>
+    <span id='name'>${item.name}</span>
   </div>
   `;
 };
@@ -34,9 +34,9 @@ const itemList = (item) => {
 const clientList = (client) => {
   return `
   <div data-id=${client.id} id='client'>
-    <span>${client.association}</span>
-    <span>${client.name}</span>
-    <span>${client.telephone}</span>
+    <span id='association'>${client.association}</span>
+    <span id='name'>${client.name}</span>
+    <span id='telephone'>${client.telephone}</span>
   </div>
   `;
 };
@@ -57,15 +57,13 @@ async function clickItemHandler() {
   const response = await FetchAPI.get(`/items/${id}`);
   if (response) {
     const data = await response.json();
-    const workDetailDOMs = workDetailsDOM.querySelectorAll("#workDetail");
-    for (let i = 0; i < workDetailDOMs.length; i++) {
-      if (i === workDetailDOMs.length - 1) {
-        const inputDOMs = workDetailDOMs[i].querySelectorAll("input");
-        const itemIdDOM = inputDOMs[0];
-        itemIdDOM.value = data.item.name;
-        itemIdDOM.dataset.id = data.item.id;
-      }
-    }
+    const workDetailDOM = workDetailsDOM.querySelector(
+      "#workDetail:last-child"
+    );
+    const inputDOM = workDetailDOM.querySelector("input:first-child");
+    const itemIdDOM = inputDOM;
+    itemIdDOM.value = data.item.name;
+    itemIdDOM.dataset.id = data.item.id;
     itemsPopupDOM.classList.add("hidden");
   }
 }
@@ -103,39 +101,66 @@ const searchClientFormHandler = async (event) => {
   const searchClient = searchClientDOM.value;
   const regExp = new RegExp(searchClient, "i");
 
-  const response = await FetchAPI.get("/clients");
-  if (response) {
-    const data = await response.json();
-    let html = "";
-
-    for (const client of data.clients) {
-      const isAssociation = regExp.test(client.association);
-      if (isAssociation) {
-        html += clientList(client);
-        continue;
-      }
-
-      const isName = regExp.test(client.name);
-      if (isName) {
-        html += clientList(client);
-        continue;
-      }
-
-      const isTelephone = regExp.test(client.telephone);
-      if (isTelephone) {
-        html += clientList(client);
-        continue;
-      }
+  const clientDOMs = clientsDOM.querySelectorAll("#client");
+  for (const clientDOM of clientDOMs) {
+    const association = clientDOM.querySelector("#association").textContent;
+    const isAssociation = regExp.test(association);
+    if (isAssociation) {
+      clientDOM.classList.remove("hidden");
+      continue;
     }
 
-    clientsDOM.textContent = "";
-    clientsDOM.insertAdjacentHTML("beforeend", html);
-
-    const clientDOMs = clientsDOM.querySelectorAll("#client");
-    for (const clientDOM of clientDOMs) {
-      clientDOM.addEventListener("click", clickClientHandler);
+    const name = clientDOM.querySelector("#name").textContent;
+    const isName = regExp.test(name);
+    if (isName) {
+      clientDOM.classList.remove("hidden");
+      continue;
     }
+
+    const telephone = clientDOM.querySelector("#telephone").textContent;
+    const isTelephone = regExp.test(telephone);
+    if (isTelephone) {
+      clientDOM.classList.remove("hidden");
+      continue;
+    }
+    clientDOM.classList.add("hidden");
   }
+
+  // const searchClient = searchClientDOM.value;
+  // const regExp = new RegExp(searchClient, "i");
+  // const response = await FetchAPI.get("/clients");
+  // if (response) {
+  //   const data = await response.json();
+  //   let html = "";
+
+  //   for (const client of data.clients) {
+  //     const isAssociation = regExp.test(client.association);
+  //     if (isAssociation) {
+  //       html += clientList(client);
+  //       continue;
+  //     }
+
+  //     const isName = regExp.test(client.name);
+  //     if (isName) {
+  //       html += clientList(client);
+  //       continue;
+  //     }
+
+  //     const isTelephone = regExp.test(client.telephone);
+  //     if (isTelephone) {
+  //       html += clientList(client);
+  //       continue;
+  //     }
+  //   }
+
+  //   clientsDOM.textContent = "";
+  //   clientsDOM.insertAdjacentHTML("beforeend", html);
+
+  //   const clientDOMs = clientsDOM.querySelectorAll("#client");
+  //   for (const clientDOM of clientDOMs) {
+  //     clientDOM.addEventListener("click", clickClientHandler);
+  //   }
+  // }
 };
 
 const closeClientsPopupHandler = () => {
@@ -145,54 +170,49 @@ const closeClientsPopupHandler = () => {
 const addHandler = async () => {
   itemsPopupDOM.classList.remove("hidden");
 
-  const workDetailDOMs = workDetailsDOM.querySelectorAll("#workDetail");
-  for (let i = 0; i < workDetailDOMs.length; i++) {
-    if (i === workDetailDOMs.length - 1) {
-      const inputDOMs = workDetailDOMs[i].querySelectorAll("input");
-      const itemIdDOM = inputDOMs[0];
-      if (!itemIdDOM.value) {
-        alert("Item not found");
-        return;
-      }
+  const workDetailDOM = workDetailsDOM.querySelector("#workDetail:last-child");
+  if (workDetailDOM) {
+    const itemDOM = workDetailDOM.querySelector("#item");
+    if (!itemDOM.value) {
+      alert("Item not found");
+      return;
     }
   }
 
   const html = `
   <div class='work-detail' id='workDetail'>
     <div>
-      <input type='text' name='itemId'>
+      <input type='text' id='item'>
     </div>
     <div>
-      <input type='text' name='depth'>
+      <input type='text' id='depth'>
     </div>
     <div>
-      <input type='text' name='width'>
+      <input type='text' id='width'>
     </div>
     <div>
-      <input type='text' name='length'>
+      <input type='text' id='length'>
     </div>
     <div>
-      <input type='text' name='quantity'>
+      <input type='text' id='quantity'>
     </div>
     <div>
-      <input type='text' name='remnant'>
+      <input type='text' id='remnant'>
     </div>
     <div>
       <button id='delete'>delete</button>
     </div>
   </div>
   `;
-
   workDetailsDOM.insertAdjacentHTML("beforeend", html);
-  const newWorkDetailDOMs = workDetailsDOM.querySelectorAll("#workDetail");
-  for (let i = 0; i < newWorkDetailDOMs.length; i++) {
-    if (i === newWorkDetailDOMs.length - 1) {
-      const deleteDOM = newWorkDetailDOMs[i].querySelector("#delete");
-      deleteDOM.addEventListener("click", () => {
-        newWorkDetailDOMs[i].remove();
-      });
-    }
-  }
+
+  const newWorkDetailDOM = workDetailsDOM.querySelector(
+    "#workDetail:last-child"
+  );
+  const deleteDOM = newWorkDetailDOM.querySelector("#delete");
+  deleteDOM.addEventListener("click", () => {
+    newWorkDetailDOM.remove();
+  });
 
   const response = await FetchAPI.get("/items");
   if (response) {
@@ -221,13 +241,12 @@ const placeHandler = async () => {
 
   const workDetailDOMs = workDetailsDOM.querySelectorAll("#workDetail");
   for (const workDetailDOM of workDetailDOMs) {
-    const inputDOMs = workDetailDOM.querySelectorAll("input");
-    const item_id = inputDOMs[0].dataset.id;
-    const depth = inputDOMs[1].value;
-    const width = inputDOMs[2].value;
-    const length = inputDOMs[3].value;
-    const quantity = inputDOMs[4].value;
-    const remnant = inputDOMs[5].value;
+    const item_id = workDetailDOM.querySelector("#item").dataset.id;
+    const depth = workDetailDOM.querySelector("#depth").value;
+    const width = workDetailDOM.querySelector("#width").value;
+    const length = workDetailDOM.querySelector("#length").value;
+    const quantity = workDetailDOM.querySelector("#quantity").value;
+    const remnant = workDetailDOM.querySelector("#remnant").value;
 
     if (!item_id || !depth || !width || !length || !quantity) {
       alert("Provide all values");
@@ -303,36 +322,48 @@ const closeItemsPopupHandler = () => {
   itemsPopupDOM.classList.add("hidden");
 };
 
-const searchItemFormHandler = async (event) => {
-  event.preventDefault();
+// move to popup.js
+// const searchItemFormHandler = (event) => {
+//   event.preventDefault();
 
-  const searchItem = searchItemDOM.value;
-  const regExp = new RegExp(searchItem, "i");
+//   const searchItem = searchItemDOM.value;
+//   const regExp = new RegExp(searchItem, "i");
 
-  const response = await FetchAPI.get("/items");
-  if (response) {
-    const data = await response.json();
-    let html = "";
+//   const itemDOMs = itemsDOM.querySelectorAll("#item");
+//   for (const itemDOM of itemDOMs) {
+//     const name = itemDOM.querySelector("#name").textContent;
+//     const isName = regExp.test(name);
+//     if (isName) {
+//       itemDOM.classList.remove("hidden");
+//       continue;
+//     }
+//     itemDOM.classList.add("hidden");
+//   }
 
-    for (const item of data.items) {
-      const isName = regExp.test(item.name);
-      if (isName) {
-        html += itemList(item);
-        continue;
-      }
-    }
+//   /* const response = await FetchAPI.get("/items");
+//   if (response) {
+//     const data = await response.json();
+//     let html = "";
 
-    itemsDOM.textContent = "";
-    itemsDOM.insertAdjacentHTML("beforeend", html);
+//     for (const item of data.items) {
+//       const isName = regExp.test(item.name);
+//       if (isName) {
+//         html += itemList(item);
+//         continue;
+//       }
+//     }
 
-    const itemDOMs = itemsDOM.querySelectorAll("#item");
-    for (const itemDOM of itemDOMs) {
-      itemDOM.addEventListener("click", clickItemHandler);
-    }
-  }
-};
+//     itemsDOM.textContent = "";
+//     itemsDOM.insertAdjacentHTML("beforeend", html);
 
-searchItemFormDOM.addEventListener("submit", searchItemFormHandler);
+//     const itemDOMs = itemsDOM.querySelectorAll("#item");
+//     for (const itemDOM of itemDOMs) {
+//       itemDOM.addEventListener("click", clickItemHandler);
+//     }
+//   } */
+// };
+
+// searchItemFormDOM.addEventListener("submit", searchItemFormHandler);
 closeItemsPopupDOM.addEventListener("click", closeItemsPopupHandler);
 placeDOM.addEventListener("click", placeHandler);
 addDOM.addEventListener("click", addHandler);

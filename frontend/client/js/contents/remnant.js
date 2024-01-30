@@ -11,22 +11,47 @@ const saveDOM = document.getElementById("save");
 const popupDOM = document.getElementById("popup");
 const contentDOM = document.getElementById("content");
 
+const newZoneDOM = document.getElementById("newZone");
+const createZoneFormDOM = document.getElementById("createZoneForm");
+const createZonePopupDOM = document.getElementById("createZonePopup");
+const searchZonePopupDOM = document.getElementById("searchZonePopup");
+const searchZonesFormDOM = document.getElementById("searchZonesForm");
+const nameDOM = document.getElementById("name");
+const commentDOM = document.getElementById("comment");
+const closeItemsPopupDOM = document.getElementById("closeItemsPopup");
+const closeZonesPopupDOM = document.getElementById("closeZonesPopup");
+
+const searchZonesDOM = document.getElementById("searchZones");
+
 const itemList = (item) => {
   return `
   <div data-id=${item.id} id='item'>
-    <span>${item.name}</span>
+    <span id='name'>${item.name}</span>
   </div>
   `;
 };
 
 const zoneList = (zone) => {
   return `
-  <div data-id=${zone.id} id='zone' style="display: grid; grid-template-columns: repeat(2, 1fr);">
+  <div data-id=${zone.id} id='zone'>
     <div>
-      <span>${zone.name}</span>
+      <span id='name'>${zone.name}</span>
     </div>
     <div>
       <span>${zone.comment}</span>
+    </div>
+  </div>
+  <div>
+    <div>
+      <button id='save'>save</button>
+    </div>
+    <div>
+      <div>
+        <button id='update'>update</button>
+      </div>
+      <div>
+        <button id='delete'>delete</button>
+      </div>
     </div>
   </div>
   `;
@@ -38,16 +63,12 @@ async function clickItemHandler() {
   const response = await FetchAPI.get(`/items/${id}`);
   if (response) {
     const data = await response.json();
-    const remnantDetailDOMs =
-      remnantDetailsDOM.querySelectorAll("#remnantDetail");
-    for (let i = 0; i < remnantDetailDOMs.length; i++) {
-      if (i === remnantDetailDOMs.length - 1) {
-        const inputDOMs = remnantDetailDOMs[i].querySelectorAll("input");
-        const itemIdDOM = inputDOMs[0];
-        itemIdDOM.value = data.item.name;
-        itemIdDOM.dataset.id = data.item.id;
-      }
-    }
+    const remnantDetailDOM = remnantDetailsDOM.querySelector(
+      "#remnantDetail:last-child"
+    );
+    const itemDOM = remnantDetailDOM.querySelector("#item");
+    itemDOM.value = data.item.name;
+    itemDOM.dataset.id = data.item.id;
     itemsPopupDOM.classList.add("hidden");
     zonesPopupDOM.classList.remove("hidden");
   }
@@ -59,63 +80,83 @@ async function clickZoneHandler() {
   const response = await FetchAPI.get(`/remnant-zones/${id}`);
   if (response) {
     const data = await response.json();
-    const remnantDetailDOMs =
-      remnantDetailsDOM.querySelectorAll("#remnantDetail");
-    for (let i = 0; i < remnantDetailDOMs.length; i++) {
-      if (i === remnantDetailDOMs.length - 1) {
-        const inputDOMs = remnantDetailDOMs[i].querySelectorAll("input");
-        const zoneIdDOM = inputDOMs[inputDOMs.length - 1];
-        zoneIdDOM.value = data.remnantZone.name;
-        zoneIdDOM.dataset.id = data.remnantZone.id;
-      }
-    }
+    const remnantDetailDOM = remnantDetailsDOM.querySelector(
+      "#remnantDetail:last-child"
+    );
+    const zoneDOM = remnantDetailDOM.querySelector("#zone");
+    zoneDOM.value = data.remnantZone.name;
+    zoneDOM.dataset.id = data.remnantZone.id;
     zonesPopupDOM.classList.add("hidden");
   }
 }
 
 const addHandler = async () => {
   itemsPopupDOM.classList.remove("hidden");
+  searchZonePopupDOM.classList.remove("hidden");
+  const icon = newZoneDOM.querySelector("i");
+  icon.className = icon.className.replace("solid", "regular");
+  createZonePopupDOM.classList.add("hidden");
+
+  const remnantDetailDOM = remnantDetailsDOM.querySelector(
+    "#remnantDetail:last-child"
+  );
+  if (remnantDetailDOM) {
+    const itemDOM = remnantDetailDOM.querySelector("#item");
+    const zoneDOM = remnantDetailDOM.querySelector("#zone");
+    if (!itemDOM.value) {
+      alert("Provide item");
+      return;
+    }
+
+    if (!zoneDOM.value) {
+      itemsPopupDOM.classList.add("hidden");
+      zonesPopupDOM.classList.remove("hidden");
+      alert("Provide zone");
+      return;
+    }
+  }
 
   const html = `
   <div class='remnant-detail' id='remnantDetail'>
     <div>
-      <input type='text' name='itemId'>
+      <input type='text' id='item'>
     </div>
     <div>
-      <input type='text' name='depth'>
+      <input type='text' id='depth'>
     </div>
     <div style="display: flex;">
       <div>
-        <input type='text' name='width'>
+        <input type='text' id='width'>
       </div>
       <div>
         <span>x</span>
       </div>
       <div>
-        <input type='text' name='length'>
+        <input type='text' id='length'>
       </div>
     </div>
     <div>
-      <input type='text' name='quantity'>
+      <input type='text' id='quantity'>
     </div>
     <div>
-      <input type='text' name='zoneId'>
+      <input type='text' id='zone'>
     </div>
-    <div></div>
+    <div>
+      <button id='delete'>delete</button>
+    </div>
   </div>
   `;
-
   remnantDetailsDOM.insertAdjacentHTML("beforeend", html);
-  // const newRemnantDetailDOMs =
-  //   remnantDetailsDOM.querySelectorAll("#remnantDetail");
-  // for (let i = 0; i < newRemnantDetailDOMs.length; i++) {
-  //   if (i === newRemnantDetailDOMs.length - 1) {
-  //     const deleteDOM = newRemnantDetailDOMs[i].querySelector("#delete");
-  //     deleteDOM.addEventListener("click", () => {
-  //       newRemnantDetailDOMs[i].remove();
-  //     });
-  //   }
-  // }
+
+  const newRemnantDetailDOM = remnantDetailsDOM.querySelector(
+    "#remnantDetail:last-child"
+  );
+  const deleteDOM = newRemnantDetailDOM.querySelector("#delete");
+  deleteDOM.addEventListener("click", () => {
+    newRemnantDetailDOM.remove();
+    itemsPopupDOM.classList.add("hidden");
+    zonesPopupDOM.classList.add("hidden");
+  });
 
   let response = await FetchAPI.get("/items");
   if (response) {
@@ -155,14 +196,14 @@ const addHandler = async () => {
 const saveHandler = async () => {
   const remnantDetailDOMs =
     remnantDetailsDOM.querySelectorAll("#remnantDetail");
+
   for (const remnantDetailDOM of remnantDetailDOMs) {
-    const inputDOMs = remnantDetailDOM.querySelectorAll("input");
-    const item_id = inputDOMs[0].dataset.id;
-    const depth = inputDOMs[1].value;
-    const width = inputDOMs[2].value;
-    const length = inputDOMs[3].value;
-    const quantity = inputDOMs[4].value;
-    const remnant_zone_id = inputDOMs[5].dataset.id;
+    const item_id = remnantDetailDOM.querySelector("#item").dataset.id;
+    const depth = remnantDetailDOM.querySelector("#depth").value;
+    const width = remnantDetailDOM.querySelector("#width").value;
+    const length = remnantDetailDOM.querySelector("#length").value;
+    const quantity = remnantDetailDOM.querySelector("#quantity").value;
+    const remnant_zone_id = remnantDetailDOM.querySelector("#zone").dataset.id;
 
     if (!item_id || !remnant_zone_id) {
       alert("Provide item and zone");
@@ -188,8 +229,7 @@ const saveHandler = async () => {
       <div class="remnant-container" id="remnantContainer" data-id="${data.remnantDetail.id}"
           data-item_id="${data.remnantDetail.item_id}" data-zone_id="${data.remnantDetail.remnant_zone_id}"
           data-creator_id="${data.remnantDetail.creator_id}">
-          <div id="item">
-      </div>
+          <div id="item"></div>
           <div>
               <div>
                   <span>depth</span>
@@ -223,15 +263,87 @@ const saveHandler = async () => {
       </div>
       `;
       contentDOM.insertAdjacentHTML("afterbegin", html);
+
+      popupDOM.classList.add("hidden");
+      const createRemnantDOM = document.getElementById("createRemnant");
+      const icon = createRemnantDOM.querySelector("i");
+      icon.className = icon.className.replace("solid", "regular");
     }
   }
+};
 
-  popupDOM.classList.add("hidden");
-  const createRemnantDOM = document.getElementById("createRemnant");
-  const icon = createRemnantDOM.querySelector("i");
+const newZoneHandler = () => {
+  if (createZonePopupDOM.classList.contains("hidden")) {
+    createZonePopupDOM.classList.remove("hidden");
+    searchZonePopupDOM.classList.add("hidden");
+    const icon = newZoneDOM.querySelector("i");
+    icon.className = icon.className.replace("regular", "solid");
+    return;
+  }
+
+  createZonePopupDOM.classList.add("hidden");
+  searchZonePopupDOM.classList.remove("hidden");
+  const icon = newZoneDOM.querySelector("i");
   icon.className = icon.className.replace("solid", "regular");
 };
 
+const createZoneFormHandler = async (event) => {
+  event.preventDefault();
+
+  const name = nameDOM.value;
+  const comment = commentDOM.value;
+
+  if (!name || !comment) {
+    alert("Provide all values");
+    return;
+  }
+
+  const response = await FetchAPI.post("/remnant-zones", { name, comment });
+  if (response) {
+    const data = await response.json();
+    const html = zoneList(data.remnantZone);
+    zonesDOM.insertAdjacentHTML("beforeend", html);
+
+    const zoneDOM = zonesDOM.querySelector("#zone:last-child");
+    zoneDOM.addEventListener("click", clickZoneHandler);
+    createZonePopupDOM.classList.add("hidden");
+    searchZonePopupDOM.classList.remove("hidden");
+    const icon = newZoneDOM.querySelector("i");
+    icon.className = icon.className.replace("solid", "regular");
+  }
+};
+
+const closeItemsPopupHandler = () => {
+  itemsPopupDOM.classList.add("hidden");
+};
+
+const closeZonesPopupHandler = () => {
+  zonesPopupDOM.classList.add("hidden");
+};
+
+const searchZonesFormHandler = (event) => {
+  event.preventDefault();
+
+  const zone = searchZonesDOM.value;
+  const regExp = new RegExp(zone, "i");
+
+  const zoneDOMs = zonesDOM.querySelectorAll("#zone");
+  for (const zoneDOM of zoneDOMs) {
+    const name = zoneDOM.querySelector("#name").textContent;
+    const isName = regExp.test(name);
+    if (isName) {
+      zoneDOM.classList.remove("hidden");
+      continue;
+    }
+    zoneDOM.classList.add("hidden");
+  }
+};
+
+searchZonesFormDOM.addEventListener("submit", searchZonesFormHandler);
+closeZonesPopupDOM.addEventListener("click", closeZonesPopupHandler);
+closeItemsPopupDOM.addEventListener("click", closeItemsPopupHandler);
+createZoneFormDOM.addEventListener("submit", createZoneFormHandler);
+newZoneDOM.addEventListener("click", newZoneHandler);
 saveDOM.addEventListener("click", saveHandler);
 addDOM.addEventListener("click", addHandler);
 
