@@ -2,26 +2,41 @@
 
     <div class="content work-order" id="content">
         <% for (const workOrder of workOrders) { %>
-            <div class="work-order-container" id="workOrderContainer" data-client_id="<%= workOrder.client_id %>"
-                data-is_complete="<%=workOrder.is_complete %>" data-is_urgent="<%=workOrder.is_urgent %>">
-                <div style=" display: flex; justify-content: space-between;">
-                    <div>
-                        <% if (!workOrder.is_complete) { %>
-                            <span>resolving</span>
-                            <% } else { %>
-                                <span>complete</span>
+            <div class="work-order-container" id="workOrderContainer" data-id="<%= workOrder.id %>"
+                data-client_id="<%= workOrder.client_id %>" data-is_complete="<%=workOrder.is_complete %>"
+                data-is_urgent="<%=workOrder.is_urgent %>">
+                <div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <div>
+                            <% if (!workOrder.is_complete) { %>
+                                <span>resolving</span>
+                                <% } else { %>
+                                    <span>complete</span>
+                                    <% } %>
+                        </div>
+                        <div>
+                            <% if (workOrder.is_urgent) { %>
+                                <span>urgent</span>
                                 <% } %>
+                        </div>
                     </div>
                     <div>
-                        <% if (workOrder.is_urgent) { %>
-                            <span>urgent</span>
-                            <% } %>
+                        <div>
+                            <span>
+                                comment: <%= workOrder.comment %>
+                            </span>
+                        </div>
+                        <div>
+                            <span>
+                                end_date: <%= workOrder.end_date %>
+                            </span>
+                        </div>
                     </div>
                 </div>
                 <div id="client"></div>
                 <div>
                     <span>
-                        생성일자 <%= workOrder.created_at %>
+                        created_at: <%= workOrder.created_at %>
                     </span>
                 </div>
             </div>

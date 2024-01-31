@@ -1,3 +1,5 @@
+import FetchAPI from "../fetch-api";
+
 const createWorkOrderDOM = document.getElementById("createWorkOrder");
 const createRemnantDOM = document.getElementById("createRemnant");
 
@@ -8,6 +10,18 @@ const itemsPopupDOM = document.getElementById("itemsPopup");
 const searchItemFormDOM = document.getElementById("searchItemForm");
 const searchItemDOM = document.getElementById("searchItem");
 const itemsDOM = document.getElementById("items");
+const newItemDOM = document.getElementById("newItem");
+const createItemPopupDOM = document.getElementById("createItemPopup");
+const createItemFormDOM = document.getElementById("createItemForm");
+const nameDOM = document.querySelector("#itemsPopup #name");
+
+const itemList = (item) => {
+  return `
+  <div data-id=${item.id} id='item'>
+    <span id='name'>${item.name}</span>
+  </div>
+  `;
+};
 
 const searchItemFormHandler = (event) => {
   event.preventDefault();
@@ -27,6 +41,46 @@ const searchItemFormHandler = (event) => {
   }
 };
 
+const newItemHandler = () => {
+  const icon = newItemDOM.querySelector("i");
+
+  if (createItemPopupDOM.classList.contains("hidden")) {
+    icon.className = icon.className.replace("regular", "solid");
+    createItemPopupDOM.classList.remove("hidden");
+    searchItemFormDOM.classList.add("hidden");
+    return;
+  }
+
+  icon.className = icon.className.replace("solid", "regular");
+  searchItemFormDOM.classList.remove("hidden");
+  createItemPopupDOM.classList.add("hidden");
+};
+
+const createItemFormHandler = async (event) => {
+  event.preventDefault();
+
+  const name = nameDOM.value;
+  if (!name) {
+    alert("Provide name");
+    return;
+  }
+
+  const response = await FetchAPI.post("/items", { name });
+  if (response) {
+    const data = await response.json();
+    const html = itemList(data.item);
+    itemsDOM.insertAdjacentHTML("beforeend", html);
+    nameDOM.value = "";
+    const icon = newItemDOM.querySelector("i");
+    icon.className = icon.className.replace("solid", "regular");
+    searchItemFormDOM.classList.remove("hidden");
+    createItemPopupDOM.classList.add("hidden");
+    itemsPopupDOM.classList.add("hidden");
+  }
+};
+
+createItemFormDOM.addEventListener("submit", createItemFormHandler);
+newItemDOM.addEventListener("click", newItemHandler);
 searchItemFormDOM.addEventListener("submit", searchItemFormHandler);
 
 if (createWorkOrderDOM) {
@@ -35,11 +89,13 @@ if (createWorkOrderDOM) {
   const workDetailsDOM = document.getElementById("workDetails");
   const commentDOM = document.getElementById("comment");
   const clientsPopupDOM = document.getElementById("clientsPopup");
+  const workOrderPopupDOM = document.getElementById("workOrderPopup");
 
   const createWorkOrderHandler = () => {
     const icon = createWorkOrderDOM.querySelector("i");
     if (popupDOM.classList.contains("hidden")) {
       popupDOM.classList.remove("hidden");
+      workOrderPopupDOM.classList.remove("hidden");
       icon.className = icon.className.replace("regular", "solid");
       urgentDOM.checked = false;
       selectedClientDOM.value = "";
@@ -52,6 +108,7 @@ if (createWorkOrderDOM) {
     }
 
     popupDOM.classList.add("hidden");
+    workOrderPopupDOM.classList.add("hidden");
     itemsPopupDOM.classList.add("hidden");
     clientsPopupDOM.classList.add("hidden");
     icon.className = icon.className.replace("solid", "regular");

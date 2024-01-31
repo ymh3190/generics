@@ -3,6 +3,10 @@ import * as CustomError from "./error";
 // import util from "./util";
 
 class RootController {
+  getIndex(req, res) {
+    res.status(200).render("index", { pageTitle: "Generics" });
+  }
+
   async getWorkOrder(req, res) {
     // const { years, months, dates } = util.getDateTime();
     // const date = `${years}-${months}-${dates}`;
@@ -40,7 +44,6 @@ class RootController {
     let response = await FetchAPI.get("/remnant-details", {
       cookie: req.headers.cookie,
     });
-
     let data = await response.json();
     const remnantDetails = data.remnantDetails;
 
@@ -225,6 +228,16 @@ class WorkOrderController {
     const data = await response.json();
     res.status(200).json({ workOrders: data.workOrders });
   }
+
+  async selectById(req, res) {
+    const { id } = req.params;
+
+    const response = await FetchAPI.get(`/work-orders/${id}`, {
+      cookie: req.headers.cookie,
+    });
+    const data = await response.json();
+    res.status(200).json({ workOrder: data.workOrder });
+  }
 }
 
 class WorkDetailController {
@@ -235,9 +248,26 @@ class WorkDetailController {
     const data = await response.json();
     res.status(201).json({ workDetail: data.workDetail });
   }
+
+  async selectByWorkOrderId(req, res) {
+    const { id } = req.params;
+    const response = await FetchAPI.get(`/work-orders/${id}/details`, {
+      cookie: req.headers.cookie,
+    });
+    const data = await response.json();
+    res.status(201).json({ workDetails: data.workDetails });
+  }
 }
 
 class ItemController {
+  async create(req, res) {
+    const response = await FetchAPI.post("/items", req.body, {
+      cookie: req.headers.cookie,
+    });
+    const data = await response.json();
+    res.status(201).json({ item: data.item });
+  }
+
   async select(req, res) {
     const response = await FetchAPI.get("/items", {
       cookie: req.headers.cookie,

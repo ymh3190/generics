@@ -29,12 +29,7 @@ class ImageController {
   }
 
   async select(req, res) {
-    const images = await Image.select({}, "-created_at");
-    // TODO: sort ORM 구현
-    // const images = (await Image.select({})).toSorted((a, b) => {
-    //   return b.created_at - a.created_at;
-    // });
-
+    const images = await Image.select({}, "desc");
     res.status(200).json({ images });
   }
 

@@ -29,10 +29,6 @@ body {
   padding-right: 40px;
 }
 
-// .index {
-//   display: flex;
-// }
-
 a {
   text-decoration: none;
   color: black;
@@ -55,4 +51,18 @@ button {
 
 .position-left {
   left: 100px + $rootLeftMargin;
+}
+
+.click {
+  background-color: $clickBgColor;
+  color: $clickFontColor;
+}
+
+.release {
+  background-color: $bgColor;
+  color: $fontColor;
+}
+
+.nav-click {
+  background-color: $bgColor;
 }

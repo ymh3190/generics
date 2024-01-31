@@ -8,20 +8,30 @@ const closeClientsPopupDOM = document.getElementById("closeClientsPopup");
 const searchClientDOM = document.getElementById("searchClient");
 const searchClientFormDOM = document.getElementById("searchClientForm");
 const addDOM = document.getElementById("add");
-const workDetailsDOM = document.getElementById("workDetails");
+const orderPopupDetailsDOM = document.querySelector(
+  "#workOrderPopup #workDetails"
+);
 const placeDOM = document.getElementById("place");
 
 const itemsDOM = document.getElementById("items");
 const itemsPopupDOM = document.getElementById("itemsPopup");
 const closeItemsPopupDOM = document.getElementById("closeItemsPopup");
-// const searchItemFormDOM = document.getElementById("searchItemForm");
-// const searchItemDOM = document.getElementById("searchItem");
 
 const urgentDOM = document.getElementById("urgent");
 const commentDOM = document.getElementById("comment");
 const popupDOM = document.getElementById("popup");
 
 const contentDOM = document.getElementById("content");
+
+const workDetailPopupDOM = document.getElementById("workDetailPopup");
+const closeWorkDetailPopupDOM = document.querySelector(
+  "#workDetailPopup #close"
+);
+const detailPopupDetailsDOM = document.querySelector(
+  "#workDetailPopup #workDetails"
+);
+const bodyDOM = document.querySelector("body");
+const newItemDOM = document.getElementById("newItem");
 
 const itemList = (item) => {
   return `
@@ -37,6 +47,35 @@ const clientList = (client) => {
     <span id='association'>${client.association}</span>
     <span id='name'>${client.name}</span>
     <span id='telephone'>${client.telephone}</span>
+  </div>
+  `;
+};
+
+const workDetailList = (workDetail) => {
+  return `
+  <div id='workDetail'>
+    <div>
+      <span>item</span>
+      <span>${workDetail.itemName}</span>
+    </div>
+    <div>
+      <span>depth</span>
+      <span>${workDetail.depth}</span>
+    </div>
+    <div>
+      <span>size</span>
+      <span>${workDetail.width}</span>
+      <span>x</span>
+      <span>${workDetail.length}</span>
+    </div>
+    <div>
+      <span>quantity</span>
+      <span>${workDetail.quantity}</span>
+    </div>
+    <div>
+      <span>comment</span>
+      <span>${workDetail.workOrderComment}</span>
+    </div>
   </div>
   `;
 };
@@ -57,7 +96,7 @@ async function clickItemHandler() {
   const response = await FetchAPI.get(`/items/${id}`);
   if (response) {
     const data = await response.json();
-    const workDetailDOM = workDetailsDOM.querySelector(
+    const workDetailDOM = orderPopupDetailsDOM.querySelector(
       "#workDetail:last-child"
     );
     const inputDOM = workDetailDOM.querySelector("input:first-child");
@@ -66,6 +105,30 @@ async function clickItemHandler() {
     itemIdDOM.dataset.id = data.item.id;
     itemsPopupDOM.classList.add("hidden");
   }
+}
+
+function bodyHandler(event) {
+  if (event.target === workDetailPopupDOM) {
+    return;
+  }
+
+  const spanDOMs = workDetailPopupDOM.querySelectorAll("span");
+  for (const spanDOM of spanDOMs) {
+    if (event.target === spanDOM) {
+      return;
+    }
+  }
+
+  const divDOMs = workDetailPopupDOM.querySelectorAll("div");
+  for (const divDOM of divDOMs) {
+    if (event.target === divDOM) {
+      return;
+    }
+  }
+
+  bodyDOM.removeEventListener("click", bodyHandler);
+  popupDOM.classList.add("hidden");
+  workDetailPopupDOM.classList.add("hidden");
 }
 
 const searchClientsHandler = async () => {
@@ -125,42 +188,6 @@ const searchClientFormHandler = async (event) => {
     }
     clientDOM.classList.add("hidden");
   }
-
-  // const searchClient = searchClientDOM.value;
-  // const regExp = new RegExp(searchClient, "i");
-  // const response = await FetchAPI.get("/clients");
-  // if (response) {
-  //   const data = await response.json();
-  //   let html = "";
-
-  //   for (const client of data.clients) {
-  //     const isAssociation = regExp.test(client.association);
-  //     if (isAssociation) {
-  //       html += clientList(client);
-  //       continue;
-  //     }
-
-  //     const isName = regExp.test(client.name);
-  //     if (isName) {
-  //       html += clientList(client);
-  //       continue;
-  //     }
-
-  //     const isTelephone = regExp.test(client.telephone);
-  //     if (isTelephone) {
-  //       html += clientList(client);
-  //       continue;
-  //     }
-  //   }
-
-  //   clientsDOM.textContent = "";
-  //   clientsDOM.insertAdjacentHTML("beforeend", html);
-
-  //   const clientDOMs = clientsDOM.querySelectorAll("#client");
-  //   for (const clientDOM of clientDOMs) {
-  //     clientDOM.addEventListener("click", clickClientHandler);
-  //   }
-  // }
 };
 
 const closeClientsPopupHandler = () => {
@@ -170,7 +197,9 @@ const closeClientsPopupHandler = () => {
 const addHandler = async () => {
   itemsPopupDOM.classList.remove("hidden");
 
-  const workDetailDOM = workDetailsDOM.querySelector("#workDetail:last-child");
+  const workDetailDOM = orderPopupDetailsDOM.querySelector(
+    "#workDetail:last-child"
+  );
   if (workDetailDOM) {
     const itemDOM = workDetailDOM.querySelector("#item");
     if (!itemDOM.value) {
@@ -204,11 +233,34 @@ const addHandler = async () => {
     </div>
   </div>
   `;
-  workDetailsDOM.insertAdjacentHTML("beforeend", html);
+  orderPopupDetailsDOM.insertAdjacentHTML("beforeend", html);
 
-  const newWorkDetailDOM = workDetailsDOM.querySelector(
+  const newWorkDetailDOM = orderPopupDetailsDOM.querySelector(
     "#workDetail:last-child"
   );
+  const itemDOM = newWorkDetailDOM.querySelector("#item");
+  itemDOM.addEventListener("focus", async () => {
+    const response = await FetchAPI.get("/items");
+    if (response) {
+      itemsPopupDOM.classList.remove("hidden");
+      const icon = newItemDOM.querySelector("i");
+      icon.className = icon.className.replace("solid", "regular");
+
+      const data = await response.json();
+      let html = "";
+
+      for (const item of data.items) {
+        html += itemList(item);
+      }
+      itemsDOM.textContent = "";
+      itemsDOM.insertAdjacentHTML("beforeend", html);
+
+      const itemDOMs = itemsDOM.querySelectorAll("#item");
+      for (const itemDOM of itemDOMs) {
+        itemDOM.addEventListener("click", clickItemHandler);
+      }
+    }
+  });
   const deleteDOM = newWorkDetailDOM.querySelector("#delete");
   deleteDOM.addEventListener("click", () => {
     newWorkDetailDOM.remove();
@@ -239,29 +291,34 @@ const placeHandler = async () => {
     return;
   }
 
-  const workDetailDOMs = workDetailsDOM.querySelectorAll("#workDetail");
+  let workOrder;
+  let response = await FetchAPI.post("/work-orders", {
+    client_id,
+    is_urgent: urgentDOM.checked,
+    comment: commentDOM.value,
+  });
+  if (response) {
+    const data = await response.json();
+    workOrder = data.workOrder;
+  }
+  if (!workOrder) {
+    return;
+  }
+
+  const workDetailDOMs = orderPopupDetailsDOM.querySelectorAll("#workDetail");
   for (const workDetailDOM of workDetailDOMs) {
     const item_id = workDetailDOM.querySelector("#item").dataset.id;
     const depth = workDetailDOM.querySelector("#depth").value;
     const width = workDetailDOM.querySelector("#width").value;
     const length = workDetailDOM.querySelector("#length").value;
     const quantity = workDetailDOM.querySelector("#quantity").value;
+
+    // TODO: 잔재 관련 기능 추가
     const remnant = workDetailDOM.querySelector("#remnant").value;
 
     if (!item_id || !depth || !width || !length || !quantity) {
       alert("Provide all values");
       return;
-    }
-
-    let workOrder;
-    let response = await FetchAPI.post("/work-orders", {
-      client_id,
-      is_urgent: urgentDOM.checked,
-      comment: commentDOM.value,
-    });
-    if (response) {
-      const data = await response.json();
-      workOrder = data.workOrder;
     }
 
     let clientHtml;
@@ -322,48 +379,72 @@ const closeItemsPopupHandler = () => {
   itemsPopupDOM.classList.add("hidden");
 };
 
-// move to popup.js
-// const searchItemFormHandler = (event) => {
-//   event.preventDefault();
+async function workOrderContainerHandler(event) {
+  event.stopPropagation();
 
-//   const searchItem = searchItemDOM.value;
-//   const regExp = new RegExp(searchItem, "i");
+  if (workDetailPopupDOM.classList.contains("hidden")) {
+    bodyDOM.addEventListener("click", bodyHandler);
+  }
+  popupDOM.classList.remove("hidden");
+  workDetailPopupDOM.classList.remove("hidden");
+  const workOrderId = this.dataset.id;
 
-//   const itemDOMs = itemsDOM.querySelectorAll("#item");
-//   for (const itemDOM of itemDOMs) {
-//     const name = itemDOM.querySelector("#name").textContent;
-//     const isName = regExp.test(name);
-//     if (isName) {
-//       itemDOM.classList.remove("hidden");
-//       continue;
-//     }
-//     itemDOM.classList.add("hidden");
-//   }
+  let workOrderComment;
+  let response = await FetchAPI.get(`/work-orders/${workOrderId}`);
+  if (response) {
+    const data = await response.json();
+    workOrderComment = data.workOrder.comment;
+  }
 
-//   /* const response = await FetchAPI.get("/items");
-//   if (response) {
-//     const data = await response.json();
-//     let html = "";
+  response = await FetchAPI.get(`/work-orders/${workOrderId}/details`);
+  if (response) {
+    const data = await response.json();
+    let html = "";
 
-//     for (const item of data.items) {
-//       const isName = regExp.test(item.name);
-//       if (isName) {
-//         html += itemList(item);
-//         continue;
-//       }
-//     }
+    for (const workDetail of data.workDetails) {
+      const itemId = workDetail.item_id;
+      const response = await FetchAPI.get(`/items/${itemId}`);
+      if (response) {
+        const data = await response.json();
+        workDetail.itemName = data.item.name;
+        workDetail.workOrderComment = workOrderComment;
+        html += workDetailList(workDetail);
+      }
+    }
 
-//     itemsDOM.textContent = "";
-//     itemsDOM.insertAdjacentHTML("beforeend", html);
+    detailPopupDetailsDOM.textContent = "";
+    detailPopupDetailsDOM.insertAdjacentHTML("beforeend", html);
+  }
 
-//     const itemDOMs = itemsDOM.querySelectorAll("#item");
-//     for (const itemDOM of itemDOMs) {
-//       itemDOM.addEventListener("click", clickItemHandler);
-//     }
-//   } */
-// };
+  const clientId = this.dataset.client_id;
+  response = await FetchAPI.get(`/clients/${clientId}`);
+  if (response) {
+    const data = await response.json();
+    const clientDOM = workDetailPopupDOM.querySelector("#client");
+    const html = `
+    <div>
+      <span>association: ${data.client.association}</span>
+    </div>
+    <div>
+      <span>name: ${data.client.name}</span>
+    </div>
+    <div>
+      <span>telephone: ${data.client.telephone}</span>
+    </div>
+    `;
+    clientDOM.textContent = "";
+    clientDOM.insertAdjacentHTML("beforeend", html);
+  }
+}
 
-// searchItemFormDOM.addEventListener("submit", searchItemFormHandler);
+const closeWorkDetailPopupHandler = () => {
+  bodyDOM.removeEventListener("click", bodyHandler);
+
+  popupDOM.classList.add("hidden");
+  workDetailPopupDOM.classList.add("hidden");
+};
+
+closeWorkDetailPopupDOM.addEventListener("click", closeWorkDetailPopupHandler);
 closeItemsPopupDOM.addEventListener("click", closeItemsPopupHandler);
 placeDOM.addEventListener("click", placeHandler);
 addDOM.addEventListener("click", addHandler);
@@ -377,6 +458,8 @@ searchClientsDOM.addEventListener("click", searchClientsHandler);
   );
 
   for (const workOrderContainerDOM of workOrderContainerDOMs) {
+    workOrderContainerDOM.addEventListener("click", workOrderContainerHandler);
+
     const id = workOrderContainerDOM.dataset.client_id;
 
     const response = await FetchAPI.get(`/clients/${id}`);
@@ -385,10 +468,10 @@ searchClientsDOM.addEventListener("click", searchClientsHandler);
       const data = await response.json();
       const html = `
       <div>
-        <span>${data.client.association}</span>
+        <span>association: ${data.client.association}</span>
       </div>
       <div>
-        <span>${data.client.name}</span>
+        <span>name: ${data.client.name}</span>
       </div>
       `;
       clientDOM.insertAdjacentHTML("beforeend", html);

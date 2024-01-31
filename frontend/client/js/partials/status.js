@@ -11,7 +11,27 @@ if (workOrderContainerDOMs.length) {
   const dateChipDOM = document.getElementById("dateChip");
   const contentDOM = document.getElementById("content");
 
+  function spotlightChip(dom) {
+    const chips = [
+      allChipDOM,
+      resolvingChipDOM,
+      completeChipDOM,
+      urgentChipDOM,
+      dateChipDOM,
+    ];
+    for (const chip of chips) {
+      if (dom !== chip) {
+        chip.classList.add("release");
+        chip.classList.remove("click");
+        continue;
+      }
+      dom.classList.add("click");
+      dom.classList.remove("release");
+    }
+  }
+
   const allChipHandler = () => {
+    spotlightChip(allChipDOM);
     workOrderContainerDOMs = document.querySelectorAll("#workOrderContainer");
 
     for (const workOrderContainerDOM of workOrderContainerDOMs) {
@@ -20,6 +40,7 @@ if (workOrderContainerDOMs.length) {
   };
 
   const resolvingChipHandler = () => {
+    spotlightChip(resolvingChipDOM);
     workOrderContainerDOMs = document.querySelectorAll("#workOrderContainer");
 
     for (const workOrderContainerDOM of workOrderContainerDOMs) {
@@ -33,6 +54,7 @@ if (workOrderContainerDOMs.length) {
   };
 
   const completeChipHandler = () => {
+    spotlightChip(completeChipDOM);
     workOrderContainerDOMs = document.querySelectorAll("#workOrderContainer");
 
     for (const workOrderContainerDOM of workOrderContainerDOMs) {
@@ -46,6 +68,7 @@ if (workOrderContainerDOMs.length) {
   };
 
   const urgentChipHandler = () => {
+    spotlightChip(urgentChipDOM);
     workOrderContainerDOMs = document.querySelectorAll("#workOrderContainer");
 
     for (const workOrderContainerDOM of workOrderContainerDOMs) {
@@ -59,6 +82,7 @@ if (workOrderContainerDOMs.length) {
   };
 
   const dateChipHandler = async () => {
+    spotlightChip(dateChipDOM);
     workOrderContainerDOMs = document.querySelectorAll("#workOrderContainer");
     for (const workOrderContainerDOM of workOrderContainerDOMs) {
       workOrderContainerDOM.remove();

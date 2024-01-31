@@ -22,7 +22,13 @@ class RootRouter extends Router {
   constructor() {
     super();
 
-    this.router.get("/", middleware.tokenExists, rootController.getWorkOrder);
+    this.router.get("/", middleware.tokenExists, rootController.getIndex);
+
+    this.router.get(
+      "/work-order",
+      middleware.tokenExists,
+      rootController.getWorkOrder
+    );
 
     this.router.get(
       "/remnant",
@@ -93,10 +99,20 @@ class WorkOrderRouter extends Router {
       .post(middleware.tokenExists, workOrderController.create);
     // .get(middleware.tokenExists, workOrderController.select);
 
+    this.router
+      .route("/:id(\\d|\\w{32})")
+      .get(middleware.tokenExists, workOrderController.selectById);
+
     this.router.post(
       "/date",
       middleware.tokenExists,
       workOrderController.select
+    );
+
+    this.router.get(
+      "/:id(\\d|\\w{32})/details",
+      middleware.tokenExists,
+      workDetailController.selectByWorkOrderId
     );
   }
 }
@@ -118,7 +134,10 @@ class ItemRouter extends Router {
   constructor() {
     super();
 
-    this.router.route("/").get(middleware.tokenExists, itemController.select);
+    this.router
+      .route("/")
+      .post(middleware.tokenExists, itemController.create)
+      .get(middleware.tokenExists, itemController.select);
 
     this.router
       .route("/:id(\\d|\\w{32})")

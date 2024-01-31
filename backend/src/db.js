@@ -108,9 +108,10 @@ class MySQLAPI {
     }
 
     for (const [key, value] of Object.entries(options)) {
-      if (key.includes("new") && value) {
+      if (key === "new" && value) {
         const sql = `SELECT * FROM ${table} WHERE id = ?`;
-        const [[result]] = await MySQLAPI.pool.execute(sql, [id]);
+        const values = [id];
+        const [[result]] = await MySQLAPI.pool.execute(sql, values);
         return result;
       }
     }
@@ -130,18 +131,24 @@ class MySQLAPI {
     DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') AS created_at
     `;
 
+    // const asEndDate = `
+    // DATE_FORMAT(end_date, '%Y-%m-%d %H:%i:%s') AS end_date
+    // `;
+
     const table = this.getTable();
 
     const keys = Object.keys(filter);
     if (!keys.length) {
-      const sql = `SELECT *, ${asCreatedAt} FROM ${table}`;
-      const [result] = await MySQLAPI.pool.execute(sql);
+      let sql = `SELECT *, ${asCreatedAt} FROM ${table}`;
+      // let sql = `SELECT *, ${asCreatedAt}, ${asEndDate} FROM ${table}`;
 
       if (!projection) {
+        const [result] = await MySQLAPI.pool.execute(sql);
         return result;
       }
 
       if (projection.startsWith("-")) {
+        const [result] = await MySQLAPI.pool.execute(sql);
         const query = projection.replace("-", "");
         for (let i = 0; i < result.length; i++) {
           delete result[i][`${query}`];
@@ -149,16 +156,15 @@ class MySQLAPI {
         return result;
       }
 
-      if (projection.startsWith("desc")) {
-        result.sort((a, b) => {
-          return b.created_at - a.created_at;
-        });
+      if (projection === "desc") {
+        sql = sql.concat(" ", " ORDER BY created_at DESC");
+        const [result] = await MySQLAPI.pool.execute(sql);
         return result;
       }
     }
 
     let sql = `SELECT *, ${asCreatedAt} FROM ${table} WHERE`;
-    let values = Object.values(filter);
+    const values = Object.values(filter);
     for (let i = 0; i < keys.length; i++) {
       if (i !== keys.length - 1) {
         sql = sql.concat(" ", keys[i], " = ? AND");
@@ -167,13 +173,23 @@ class MySQLAPI {
       if (keys[i] === "created_at") {
         sql = sql.concat(" ", `DATE(${keys[i]})`, ` BETWEEN ? AND ?`);
         const { years, months, dates } = util.getDateTime();
-        values.push(`${years}-${months}-${dates}`);
+        const today = `${years}-${months}-${dates}`;
+        values.push(today);
         break;
       }
       sql = sql.concat(" ", keys[i], " = ?");
     }
-    const [result] = await MySQLAPI.pool.execute(sql, values);
-    return result;
+
+    if (!projection) {
+      const [result] = await MySQLAPI.pool.execute(sql, values);
+      return result;
+    }
+
+    if (projection === "desc") {
+      sql = sql.concat(" ", "ORDER BY created_at DESC");
+      const [result] = await MySQLAPI.pool.execute(sql, values);
+      return result;
+    }
   }
 
   /**

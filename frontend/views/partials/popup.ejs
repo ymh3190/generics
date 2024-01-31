@@ -1,6 +1,6 @@
 <div class="popup-container hidden" id="popup">
-    <% if (url==='/' || url==='/work-order' ) { %>
-        <div class="primary work-order-popup">
+    <% if (url==='/work-order' ) { %>
+        <div class="primary work-order-popup hidden" id="workOrderPopup">
             <div>
                 <label for="urgent">urgent</label>
                 <input type="checkbox" id="urgent">
@@ -40,8 +40,7 @@
                     </div>
                 </div>
                 <div class="rows">
-                    <div id="workDetails">
-                    </div>
+                    <div id="workDetails"></div>
                     <div>
                         <button id="add">add</button>
                     </div>
@@ -56,9 +55,39 @@
                 </div>
             </div>
         </div>
+        <div class="primary work-detail-popup hidden" id="workDetailPopup">
+            <div>
+                <div>
+                    <span>title</span>
+                </div>
+                <div>
+                    <button id="close">x</button>
+                </div>
+            </div>
+            <div>
+                <div id="client"></div>
+            </div>
+            <div>
+                <div id="workDetails"></div>
+                <div id="comment"></div>
+            </div>
+        </div>
         <div class="secondary clients-popup hidden" id="clientsPopup">
             <div>
                 <div>
+                    <a id="newClient">
+                        <i class="fa-regular fa-square-plus"></i>
+                    </a>
+                </div>
+                <div>
+                    <div class="hidden" id="createClientPopup">
+                        <form id="createClientForm">
+                            <input type="text" placeholder="association" id="association" autocomplete="on">
+                            <input type="text" placeholder="name" id="name" autocomplete="on">
+                            <input type="text" placeholder="telephone" id="telephone" autocomplete="on">
+                            <button id="createClient">create</button>
+                        </form>
+                    </div>
                     <form id="searchClientForm">
                         <input type="text" id="searchClient">
                         <button>
@@ -145,6 +174,17 @@
             <% } %>
                 <div class="secondary items-popup hidden" id="itemsPopup">
                     <div>
+                        <a id="newItem">
+                            <i class="fa-regular fa-square-plus"></i>
+                        </a>
+                    </div>
+                    <div>
+                        <div class="hidden" id="createItemPopup">
+                            <form id="createItemForm">
+                                <input type="text" placeholder="name" id="name" autocomplete="on">
+                                <button id="createItem">create</button>
+                            </form>
+                        </div>
                         <div>
                             <form id="searchItemForm">
                                 <input type="text" id="searchItem">

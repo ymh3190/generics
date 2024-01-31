@@ -2,13 +2,12 @@
   position: fixed;
   z-index: 1;
   top: 7vh;
-  background-color: white;
   height: 100vh;
+  background-color: white;
 
   &-list {
-    &:not(:last-child) {
-      margin-bottom: 10px;
-    }
+    padding: 10px;
+    border-radius: 10px;
 
     a {
       i {

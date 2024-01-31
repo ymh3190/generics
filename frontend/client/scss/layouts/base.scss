@@ -5,4 +5,16 @@
   row-gap: 40px;
   padding-top: 150px;
   padding-left: 250px;
+
+  .work-order-container,
+  .remnant-container {
+    padding: 1rem;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 1rem;
+  }
+
+  .remnant-container:hover,
+  .work-order-container:hover {
+    cursor: pointer;
+  }
 }

@@ -1,26 +1,27 @@
 .status {
   display: flex;
   position: fixed;
-  z-index: 1;
   top: 7vh;
   left: 250px + $rootLeftMargin;
   width: 100%;
   background-color: white;
 
   &-text {
+    background-color: $bgColor;
     border: 1px solid rgba(0, 0, 0, 0.5);
     border-radius: 10px;
 
     span {
       display: inline-block;
-      padding: 10px;
+      padding: 10px 15px 10px 15px;
     }
 
     input,
     select {
       border: 0;
-      padding: 10px;
+      padding: 10px 15px 10px 15px;
       border-radius: 10px;
+      background-color: $bgColor;
 
       cursor: pointer;
     }
@@ -29,6 +30,6 @@
   }
 
   &-text:not(:last-child) {
-    margin-right: 20px;
+    margin-right: 10px;
   }
 }

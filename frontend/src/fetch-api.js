@@ -24,6 +24,11 @@ const catchResponseError = async (response) => {
     throw new CustomError.NotFoundError(data.message);
   }
 
+  if (response?.status === 500) {
+    const data = await response.json();
+    throw new CustomError.InternalServerError(data.message);
+  }
+
   if (!response) {
     throw new Error("Network response error");
   }
@@ -36,7 +41,7 @@ class FetchAPI {
 
   /**
    *
-   * @param {string} path
+   * @param {string} path remote_origin + /api/v1 + path
    * @param {{}} options
    * @returns
    */
@@ -60,7 +65,7 @@ class FetchAPI {
 
   /**
    *
-   * @param {string} path
+   * @param {string} path remote_origin + /api/v1 + path
    * @param {{}} data
    * @param {{}} options
    * @returns
@@ -105,7 +110,7 @@ class FetchAPI {
 
   /**
    *
-   * @param {string} path
+   * @param {string} path remote_origin + /api/v1 + path
    * @param {{}} data
    * @returns
    */
@@ -125,7 +130,7 @@ class FetchAPI {
 
   /**
    *
-   * @param {string} path
+   * @param {string} path remote_origin + /api/v1 + path
    * @param {{}} options
    * @returns
    */

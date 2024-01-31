@@ -1,12 +1,21 @@
 .popup-container {
   position: fixed;
-  left: $leftPrimaryPopup;
-  top: $topPrimaryPopup;
-  width: $widthPrimaryPopup;
-  height: $heightPrimaryPopup;
+  left: $leftPopup;
+  top: $topPopup;
+  width: $widthPopup;
+  height: $heightPopup;
   background-color: white;
   border: 1px solid rgba(0, 0, 0, 0.5);
-  z-index: 2;
+
+  .primary {
+    position: fixed;
+    left: $leftPrimaryPopup;
+    top: $topPrimaryPopup;
+    width: $widthPrimaryPopup;
+    height: $heightPrimaryPopup;
+    // background-color: white;
+    z-index: 1;
+  }
 
   .secondary {
     position: fixed;

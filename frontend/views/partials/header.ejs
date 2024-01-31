@@ -14,7 +14,7 @@
     </div>
     <div class="end">
         <% if (auth) { %>
-            <% if (url==='/' || url==='/work-order' ) { %>
+            <% if (url==='/work-order' ) { %>
                 <div class="end-create">
                     <a class="end-create__endpoint" id="createWorkOrder">
                         <i class="fa-regular fa-square-plus"></i>
@@ -26,31 +26,15 @@
                             <i class="fa-regular fa-square-plus"></i>
                         </a>
                     </div>
-                    <% } %>
-                        <div class="end-signout">
-                            <a class="end-signout__endpoint" id="signout">
-                                <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                            </a>
-                        </div>
+                    <% } else { %>
+                        <div></div>
                         <% } %>
-                            <!-- <div class="end-signin">
-                    <a class="end-signin__endpoint" id="signin">
-                        <i class="fa-solid fa-arrow-right-to-bracket"></i>
-                    </a>
-                </div> -->
-
-                            <!-- <div class="end-create">
-                    <a class="end-create__endpoint" id="createWorkOrder">
-                        <i class="fa-regular fa-square-plus"></i>
-                    </a>
-                </div>
-                <div class="end-signout">
-                    <a class="end-signout__endpoint" id="signout">
-                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                    </a>
-                </div> -->
+                            <div class="end-signout">
+                                <a class="end-signout__endpoint" id="signout">
+                                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                                </a>
+                            </div>
+                            <% } %>
     </div>
-    <!-- <div id="auth">
-    </div> -->
 </header>
 <script src="/public/js/signout.js"></script>
