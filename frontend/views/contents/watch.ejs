@@ -1,10 +1,12 @@
 <%- include('../layouts/base') %>
 
-    <div class="content watch" id="watch">
+    <div class="content watch" id="content">
         <div class="watch-container">
-            <video src="<%= video.path %>" poster="<%= image.path%>" controls></video>
+            <video src="<%= video.path %>" poster="<%= image.path%>" controls loop></video>
         </div>
         <div></div>
     </div>
-    <script src="/public/js/watch.js"></script>
-    <%- include('../partials/footer') %>
+    <%- include('../partials/status') %>
+        <%- include('../partials/popup') %>
+            <script src="/public/js/watch.js"></script>
+            <%- include('../partials/footer') %>

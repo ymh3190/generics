@@ -5,7 +5,7 @@ const createRemnantDOM = document.getElementById("createRemnant");
 
 const popupDOM = document.getElementById("popup");
 const closeDOM = document.getElementById("close");
-const cancelDOM = document.getElementById("cancel");
+// const cancelDOM = document.getElementById("cancel");
 const itemsPopupDOM = document.getElementById("itemsPopup");
 const searchItemFormDOM = document.getElementById("searchItemForm");
 const searchItemDOM = document.getElementById("searchItem");
@@ -115,10 +115,10 @@ if (createWorkOrderDOM) {
   };
 
   createWorkOrderDOM.addEventListener("click", createWorkOrderHandler);
-
-  for (const dom of [closeDOM, cancelDOM]) {
-    dom.addEventListener("click", createWorkOrderHandler);
-  }
+  closeDOM.addEventListener("click", createWorkOrderHandler);
+  // for (const dom of [closeDOM, cancelDOM]) {
+  //   dom.addEventListener("click", createWorkOrderHandler);
+  // }
 }
 
 if (createRemnantDOM) {
@@ -143,8 +143,8 @@ if (createRemnantDOM) {
   };
 
   createRemnantDOM.addEventListener("click", createRemnantHandler);
-
-  for (const dom of [closeDOM, cancelDOM]) {
-    dom.addEventListener("click", createRemnantHandler);
-  }
+  closeDOM.addEventListener("click", createRemnantHandler);
+  // for (const dom of [closeDOM, cancelDOM]) {
+  //   dom.addEventListener("click", createRemnantHandler);
+  // }
 }

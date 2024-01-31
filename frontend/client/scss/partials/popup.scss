@@ -1,20 +1,65 @@
 .popup-container {
   position: fixed;
-  left: $leftPopup;
-  top: $topPopup;
-  width: $widthPopup;
-  height: $heightPopup;
-  background-color: white;
-  border: 1px solid rgba(0, 0, 0, 0.5);
 
   .primary {
+    border-radius: 1rem;
+    border: 1px solid rgba(0, 0, 0, 0.2);
     position: fixed;
     left: $leftPrimaryPopup;
     top: $topPrimaryPopup;
     width: $widthPrimaryPopup;
     height: $heightPrimaryPopup;
-    // background-color: white;
+    background-color: white;
     z-index: 1;
+
+    &-top {
+      display: flex;
+      justify-content: space-between;
+      padding: 1rem;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+
+      &-title {
+        padding-left: 1rem;
+      }
+
+      &-button {
+        padding-right: 1rem;
+
+        button {
+          background-color: transparent;
+          border: 0;
+        }
+      }
+    }
+
+    &-bottom {
+      padding: 1rem 2rem 1rem 2rem;
+
+      &-input-container {
+        display: grid;
+        grid-template-columns: 1fr 8fr auto;
+        column-gap: 1rem;
+        line-height: 2rem;
+        margin-bottom: 2rem;
+
+        .search {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+        }
+
+        .comment {
+          input {
+            width: 100%;
+            line-height: 2rem;
+          }
+        }
+
+        .urgent {
+          display: flex;
+          align-items: center;
+        }
+      }
+    }
   }
 
   .secondary {
