@@ -1,9 +1,8 @@
 import FetchAPI from "../fetch-api";
 
 const clientsDOM = document.getElementById("clients");
-const searchClientsDOM = document.getElementById("searchClients");
+const clientInputDOM = document.getElementById("clientInput");
 const clientsPopupDOM = document.getElementById("clientsPopup");
-const selectedClientDOM = document.getElementById("selectedClient");
 const closeClientsPopupDOM = document.getElementById("closeClientsPopup");
 const searchClientDOM = document.getElementById("searchClient");
 const searchClientFormDOM = document.getElementById("searchClientForm");
@@ -32,10 +31,19 @@ const detailPopupDetailsDOM = document.querySelector(
 );
 const bodyDOM = document.querySelector("body");
 const newItemDOM = document.getElementById("newItem");
+const createClientPopupDOM = document.getElementById("createClientPopup");
+const searchClientPopupDOM = document.getElementById("searchClientPopup");
+const newClientDOM = document.getElementById("newClient");
+const createClientFormDOM = document.getElementById("createClientForm");
+const associationDOM = document.getElementById("association");
+const nameDOM = document.getElementById("name");
+const telephoneDOM = document.getElementById("telephone");
+const searchItemPopupDOM = document.getElementById("searchItemPopup");
+const createItemPopupDOM = document.getElementById("createItemPopup");
 
 const itemList = (item) => {
   return `
-  <div data-id=${item.id} id='item'>
+  <div data-id=${item.id} id='item' class='item-container'>
     <span id='name'>${item.name}</span>
   </div>
   `;
@@ -43,10 +51,16 @@ const itemList = (item) => {
 
 const clientList = (client) => {
   return `
-  <div data-id=${client.id} id='client'>
-    <span id='association'>${client.association}</span>
-    <span id='name'>${client.name}</span>
-    <span id='telephone'>${client.telephone}</span>
+  <div data-id=${client.id} id='client' class='client-container'>
+    <div>
+      <span id='association'>${client.association}</span>
+    </div>
+    <div>
+      <span id='name'>${client.name}</span>
+    </div>
+    <div>
+      <span id='telephone'>${client.telephone}</span>
+    </div>
   </div>
   `;
 };
@@ -85,8 +99,10 @@ async function clickClientHandler() {
   const response = await FetchAPI.get(`/clients/${id}`);
   if (response) {
     const data = await response.json();
-    selectedClientDOM.value = data.client.association;
-    selectedClientDOM.dataset.id = data.client.id;
+    clientInputDOM.value = data.client.association;
+    clientInputDOM.dataset.id = data.client.id;
+    // selectedClientDOM.value = data.client.association;
+    // selectedClientDOM.dataset.id = data.client.id;
     clientsPopupDOM.classList.add("hidden");
   }
 }
@@ -131,9 +147,13 @@ function bodyHandler(event) {
   workDetailPopupDOM.classList.add("hidden");
 }
 
-const searchClientsHandler = async () => {
+const clientInputFocusHandler = async () => {
   if (clientsPopupDOM.classList.contains("hidden")) {
     clientsPopupDOM.classList.remove("hidden");
+    searchClientPopupDOM.classList.remove("hidden");
+    createClientPopupDOM.classList.add("hidden");
+    const icon = newClientDOM.querySelector("i");
+    icon.className = icon.className.replace("solid", "regular");
 
     const response = await FetchAPI.get("/clients");
     if (response) {
@@ -196,6 +216,10 @@ const closeClientsPopupHandler = () => {
 
 const addHandler = async () => {
   itemsPopupDOM.classList.remove("hidden");
+  searchItemPopupDOM.classList.remove("hidden");
+  createItemPopupDOM.classList.add("hidden");
+  const icon = newItemDOM.querySelector("i");
+  icon.className = icon.className.replace("solid", "regular");
 
   const workDetailDOM = orderPopupDetailsDOM.querySelector(
     "#workDetail:last-child"
@@ -285,7 +309,7 @@ const addHandler = async () => {
 };
 
 const placeHandler = async () => {
-  const client_id = selectedClientDOM.dataset.id;
+  const client_id = clientInputDOM.dataset.id;
   if (!client_id) {
     alert("Client not found");
     return;
@@ -444,13 +468,73 @@ const closeWorkDetailPopupHandler = () => {
   workDetailPopupDOM.classList.add("hidden");
 };
 
+const createClientFormHandler = async (event) => {
+  event.preventDefault();
+
+  const association = associationDOM.value;
+  const name = nameDOM.value;
+  const telephone = telephoneDOM.value;
+
+  if (!association) {
+    alert("Provide association");
+    associationDOM.focus();
+    return;
+  }
+
+  if (!name) {
+    alert("Provide name");
+    nameDOM.focus();
+    return;
+  }
+
+  if (!telephone) {
+    alert("Provide telephone");
+    telephoneDOM.focus();
+    return;
+  }
+
+  const response = await FetchAPI.post("/clients", {
+    association,
+    name,
+    telephone,
+  });
+  if (response) {
+    associationDOM.value = "";
+    nameDOM.value = "";
+    telephoneDOM.value = "";
+
+    const data = await response.json();
+    const html = clientList(data.client);
+    clientsDOM.insertAdjacentHTML("afterbegin", html);
+    const clientDOM = clientsDOM.querySelector("#client:first-child");
+    clientDOM.addEventListener("click", clickClientHandler);
+  }
+};
+
+const newClientHandler = () => {
+  if (createClientPopupDOM.classList.contains("hidden")) {
+    searchClientPopupDOM.classList.add("hidden");
+    createClientPopupDOM.classList.remove("hidden");
+    const icon = newClientDOM.querySelector("i");
+    icon.className = icon.className.replace("regular", "solid");
+    return;
+  }
+
+  searchClientPopupDOM.classList.remove("hidden");
+  createClientPopupDOM.classList.add("hidden");
+  const icon = newClientDOM.querySelector("i");
+  icon.className = icon.className.replace("solid", "regular");
+};
+
+newClientDOM.addEventListener("click", newClientHandler);
+createClientFormDOM.addEventListener("submit", createClientFormHandler);
 closeWorkDetailPopupDOM.addEventListener("click", closeWorkDetailPopupHandler);
 closeItemsPopupDOM.addEventListener("click", closeItemsPopupHandler);
 placeDOM.addEventListener("click", placeHandler);
 addDOM.addEventListener("click", addHandler);
 closeClientsPopupDOM.addEventListener("click", closeClientsPopupHandler);
 searchClientFormDOM.addEventListener("submit", searchClientFormHandler);
-searchClientsDOM.addEventListener("click", searchClientsHandler);
+clientInputDOM.addEventListener("focus", clientInputFocusHandler);
 
 (async () => {
   const workOrderContainerDOMs = document.querySelectorAll(

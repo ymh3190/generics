@@ -84,7 +84,10 @@ class ClientRouter extends Router {
   constructor() {
     super();
 
-    this.router.route("/").get(clientController.select);
+    this.router
+      .route("/")
+      .post(middleware.tokenExists, clientController.create)
+      .get(middleware.tokenExists, clientController.select);
 
     this.router.route("/:id(\\d|\\w{32})").get(clientController.selectById);
   }

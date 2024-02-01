@@ -193,6 +193,14 @@ class AuthController {
 }
 
 class ClientController {
+  async create(req, res) {
+    const response = await FetchAPI.post("/clients", req.body, {
+      cookie: req.headers.cookie,
+    });
+    const data = await response.json();
+    res.status(201).json({ client: data.client });
+  }
+
   async select(req, res) {
     const response = await FetchAPI.get("/clients", {
       cookie: req.headers.cookie,

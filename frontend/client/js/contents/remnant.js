@@ -25,7 +25,7 @@ const searchZonesDOM = document.getElementById("searchZones");
 
 const itemList = (item) => {
   return `
-  <div data-id=${item.id} id='item'>
+  <div data-id=${item.id} id='item' class='item-container'>
     <span id='name'>${item.name}</span>
   </div>
   `;
@@ -33,25 +33,12 @@ const itemList = (item) => {
 
 const zoneList = (zone) => {
   return `
-  <div data-id=${zone.id} id='zone'>
+  <div data-id=${zone.id} id='zone' class='zone-container'>
     <div>
       <span id='name'>${zone.name}</span>
     </div>
     <div>
       <span>${zone.comment}</span>
-    </div>
-  </div>
-  <div>
-    <div>
-      <button id='save'>save</button>
-    </div>
-    <div>
-      <div>
-        <button id='update'>update</button>
-      </div>
-      <div>
-        <button id='delete'>delete</button>
-      </div>
     </div>
   </div>
   `;
@@ -124,16 +111,11 @@ const addHandler = async () => {
     <div>
       <input type='text' id='depth'>
     </div>
-    <div style="display: flex;">
-      <div>
-        <input type='text' id='width'>
-      </div>
-      <div>
-        <span>x</span>
-      </div>
-      <div>
-        <input type='text' id='length'>
-      </div>
+    <div>
+      <input type='text' id='width'>
+    </div>
+    <div>
+      <input type='text' id='length'>
     </div>
     <div>
       <input type='text' id='quantity'>

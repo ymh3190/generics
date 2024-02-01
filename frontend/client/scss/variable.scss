@@ -9,18 +9,18 @@ $leftSign: 40%;
 $topSign: 30%;
 $heightSign: 40%;
 
-$leftPrimaryPopup: 15%;
-$widthPrimaryPopup: 70%;
-$topPrimaryPopup: 5%;
-$heightPrimaryPopup: 90%;
+$primaryPopupLeft: 25%;
+$primaryPopupWidth: 50%;
+$primaryPopupTop: 5%;
+$primaryPopupHeight: 90%;
 
-$leftSecondaryPopup: 30%;
-$widthSecondaryPopup: 40%;
-$topSecondaryPopup: 10%;
-$heightSecondaryPopup: 80%;
+$secondaryPopupLeft: 30%;
+$secondaryPopupWidth: 40%;
+$secondaryPopupTop: 10%;
+$secondaryPopupHeight: 80%;
 
 $bgColor: #e5e5e5;
 $fontColor: #3f3f3f;
-$clickBgColor: black;
-$clickFontColor: white;
-$navClickBgColor: #3f3f3f;
+
+$clickColorBg: black;
+$clickColorFont: white;

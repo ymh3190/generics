@@ -131,16 +131,22 @@ class MySQLAPI {
     DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') AS created_at
     `;
 
-    // const asEndDate = `
-    // DATE_FORMAT(end_date, '%Y-%m-%d %H:%i:%s') AS end_date
-    // `;
-
+    let asEndDate;
     const table = this.getTable();
+    if (table === "work_order") {
+      asEndDate = `
+      DATE_FORMAT(end_date, '%Y-%m-%d %H:%i:%s') AS end_date
+      `;
+    }
 
     const keys = Object.keys(filter);
     if (!keys.length) {
-      let sql = `SELECT *, ${asCreatedAt} FROM ${table}`;
-      // let sql = `SELECT *, ${asCreatedAt}, ${asEndDate} FROM ${table}`;
+      let sql;
+      if (asEndDate) {
+        sql = `SELECT *, ${asCreatedAt}, ${asEndDate} FROM ${table}`;
+      } else {
+        sql = `SELECT *, ${asCreatedAt} FROM ${table}`;
+      }
 
       if (!projection) {
         const [result] = await MySQLAPI.pool.execute(sql);
@@ -163,7 +169,12 @@ class MySQLAPI {
       }
     }
 
-    let sql = `SELECT *, ${asCreatedAt} FROM ${table} WHERE`;
+    let sql;
+    if (asEndDate) {
+      sql = `SELECT *, ${asCreatedAt}, ${asEndDate} FROM ${table}`;
+    } else {
+      sql = `SELECT *, ${asCreatedAt} FROM ${table} WHERE`;
+    }
     const values = Object.values(filter);
     for (let i = 0; i < keys.length; i++) {
       if (i !== keys.length - 1) {

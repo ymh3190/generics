@@ -5,7 +5,6 @@ const createRemnantDOM = document.getElementById("createRemnant");
 
 const popupDOM = document.getElementById("popup");
 const closeDOM = document.getElementById("close");
-// const cancelDOM = document.getElementById("cancel");
 const itemsPopupDOM = document.getElementById("itemsPopup");
 const searchItemFormDOM = document.getElementById("searchItemForm");
 const searchItemDOM = document.getElementById("searchItem");
@@ -14,6 +13,7 @@ const newItemDOM = document.getElementById("newItem");
 const createItemPopupDOM = document.getElementById("createItemPopup");
 const createItemFormDOM = document.getElementById("createItemForm");
 const nameDOM = document.querySelector("#itemsPopup #name");
+const searchItemPopupDOM = document.getElementById("searchItemPopup");
 
 const itemList = (item) => {
   return `
@@ -47,12 +47,12 @@ const newItemHandler = () => {
   if (createItemPopupDOM.classList.contains("hidden")) {
     icon.className = icon.className.replace("regular", "solid");
     createItemPopupDOM.classList.remove("hidden");
-    searchItemFormDOM.classList.add("hidden");
+    searchItemPopupDOM.classList.add("hidden");
     return;
   }
 
   icon.className = icon.className.replace("solid", "regular");
-  searchItemFormDOM.classList.remove("hidden");
+  searchItemPopupDOM.classList.remove("hidden");
   createItemPopupDOM.classList.add("hidden");
 };
 
@@ -85,7 +85,7 @@ searchItemFormDOM.addEventListener("submit", searchItemFormHandler);
 
 if (createWorkOrderDOM) {
   const urgentDOM = document.getElementById("urgent");
-  const selectedClientDOM = document.getElementById("selectedClient");
+  const clientInputDOM = document.getElementById("clientInput");
   const workDetailsDOM = document.getElementById("workDetails");
   const commentDOM = document.getElementById("comment");
   const clientsPopupDOM = document.getElementById("clientsPopup");
@@ -98,7 +98,7 @@ if (createWorkOrderDOM) {
       workOrderPopupDOM.classList.remove("hidden");
       icon.className = icon.className.replace("regular", "solid");
       urgentDOM.checked = false;
-      selectedClientDOM.value = "";
+      clientInputDOM.value = "";
       commentDOM.value = "";
       const workDetailsDOMs = workDetailsDOM.querySelectorAll("#workDetail");
       for (const workDetailsDOM of workDetailsDOMs) {
@@ -116,9 +116,6 @@ if (createWorkOrderDOM) {
 
   createWorkOrderDOM.addEventListener("click", createWorkOrderHandler);
   closeDOM.addEventListener("click", createWorkOrderHandler);
-  // for (const dom of [closeDOM, cancelDOM]) {
-  //   dom.addEventListener("click", createWorkOrderHandler);
-  // }
 }
 
 if (createRemnantDOM) {
@@ -144,7 +141,4 @@ if (createRemnantDOM) {
 
   createRemnantDOM.addEventListener("click", createRemnantHandler);
   closeDOM.addEventListener("click", createRemnantHandler);
-  // for (const dom of [closeDOM, cancelDOM]) {
-  //   dom.addEventListener("click", createRemnantHandler);
-  // }
 }
