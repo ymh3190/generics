@@ -40,6 +40,12 @@ class MySQLAPI {
     return name;
   }
 
+  static async getColumns() {
+    const sql = `SHOW COLUMNS FROM ${this.getTable()}`;
+    const [result] = await MySQLAPI.pool.execute(sql);
+    return result;
+  }
+
   /**
    *
    * @param {{}} filter
@@ -127,26 +133,36 @@ class MySQLAPI {
       throw new CustomError.BadRequestError("Provide filter");
     }
 
-    const asCreatedAt = `
-    DATE_FORMAT(created_at, '%Y-%m-%d %H:%i:%s') AS created_at
-    `;
-
-    let asEndDate;
     const table = this.getTable();
-    if (table === "work_order") {
-      asEndDate = `
-      DATE_FORMAT(end_date, '%Y-%m-%d %H:%i:%s') AS end_date
-      `;
+    const dateTimes = [];
+    for (const column of await this.getColumns()) {
+      if (column.Type === "datetime") {
+        dateTimes.push(column.Field);
+      }
+    }
+
+    // for (const [index, column] of Object.entries(dateTimes)) {
+    //   const date = `DATE_FORMAT(${column}, '${format}')`;
+    //   if (index !== String(dateTimes.length - 1)) {
+    //     query = query.concat(date, ` AS ${column}`, ", ");
+    //     continue;
+    //   }
+    //   query = query.concat(date, ` AS ${column}`);
+    // }
+    let query = "";
+    const format = "%Y-%m-%d %H:%i:%s";
+    for (let i = 0; i < dateTimes.length; i++) {
+      const date = `DATE_FORMAT(${dateTimes[i]}, '${format}')`;
+      if (i !== dateTimes.length - 1) {
+        query = query.concat(date, ` AS ${dateTimes[i]}`, ", ");
+        continue;
+      }
+      query = query.concat(date, ` AS ${dateTimes[i]}`);
     }
 
     const keys = Object.keys(filter);
     if (!keys.length) {
-      let sql;
-      if (asEndDate) {
-        sql = `SELECT *, ${asCreatedAt}, ${asEndDate} FROM ${table}`;
-      } else {
-        sql = `SELECT *, ${asCreatedAt} FROM ${table}`;
-      }
+      let sql = `SELECT *, ${query} FROM ${table}`;
 
       if (!projection) {
         const [result] = await MySQLAPI.pool.execute(sql);
@@ -163,18 +179,13 @@ class MySQLAPI {
       }
 
       if (projection === "desc") {
-        sql = sql.concat(" ", " ORDER BY created_at DESC");
+        sql = sql.concat(" ", "ORDER BY created_at DESC");
         const [result] = await MySQLAPI.pool.execute(sql);
         return result;
       }
     }
 
-    let sql;
-    if (asEndDate) {
-      sql = `SELECT *, ${asCreatedAt}, ${asEndDate} FROM ${table}`;
-    } else {
-      sql = `SELECT *, ${asCreatedAt} FROM ${table} WHERE`;
-    }
+    let sql = `SELECT *, ${query} FROM ${table} WHERE`;
     const values = Object.values(filter);
     for (let i = 0; i < keys.length; i++) {
       if (i !== keys.length - 1) {
@@ -304,11 +315,10 @@ class MySQLAPI {
 
     const table = this.getTable();
 
-    // 1.30 delete
-    // const result = await this.selectById(id);
-    // if (!result) {
-    //   throw new CustomError.NotFoundError(`${table} not found`);
-    // }
+    const result = await this.selectById(id);
+    if (!result) {
+      throw new CustomError.NotFoundError(`${table} not found`);
+    }
 
     let sql = `UPDATE ${table} SET`;
     for (let i = 0; i < keys.length; i++) {
@@ -345,11 +355,10 @@ class MySQLAPI {
 
     const table = this.getTable();
 
-    // 1.30 delete
-    // const result = await this.selectById(id);
-    // if (!result) {
-    //   throw new CustomError.NotFoundError(`${table} not found`);
-    // }
+    const result = await this.selectById(id);
+    if (!result) {
+      throw new CustomError.NotFoundError(`${table} not found`);
+    }
 
     const sql = `DELETE FROM ${table} WHERE id = ?`;
     await MySQLAPI.pool.execute(sql, [id]);

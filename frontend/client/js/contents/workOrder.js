@@ -7,9 +7,7 @@ const closeClientsPopupDOM = document.getElementById("closeClientsPopup");
 const searchClientDOM = document.getElementById("searchClient");
 const searchClientFormDOM = document.getElementById("searchClientForm");
 const addDOM = document.getElementById("add");
-const orderPopupDetailsDOM = document.querySelector(
-  "#workOrderPopup #workDetails"
-);
+const orderPopupDetailsDOM = document.getElementById("workDetails");
 const placeDOM = document.getElementById("place");
 
 const itemsDOM = document.getElementById("items");
@@ -26,9 +24,7 @@ const workDetailPopupDOM = document.getElementById("workDetailPopup");
 const closeWorkDetailPopupDOM = document.querySelector(
   "#workDetailPopup #close"
 );
-const detailPopupDetailsDOM = document.querySelector(
-  "#workDetailPopup #workDetails"
-);
+const workInfosDOM = document.getElementById("workInfos");
 const bodyDOM = document.querySelector("body");
 const newItemDOM = document.getElementById("newItem");
 const createClientPopupDOM = document.getElementById("createClientPopup");
@@ -52,43 +48,47 @@ const itemList = (item) => {
 const clientList = (client) => {
   return `
   <div data-id=${client.id} id='client' class='client-container'>
-    <div>
-      <span id='association'>${client.association}</span>
+    <div class='top'>
+      <span id='association' class='center'>${client.association}</span>
     </div>
-    <div>
-      <span id='name'>${client.name}</span>
-    </div>
-    <div>
-      <span id='telephone'>${client.telephone}</span>
+    <div class='bottom'>
+      <div class='left'>
+        <span id='name'>${client.name}</span>
+      </div>
+      <div>
+        <span id='telephone'>${client.telephone}</span>
+      </div>
     </div>
   </div>
   `;
 };
 
-const workDetailList = (workDetail) => {
+const workInfoList = (workInfo) => {
   return `
-  <div id='workDetail'>
+  <div id='workInfo' class='work-info'>
     <div>
       <span>item</span>
-      <span>${workDetail.itemName}</span>
+      <span>${workInfo.item.name}</span>
     </div>
     <div>
       <span>depth</span>
-      <span>${workDetail.depth}</span>
+      <span>${workInfo.workDetail.depth}</span>
     </div>
     <div>
-      <span>size</span>
-      <span>${workDetail.width}</span>
-      <span>x</span>
-      <span>${workDetail.length}</span>
+      <span>width</span>
+      <span>${workInfo.workDetail.width}</span>
+    </div>
+    <div>
+      <span>length</span>
+      <span>${workInfo.workDetail.length}</span>
     </div>
     <div>
       <span>quantity</span>
-      <span>${workDetail.quantity}</span>
+      <span>${workInfo.workDetail.quantity}</span>
     </div>
     <div>
       <span>comment</span>
-      <span>${workDetail.workOrderComment}</span>
+      <span>${workInfo.workOrder.comment}</span>
     </div>
   </div>
   `;
@@ -101,8 +101,6 @@ async function clickClientHandler() {
     const data = await response.json();
     clientInputDOM.value = data.client.association;
     clientInputDOM.dataset.id = data.client.id;
-    // selectedClientDOM.value = data.client.association;
-    // selectedClientDOM.dataset.id = data.client.id;
     clientsPopupDOM.classList.add("hidden");
   }
 }
@@ -413,31 +411,38 @@ async function workOrderContainerHandler(event) {
   workDetailPopupDOM.classList.remove("hidden");
   const workOrderId = this.dataset.id;
 
-  let workOrderComment;
+  let workOrder;
   let response = await FetchAPI.get(`/work-orders/${workOrderId}`);
   if (response) {
     const data = await response.json();
-    workOrderComment = data.workOrder.comment;
+    workOrder = data.workOrder;
   }
 
   response = await FetchAPI.get(`/work-orders/${workOrderId}/details`);
   if (response) {
     const data = await response.json();
+    const workDetails = data.workDetails;
     let html = "";
 
-    for (const workDetail of data.workDetails) {
+    for (const workDetail of workDetails) {
       const itemId = workDetail.item_id;
       const response = await FetchAPI.get(`/items/${itemId}`);
       if (response) {
         const data = await response.json();
-        workDetail.itemName = data.item.name;
-        workDetail.workOrderComment = workOrderComment;
-        html += workDetailList(workDetail);
+        const item = data.item;
+        const workInfo = { workOrder, workDetail, item };
+        html += workInfoList(workInfo);
       }
     }
-
-    detailPopupDetailsDOM.textContent = "";
-    detailPopupDetailsDOM.insertAdjacentHTML("beforeend", html);
+    workInfosDOM.textContent = "";
+    // const completeUrgent = `
+    // <div>
+    //   <span>${workOrder.is_complete ? "complete" : "resolving"}</span>
+    //   <span>${workOrder.is_urgent ? "urgent" : ""}</span>
+    // </div>
+    // `;
+    // workInfosDOM.insertAdjacentHTML("afterbegin", completeUrgent);
+    workInfosDOM.insertAdjacentHTML("beforeend", html);
   }
 
   const clientId = this.dataset.client_id;
@@ -445,17 +450,8 @@ async function workOrderContainerHandler(event) {
   if (response) {
     const data = await response.json();
     const clientDOM = workDetailPopupDOM.querySelector("#client");
-    const html = `
-    <div>
-      <span>association: ${data.client.association}</span>
-    </div>
-    <div>
-      <span>name: ${data.client.name}</span>
-    </div>
-    <div>
-      <span>telephone: ${data.client.telephone}</span>
-    </div>
-    `;
+    const html = clientList(data.client);
+
     clientDOM.textContent = "";
     clientDOM.insertAdjacentHTML("beforeend", html);
   }
