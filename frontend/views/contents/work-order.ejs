@@ -5,13 +5,18 @@
             <div class="work-order-container" id="workOrderContainer" data-id="<%= workOrder.id %>"
                 data-client_id="<%= workOrder.client_id %>" data-is_complete="<%=workOrder.is_complete %>"
                 data-is_urgent="<%=workOrder.is_urgent %>">
-                <div>
-                    <div style="display: flex; justify-content: space-between;">
+                <div class="preview">
+                    <div class="preview-top">
                         <div>
                             <% if (!workOrder.is_complete) { %>
                                 <span>resolving</span>
                                 <% } else { %>
                                     <span>complete</span>
+                                    <div>
+                                        <span>
+                                            <%= workOrder.end_date %>
+                                        </span>
+                                    </div>
                                     <% } %>
                         </div>
                         <div>
@@ -20,24 +25,21 @@
                                 <% } %>
                         </div>
                     </div>
-                    <div>
+                    <div class="preview-bottom">
+                        <span>
+                            <%= workOrder.comment %>
+                        </span>
+                    </div>
+                </div>
+                <div class="metadata">
+                    <div id="client" class="client"></div>
+                    <div class="datetime">
                         <div>
                             <span>
-                                comment: <%= workOrder.comment %>
-                            </span>
-                        </div>
-                        <div>
-                            <span>
-                                end_date: <%= workOrder.end_date %>
+                                <%= workOrder.created_at %>
                             </span>
                         </div>
                     </div>
-                </div>
-                <div id="client"></div>
-                <div>
-                    <span>
-                        created_at: <%= workOrder.created_at %>
-                    </span>
                 </div>
             </div>
             <% } %>

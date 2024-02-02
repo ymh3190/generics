@@ -1,6 +1,6 @@
 import FetchAPI from "./fetch-api";
 import * as CustomError from "./error";
-// import util from "./util";
+import util from "./util";
 
 class RootController {
   getIndex(req, res) {
@@ -11,18 +11,19 @@ class RootController {
     // const { years, months, dates } = util.getDateTime();
     // const date = `${years}-${months}-${dates}`;
 
+    // const response = await FetchAPI.post(
+    //   "/work-orders/date",
+    //   { created_at: `${years}-${months}-${dates}` },
+    //   {
+    //     cookie: req.headers.cookie,
+    //   }
+    // );
     const response = await FetchAPI.get("/work-orders", {
       cookie: req.headers.cookie,
-      // created_at: date,
     });
 
     const data = await response.json();
     const workOrders = data.workOrders;
-
-    // const workOrders = data.workOrders.toSorted((a, b) => {
-    //   // order by desc
-    //   return new Date(b.created_at) - new Date(a.created_at);
-    // });
 
     const cookies = response.headers.raw()["set-cookie"];
     if (!cookies) {

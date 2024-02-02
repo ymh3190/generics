@@ -9,6 +9,7 @@ if (workOrderContainerDOMs.length) {
   const completeChipDOM = document.getElementById("completeChip");
   const urgentChipDOM = document.getElementById("urgentChip");
   const dateChipDOM = document.getElementById("dateChip");
+  const dateDOM = dateChipDOM.querySelector("#date");
   const contentDOM = document.getElementById("content");
 
   function spotlightChip(dom) {
@@ -81,14 +82,14 @@ if (workOrderContainerDOMs.length) {
     }
   };
 
-  const dateChipHandler = async () => {
+  const dateHandler = async () => {
     spotlightChip(dateChipDOM);
     workOrderContainerDOMs = document.querySelectorAll("#workOrderContainer");
     for (const workOrderContainerDOM of workOrderContainerDOMs) {
       workOrderContainerDOM.remove();
     }
 
-    const date = dateChipDOM.value;
+    const date = dateDOM.value;
     const response = await FetchAPI.post("/work-orders/date", {
       created_at: date,
     });
@@ -136,7 +137,7 @@ if (workOrderContainerDOMs.length) {
     }
   };
 
-  dateChipDOM.addEventListener("change", dateChipHandler);
+  dateDOM.addEventListener("change", dateHandler);
   urgentChipDOM.addEventListener("click", urgentChipHandler);
   completeChipDOM.addEventListener("click", completeChipHandler);
   resolvingChipDOM.addEventListener("click", resolvingChipHandler);

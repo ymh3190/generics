@@ -1,4 +1,5 @@
 import FetchAPI from "../fetch-api";
+import * as htmls from "../htmls";
 
 const createWorkOrderDOM = document.getElementById("createWorkOrder");
 const createRemnantDOM = document.getElementById("createRemnant");
@@ -14,14 +15,6 @@ const createItemPopupDOM = document.getElementById("createItemPopup");
 const createItemFormDOM = document.getElementById("createItemForm");
 const nameDOM = document.querySelector("#itemsPopup #name");
 const searchItemPopupDOM = document.getElementById("searchItemPopup");
-
-const itemList = (item) => {
-  return `
-  <div data-id=${item.id} id='item'>
-    <span id='name'>${item.name}</span>
-  </div>
-  `;
-};
 
 const searchItemFormHandler = (event) => {
   event.preventDefault();
@@ -68,7 +61,7 @@ const createItemFormHandler = async (event) => {
   const response = await FetchAPI.post("/items", { name });
   if (response) {
     const data = await response.json();
-    const html = itemList(data.item);
+    const html = htmls.itemList(data.item);
     itemsDOM.insertAdjacentHTML("beforeend", html);
     nameDOM.value = "";
     const icon = newItemDOM.querySelector("i");

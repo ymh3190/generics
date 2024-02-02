@@ -11,7 +11,18 @@
   background-color: white;
   box-sizing: border-box;
 
-  div:nth-child(2) {
+  input {
+    line-height: 1.2rem;
+  }
+
+  .start,
+  .end {
+    i {
+      font-size: 1.1rem;
+    }
+  }
+
+  .center {
     form {
       display: grid;
       grid-template-columns: 9fr 1fr;

@@ -1,0 +1,24 @@
+.preview {
+  height: 10vh;
+  margin-bottom: 1rem;
+
+  &-top {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+}
+
+.metadata {
+  .client {
+    display: flex;
+
+    .left {
+      margin-right: 10px;
+    }
+  }
+
+  .datetime {
+    display: flex;
+  }
+}

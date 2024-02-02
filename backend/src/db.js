@@ -46,6 +46,27 @@ class MySQLAPI {
     return result;
   }
 
+  static async formatDate() {
+    const dateTimes = [];
+    for (const column of await this.getColumns()) {
+      if (column.Type === "datetime") {
+        dateTimes.push(column.Field);
+      }
+    }
+
+    let query = "";
+    const format = "%Y-%m-%d %H:%i:%s";
+    for (let i = 0; i < dateTimes.length; i++) {
+      const date = `DATE_FORMAT(${dateTimes[i]}, '${format}')`;
+      if (i !== dateTimes.length - 1) {
+        query = query.concat(date, ` AS ${dateTimes[i]}`, ", ");
+        continue;
+      }
+      query = query.concat(date, ` AS ${dateTimes[i]}`);
+    }
+    return query;
+  }
+
   /**
    *
    * @param {{}} filter
@@ -115,7 +136,8 @@ class MySQLAPI {
 
     for (const [key, value] of Object.entries(options)) {
       if (key === "new" && value) {
-        const sql = `SELECT * FROM ${table} WHERE id = ?`;
+        const dateFormat = await this.formatDate();
+        const sql = `SELECT *, ${dateFormat} FROM ${table} WHERE id = ?`;
         const values = [id];
         const [[result]] = await MySQLAPI.pool.execute(sql, values);
         return result;
@@ -133,13 +155,22 @@ class MySQLAPI {
       throw new CustomError.BadRequestError("Provide filter");
     }
 
-    const table = this.getTable();
-    const dateTimes = [];
-    for (const column of await this.getColumns()) {
-      if (column.Type === "datetime") {
-        dateTimes.push(column.Field);
-      }
-    }
+    // const dateTimes = [];
+    // for (const column of await this.getColumns()) {
+    //   if (column.Type === "datetime") {
+    //     dateTimes.push(column.Field);
+    //   }
+    // }
+    // let query = "";
+    // const format = "%Y-%m-%d %H:%i:%s";
+    // for (let i = 0; i < dateTimes.length; i++) {
+    //   const date = `DATE_FORMAT(${dateTimes[i]}, '${format}')`;
+    //   if (i !== dateTimes.length - 1) {
+    //     query = query.concat(date, ` AS ${dateTimes[i]}`, ", ");
+    //     continue;
+    //   }
+    //   query = query.concat(date, ` AS ${dateTimes[i]}`);
+    // }
 
     // for (const [index, column] of Object.entries(dateTimes)) {
     //   const date = `DATE_FORMAT(${column}, '${format}')`;
@@ -149,20 +180,12 @@ class MySQLAPI {
     //   }
     //   query = query.concat(date, ` AS ${column}`);
     // }
-    let query = "";
-    const format = "%Y-%m-%d %H:%i:%s";
-    for (let i = 0; i < dateTimes.length; i++) {
-      const date = `DATE_FORMAT(${dateTimes[i]}, '${format}')`;
-      if (i !== dateTimes.length - 1) {
-        query = query.concat(date, ` AS ${dateTimes[i]}`, ", ");
-        continue;
-      }
-      query = query.concat(date, ` AS ${dateTimes[i]}`);
-    }
+    const table = this.getTable();
+    const dateFormat = await this.formatDate();
 
     const keys = Object.keys(filter);
     if (!keys.length) {
-      let sql = `SELECT *, ${query} FROM ${table}`;
+      let sql = `SELECT *, ${dateFormat} FROM ${table}`;
 
       if (!projection) {
         const [result] = await MySQLAPI.pool.execute(sql);
@@ -185,7 +208,7 @@ class MySQLAPI {
       }
     }
 
-    let sql = `SELECT *, ${query} FROM ${table} WHERE`;
+    let sql = `SELECT *, ${dateFormat} FROM ${table} WHERE`;
     const values = Object.values(filter);
     for (let i = 0; i < keys.length; i++) {
       if (i !== keys.length - 1) {
@@ -225,8 +248,9 @@ class MySQLAPI {
     }
 
     const table = this.getTable();
+    const dateFormat = await this.formatDate();
 
-    const sql = `SELECT * FROM ${table} WHERE id = ?`;
+    const sql = `SELECT *, ${dateFormat} FROM ${table} WHERE id = ?`;
     const [[result]] = await MySQLAPI.pool.execute(sql, [id]);
 
     if (!projection) {

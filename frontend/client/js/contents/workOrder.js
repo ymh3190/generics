@@ -1,4 +1,5 @@
 import FetchAPI from "../fetch-api";
+import * as htmls from "../htmls";
 
 const clientsDOM = document.getElementById("clients");
 const clientInputDOM = document.getElementById("clientInput");
@@ -36,63 +37,6 @@ const nameDOM = document.getElementById("name");
 const telephoneDOM = document.getElementById("telephone");
 const searchItemPopupDOM = document.getElementById("searchItemPopup");
 const createItemPopupDOM = document.getElementById("createItemPopup");
-
-const itemList = (item) => {
-  return `
-  <div data-id=${item.id} id='item' class='item-container'>
-    <span id='name'>${item.name}</span>
-  </div>
-  `;
-};
-
-const clientList = (client) => {
-  return `
-  <div data-id=${client.id} id='client' class='client-container'>
-    <div class='top'>
-      <span id='association' class='center'>${client.association}</span>
-    </div>
-    <div class='bottom'>
-      <div class='left'>
-        <span id='name'>${client.name}</span>
-      </div>
-      <div>
-        <span id='telephone'>${client.telephone}</span>
-      </div>
-    </div>
-  </div>
-  `;
-};
-
-const workInfoList = (workInfo) => {
-  return `
-  <div id='workInfo' class='work-info'>
-    <div>
-      <span>item</span>
-      <span>${workInfo.item.name}</span>
-    </div>
-    <div>
-      <span>depth</span>
-      <span>${workInfo.workDetail.depth}</span>
-    </div>
-    <div>
-      <span>width</span>
-      <span>${workInfo.workDetail.width}</span>
-    </div>
-    <div>
-      <span>length</span>
-      <span>${workInfo.workDetail.length}</span>
-    </div>
-    <div>
-      <span>quantity</span>
-      <span>${workInfo.workDetail.quantity}</span>
-    </div>
-    <div>
-      <span>comment</span>
-      <span>${workInfo.workOrder.comment}</span>
-    </div>
-  </div>
-  `;
-};
 
 async function clickClientHandler() {
   const id = this.dataset.id;
@@ -159,7 +103,7 @@ const clientInputFocusHandler = async () => {
       let html = "";
 
       for (const client of data.clients) {
-        html += clientList(client);
+        html += htmls.clientList(client);
       }
 
       clientsDOM.textContent = "";
@@ -230,59 +174,14 @@ const addHandler = async () => {
     }
   }
 
-  const html = `
-  <div class='work-detail' id='workDetail'>
-    <div>
-      <input type='text' id='item'>
-    </div>
-    <div>
-      <input type='text' id='depth'>
-    </div>
-    <div>
-      <input type='text' id='width'>
-    </div>
-    <div>
-      <input type='text' id='length'>
-    </div>
-    <div>
-      <input type='text' id='quantity'>
-    </div>
-    <div>
-      <input type='text' id='remnant'>
-    </div>
-    <div>
-      <button id='delete'>delete</button>
-    </div>
-  </div>
-  `;
+  const html = htmls.workDetailList();
   orderPopupDetailsDOM.insertAdjacentHTML("beforeend", html);
 
   const newWorkDetailDOM = orderPopupDetailsDOM.querySelector(
     "#workDetail:last-child"
   );
-  const itemDOM = newWorkDetailDOM.querySelector("#item");
-  itemDOM.addEventListener("focus", async () => {
-    const response = await FetchAPI.get("/items");
-    if (response) {
-      itemsPopupDOM.classList.remove("hidden");
-      const icon = newItemDOM.querySelector("i");
-      icon.className = icon.className.replace("solid", "regular");
-
-      const data = await response.json();
-      let html = "";
-
-      for (const item of data.items) {
-        html += itemList(item);
-      }
-      itemsDOM.textContent = "";
-      itemsDOM.insertAdjacentHTML("beforeend", html);
-
-      const itemDOMs = itemsDOM.querySelectorAll("#item");
-      for (const itemDOM of itemDOMs) {
-        itemDOM.addEventListener("click", clickItemHandler);
-      }
-    }
-  });
+  // const itemDOM = newWorkDetailDOM.querySelector("#item");
+  // itemDOM.addEventListener("focus", itemFocusHandler);
   const deleteDOM = newWorkDetailDOM.querySelector("#delete");
   deleteDOM.addEventListener("click", () => {
     newWorkDetailDOM.remove();
@@ -294,7 +193,7 @@ const addHandler = async () => {
     let html = "";
 
     for (const item of data.items) {
-      html += itemList(item);
+      html += htmls.itemList(item);
     }
     itemsDOM.textContent = "";
     itemsDOM.insertAdjacentHTML("beforeend", html);
@@ -327,6 +226,16 @@ const placeHandler = async () => {
     return;
   }
 
+  let client;
+  response = await FetchAPI.get(`/clients/${workOrder.client_id}`);
+  if (response) {
+    const data = await response.json();
+    client = data.client;
+  }
+  if (!client) {
+    return;
+  }
+
   const workDetailDOMs = orderPopupDetailsDOM.querySelectorAll("#workDetail");
   for (const workDetailDOM of workDetailDOMs) {
     const item_id = workDetailDOM.querySelector("#item").dataset.id;
@@ -343,20 +252,6 @@ const placeHandler = async () => {
       return;
     }
 
-    let clientHtml;
-    response = await FetchAPI.get(`/clients/${workOrder.client_id}`);
-    if (response) {
-      const data = await response.json();
-      clientHtml = `
-      <div>
-        <span>${data.client.association}</span>
-      </div>
-      <div>
-        <span>${data.client.name}</span>
-      </div>
-      `;
-    }
-
     response = await FetchAPI.post("/work-details", {
       work_order_id: workOrder.id,
       item_id,
@@ -365,32 +260,10 @@ const placeHandler = async () => {
       depth,
       quantity,
     });
-
-    if (response) {
-      const html = `
-      <div class="work-order-container" id="workOrderContainer" data-client_id="${
-        workOrder.client_id
-      }" data-is_complete="${workOrder.is_complete}" data-is_urgent="${
-        workOrder.is_urgent
-      }">
-        <div>
-          <div>
-              <span>${workOrder.is_complete ? "complete" : "resolving"}</span>
-          </div>
-          <div>
-              <span>${workOrder.is_urgent ? "urgent" : ""}</span>
-          </div>
-        </div>
-        <div id="client">${clientHtml}</div>
-        <div>
-          <span>생성일자 ${workOrder.created_at}</span>
-        </div>
-      </div>
-      `;
-      contentDOM.insertAdjacentHTML("afterbegin", html);
-    }
   }
 
+  const html = htmls.workOrderList(workOrder, client);
+  contentDOM.insertAdjacentHTML("afterbegin", html);
   popupDOM.classList.add("hidden");
   const createWorkOrderDOM = document.getElementById("createWorkOrder");
   const icon = createWorkOrderDOM.querySelector("i");
@@ -416,6 +289,49 @@ async function workOrderContainerHandler(event) {
   if (response) {
     const data = await response.json();
     workOrder = data.workOrder;
+    let html = `
+    <div>
+      <div class='top'>
+        <span>${workOrder.is_complete ? "complete" : "resolving"}</span>
+      </div>
+      ${
+        workOrder.is_complete
+          ? `<div><span>${workOrder.end_date}</span></div>`
+          : ""
+      }
+    </div>
+    `;
+    const completeInfoDOM = workDetailPopupDOM.querySelector("#completeInfo");
+    completeInfoDOM.textContent = "";
+    completeInfoDOM.insertAdjacentHTML("beforeend", html);
+
+    html = `
+    <div>
+      <span>${workOrder.is_urgent ? "urgent" : ""}</span>
+    </div>
+    `;
+    const urgentInfoDOM = workDetailPopupDOM.querySelector("#urgentInfo");
+    urgentInfoDOM.textContent = "";
+    urgentInfoDOM.insertAdjacentHTML("beforeend", html);
+
+    html = `
+    <div>
+      <span>${workOrder.comment}</span>
+    </div>
+    `;
+    const commentInfoDOM = workDetailPopupDOM.querySelector("#commentInfo");
+    commentInfoDOM.textContent = "";
+    commentInfoDOM.insertAdjacentHTML("beforeend", html);
+  }
+
+  const clientId = this.dataset.client_id;
+  response = await FetchAPI.get(`/clients/${clientId}`);
+  if (response) {
+    const data = await response.json();
+    const clientDOM = workDetailPopupDOM.querySelector("#client");
+    const html = htmls.clientList(data.client);
+    clientDOM.textContent = "";
+    clientDOM.insertAdjacentHTML("beforeend", html);
   }
 
   response = await FetchAPI.get(`/work-orders/${workOrderId}/details`);
@@ -430,30 +346,12 @@ async function workOrderContainerHandler(event) {
       if (response) {
         const data = await response.json();
         const item = data.item;
-        const workInfo = { workOrder, workDetail, item };
-        html += workInfoList(workInfo);
+        const workInfo = { workDetail, item };
+        html += htmls.workInfoList(workInfo);
       }
     }
     workInfosDOM.textContent = "";
-    // const completeUrgent = `
-    // <div>
-    //   <span>${workOrder.is_complete ? "complete" : "resolving"}</span>
-    //   <span>${workOrder.is_urgent ? "urgent" : ""}</span>
-    // </div>
-    // `;
-    // workInfosDOM.insertAdjacentHTML("afterbegin", completeUrgent);
     workInfosDOM.insertAdjacentHTML("beforeend", html);
-  }
-
-  const clientId = this.dataset.client_id;
-  response = await FetchAPI.get(`/clients/${clientId}`);
-  if (response) {
-    const data = await response.json();
-    const clientDOM = workDetailPopupDOM.querySelector("#client");
-    const html = clientList(data.client);
-
-    clientDOM.textContent = "";
-    clientDOM.insertAdjacentHTML("beforeend", html);
   }
 }
 
@@ -500,7 +398,7 @@ const createClientFormHandler = async (event) => {
     telephoneDOM.value = "";
 
     const data = await response.json();
-    const html = clientList(data.client);
+    const html = htmls.clientList(data.client);
     clientsDOM.insertAdjacentHTML("afterbegin", html);
     const clientDOM = clientsDOM.querySelector("#client:first-child");
     clientDOM.addEventListener("click", clickClientHandler);
@@ -547,11 +445,11 @@ clientInputDOM.addEventListener("focus", clientInputFocusHandler);
       const clientDOM = workOrderContainerDOM.querySelector("#client");
       const data = await response.json();
       const html = `
-      <div>
-        <span>association: ${data.client.association}</span>
+      <div class='left'>
+        <span>${data.client.association}</span>
       </div>
-      <div>
-        <span>name: ${data.client.name}</span>
+      <div class='right'>
+        <span>${data.client.name}</span>
       </div>
       `;
       clientDOM.insertAdjacentHTML("beforeend", html);

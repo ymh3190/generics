@@ -1,4 +1,5 @@
 import FetchAPI from "../fetch-api";
+import * as htmls from "../htmls";
 
 const remnantContainerDOMs = document.querySelectorAll("#remnantContainer");
 const addDOM = document.getElementById("add");
@@ -22,27 +23,6 @@ const closeItemsPopupDOM = document.getElementById("closeItemsPopup");
 const closeZonesPopupDOM = document.getElementById("closeZonesPopup");
 
 const searchZonesDOM = document.getElementById("searchZones");
-
-const itemList = (item) => {
-  return `
-  <div data-id=${item.id} id='item' class='item-container'>
-    <span id='name'>${item.name}</span>
-  </div>
-  `;
-};
-
-const zoneList = (zone) => {
-  return `
-  <div data-id=${zone.id} id='zone' class='zone-container'>
-    <div>
-      <span id='name'>${zone.name}</span>
-    </div>
-    <div>
-      <span>${zone.comment}</span>
-    </div>
-  </div>
-  `;
-};
 
 async function clickItemHandler() {
   const id = this.dataset.id;
@@ -146,7 +126,7 @@ const addHandler = async () => {
     let html = "";
 
     for (const item of data.items) {
-      html += itemList(item);
+      html += htmls.itemList(item);
     }
     itemsDOM.textContent = "";
     itemsDOM.insertAdjacentHTML("beforeend", html);
@@ -163,7 +143,7 @@ const addHandler = async () => {
     let html = "";
     const remnantZones = data.remnantZones;
     for (const zone of remnantZones) {
-      html += zoneList(zone);
+      html += htmls.zoneList(zone);
     }
     zonesDOM.textContent = "";
     zonesDOM.insertAdjacentHTML("beforeend", html);
@@ -207,43 +187,7 @@ const saveHandler = async () => {
     });
     if (response) {
       const data = await response.json();
-      const html = `
-      <div class="remnant-container" id="remnantContainer" data-id="${data.remnantDetail.id}"
-          data-item_id="${data.remnantDetail.item_id}" data-zone_id="${data.remnantDetail.remnant_zone_id}"
-          data-creator_id="${data.remnantDetail.creator_id}">
-          <div id="item"></div>
-          <div>
-              <div>
-                  <span>depth</span>
-                  <span>
-                      ${data.remnantDetail.depth}
-                  </span>
-              </div>
-              <div>
-                  <span>size</span>
-                  <div>
-                      <span>
-                          ${data.remnantDetail.width}
-                      </span>
-                      <span>x</span>
-                      <span>
-                          ${data.remnantDetail.length}
-                      </span>
-                  </div>
-              </div>
-              <div>
-                  <span>quantity</span>
-                  <span>
-                      ${data.remnantDetail.quantity}
-                  </span>
-              </div>
-          </div>
-          <div>
-              <div id="zone"></div>
-              <div id="creator"></div>
-          </div>
-      </div>
-      `;
+      const html = htmls.remnantList(data.remnantDetail);
       contentDOM.insertAdjacentHTML("afterbegin", html);
 
       popupDOM.classList.add("hidden");
@@ -283,7 +227,7 @@ const createZoneFormHandler = async (event) => {
   const response = await FetchAPI.post("/remnant-zones", { name, comment });
   if (response) {
     const data = await response.json();
-    const html = zoneList(data.remnantZone);
+    const html = htmls.zoneList(data.remnantZone);
     zonesDOM.insertAdjacentHTML("beforeend", html);
 
     const zoneDOM = zonesDOM.querySelector("#zone:last-child");
@@ -336,9 +280,7 @@ addDOM.addEventListener("click", addHandler);
     let response = await FetchAPI.get(`/items/${id}`);
     if (response) {
       const data = await response.json();
-      const html = `
-      <span>${data.item.name}</span>
-      `;
+      const html = htmls.itemList(data.item);
       const itemDOM = remnantContainerDOM.querySelector("#item");
       itemDOM.insertAdjacentHTML("beforeend", html);
     }
@@ -347,14 +289,7 @@ addDOM.addEventListener("click", addHandler);
     response = await FetchAPI.get(`/remnant-zones/${id}`);
     if (response) {
       const data = await response.json();
-      const html = `
-      <div>
-        <span>${data.remnantZone.name}</span>
-      </div>
-      <div>
-        <span>${data.remnantZone.comment}</span>
-      </div>
-      `;
+      const html = htmls.zoneList(data.remnantZone);
       const zoneDOM = remnantContainerDOM.querySelector("#zone");
       zoneDOM.insertAdjacentHTML("beforeend", html);
     }
