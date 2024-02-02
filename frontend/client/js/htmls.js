@@ -27,25 +27,44 @@ const clientList = (client) => {
 const workInfoList = (workInfo) => {
   return `
     <div id='workInfo' class='work-info'>
-      <div>
-        <span>item</span>
+      <div class='top'>
         <span>${workInfo.item.name}</span>
       </div>
-      <div>
-        <span>depth</span>
-        <span>${workInfo.workDetail.depth}</span>
-      </div>
-      <div>
-        <span>width</span>
-        <span>${workInfo.workDetail.width}</span>
-      </div>
-      <div>
-        <span>length</span>
-        <span>${workInfo.workDetail.length}</span>
-      </div>
-      <div>
-        <span>quantity</span>
-        <span>${workInfo.workDetail.quantity}</span>
+      <div class='bottom'>
+        <div class='detail'>
+          <div>
+            <span>depth</span>
+          </div>
+          <div>
+            <span>width</span>
+          </div>
+          <div>
+            <span>length</span>
+          </div>
+          <div>
+            <span>quantity</span>
+          </div>
+          <div>
+            <span>remnant</span>
+          </div>
+        </div>
+        <div class='values'>
+          <div>
+            <span>${workInfo.workDetail.depth}</span>
+          </div>
+          <div>
+            <span>${workInfo.workDetail.width}</span>
+          </div>
+          <div>
+            <span>${workInfo.workDetail.length}</span>
+          </div>
+          <div>
+            <span>${workInfo.workDetail.quantity}</span>
+          </div>
+          <div>
+            <span>${workInfo.workDetail.remnant}</span>
+          </div>
+        </div>
       </div>
     </div>
     `;

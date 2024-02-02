@@ -1,5 +1,8 @@
+import "./file-check";
 import server from "./server";
 import mysqlAPI from "./db";
+import "./sync-db";
+import "./sub-db";
 // import "./ssh";
 
 (async () => {

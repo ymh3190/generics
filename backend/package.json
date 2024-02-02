@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node .",
     "build": "babel -d build src",
-    "dev": "nodemon -x babel-node src/app.js"
+    "dev": "nodemon -i sub-db.js -x babel-node src/app.js"
   },
   "keywords": [],
   "author": "",

@@ -255,11 +255,12 @@
       padding: 1rem;
       border: 1px solid rgba(0, 0, 0, 0.2);
       border-radius: 1rem;
-    }
-  }
 
-  .comment-info {
-    .title {
+      .detail,
+      .values {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+      }
     }
   }
 

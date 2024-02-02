@@ -1,6 +1,7 @@
 import mysql from "mysql2/promise";
 import * as CustomError from "./error";
 import util from "./util";
+import perf from "./perf";
 
 class MySQLAPI {
   static pool = mysql.createPool({
@@ -17,7 +18,8 @@ class MySQLAPI {
     enableKeepAlive: true,
     keepAliveInitialDelay: 0,
   });
-  // static table;
+  static table;
+  static dateFormat;
 
   async connect() {
     (await MySQLAPI.pool.getConnection()).release();
@@ -76,9 +78,9 @@ class MySQLAPI {
       throw new CustomError.BadRequestError("Provide filter");
     }
 
-    const table = this.getTable();
+    // const table = this.getTable();
 
-    let sql = `INSERT INTO ${table}(`;
+    let sql = `INSERT INTO ${this.table}(`;
     const keys = Object.keys(filter);
     for (let i = 0; i < keys.length; i++) {
       if (i !== keys.length - 1) {
@@ -108,10 +110,10 @@ class MySQLAPI {
       throw new CustomError.BadRequestError("Provide filter");
     }
 
-    const table = this.getTable();
+    // const table = this.getTable();
     const id = util.createId();
 
-    let sql = `INSERT INTO ${table}(`.concat("id, ");
+    let sql = `INSERT INTO ${this.table}(`.concat("id, ");
     const keys = Object.keys(filter);
     for (let i = 0; i < keys.length; i++) {
       if (i !== keys.length - 1) {
@@ -136,8 +138,8 @@ class MySQLAPI {
 
     for (const [key, value] of Object.entries(options)) {
       if (key === "new" && value) {
-        const dateFormat = await this.formatDate();
-        const sql = `SELECT *, ${dateFormat} FROM ${table} WHERE id = ?`;
+        // const dateFormat = await this.formatDate();
+        const sql = `SELECT *, ${this.dateFormat} FROM ${this.table} WHERE id = ?`;
         const values = [id];
         const [[result]] = await MySQLAPI.pool.execute(sql, values);
         return result;
@@ -155,37 +157,12 @@ class MySQLAPI {
       throw new CustomError.BadRequestError("Provide filter");
     }
 
-    // const dateTimes = [];
-    // for (const column of await this.getColumns()) {
-    //   if (column.Type === "datetime") {
-    //     dateTimes.push(column.Field);
-    //   }
-    // }
-    // let query = "";
-    // const format = "%Y-%m-%d %H:%i:%s";
-    // for (let i = 0; i < dateTimes.length; i++) {
-    //   const date = `DATE_FORMAT(${dateTimes[i]}, '${format}')`;
-    //   if (i !== dateTimes.length - 1) {
-    //     query = query.concat(date, ` AS ${dateTimes[i]}`, ", ");
-    //     continue;
-    //   }
-    //   query = query.concat(date, ` AS ${dateTimes[i]}`);
-    // }
-
-    // for (const [index, column] of Object.entries(dateTimes)) {
-    //   const date = `DATE_FORMAT(${column}, '${format}')`;
-    //   if (index !== String(dateTimes.length - 1)) {
-    //     query = query.concat(date, ` AS ${column}`, ", ");
-    //     continue;
-    //   }
-    //   query = query.concat(date, ` AS ${column}`);
-    // }
-    const table = this.getTable();
-    const dateFormat = await this.formatDate();
+    // const table = this.getTable();
+    // const dateFormat = await this.formatDate();
 
     const keys = Object.keys(filter);
     if (!keys.length) {
-      let sql = `SELECT *, ${dateFormat} FROM ${table}`;
+      let sql = `SELECT *, ${this.dateFormat} FROM ${this.table}`;
 
       if (!projection) {
         const [result] = await MySQLAPI.pool.execute(sql);
@@ -208,7 +185,7 @@ class MySQLAPI {
       }
     }
 
-    let sql = `SELECT *, ${dateFormat} FROM ${table} WHERE`;
+    let sql = `SELECT *, ${this.dateFormat} FROM ${this.table} WHERE`;
     const values = Object.values(filter);
     for (let i = 0; i < keys.length; i++) {
       if (i !== keys.length - 1) {
@@ -247,10 +224,10 @@ class MySQLAPI {
       throw new CustomError.BadRequestError("Provide id");
     }
 
-    const table = this.getTable();
-    const dateFormat = await this.formatDate();
+    // const table = this.getTable();
+    // const dateFormat = await this.formatDate();
 
-    const sql = `SELECT *, ${dateFormat} FROM ${table} WHERE id = ?`;
+    const sql = `SELECT *, ${this.dateFormat} FROM ${this.table} WHERE id = ?`;
     const [[result]] = await MySQLAPI.pool.execute(sql, [id]);
 
     if (!projection) {
@@ -273,14 +250,14 @@ class MySQLAPI {
       throw new CustomError.BadRequestError("Provide filter");
     }
 
-    const table = this.getTable();
+    // const table = this.getTable();
 
     const keys = Object.keys(filter);
     if (!keys.length) {
       throw new CustomError.BadRequestError("Provide key");
     }
 
-    let sql = `SELECT * FROM ${table} WHERE`;
+    let sql = `SELECT * FROM ${this.table} WHERE`;
     for (let i = 0; i < keys.length; i++) {
       if (i !== keys.length - 1) {
         sql = sql.concat(" ", keys[i], " = ? AND");
@@ -302,14 +279,14 @@ class MySQLAPI {
       throw new CustomError.BadRequestError("Provide filter");
     }
 
-    const table = this.getTable();
+    // const table = this.getTable();
 
     const keys = Object.keys(filter);
     if (!keys.length) {
       throw new CustomError.BadRequestError("Provide key");
     }
 
-    let sql = `DELETE FROM ${table} WHERE`;
+    let sql = `DELETE FROM ${this.table} WHERE`;
     for (let i = 0; i < keys.length; i++) {
       if (i !== keys.length - 1) {
         sql = sql.concat(" ", keys[i], " = ? AND");
@@ -337,14 +314,14 @@ class MySQLAPI {
       throw new CustomError.BadRequestError("Provide key");
     }
 
-    const table = this.getTable();
+    // const table = this.getTable();
 
     const result = await this.selectById(id);
     if (!result) {
-      throw new CustomError.NotFoundError(`${table} not found`);
+      throw new CustomError.NotFoundError(`${this.table} not found`);
     }
 
-    let sql = `UPDATE ${table} SET`;
+    let sql = `UPDATE ${this.table} SET`;
     for (let i = 0; i < keys.length; i++) {
       if (i !== keys.length - 1) {
         sql = sql.concat(" ", keys[i], " = ?,");
@@ -377,21 +354,20 @@ class MySQLAPI {
       throw new CustomError.BadRequestError("Provide id");
     }
 
-    const table = this.getTable();
+    // const table = this.getTable();
 
     const result = await this.selectById(id);
     if (!result) {
-      throw new CustomError.NotFoundError(`${table} not found`);
+      throw new CustomError.NotFoundError(`${this.table} not found`);
     }
 
-    const sql = `DELETE FROM ${table} WHERE id = ?`;
+    const sql = `DELETE FROM ${this.table} WHERE id = ?`;
     await MySQLAPI.pool.execute(sql, [id]);
   }
 }
 
 const mysqlAPI = new MySQLAPI();
 export default mysqlAPI;
-// User.table = User.getTable();
 export class User extends MySQLAPI {}
 export class Token extends MySQLAPI {}
 export class WorkOrder extends MySQLAPI {}
