@@ -1,3 +1,7 @@
+/**
+ * @param {{}} item
+ * @returns text/html
+ */
 const itemList = (item) => {
   return `
     <div data-id=${item.id} id='item' class='item-container'>
@@ -6,6 +10,11 @@ const itemList = (item) => {
     `;
 };
 
+/**
+ *
+ * @param {{}} client
+ * @returns text/html
+ */
 const clientList = (client) => {
   return `
     <div data-id=${client.id} id='client' class='client-container'>
@@ -24,6 +33,11 @@ const clientList = (client) => {
     `;
 };
 
+/**
+ *
+ * @param {{}} workInfo { item, workDetail }
+ * @returns text/html
+ */
 const workInfoList = (workInfo) => {
   return `
     <div id='workInfo' class='work-info'>
@@ -62,7 +76,7 @@ const workInfoList = (workInfo) => {
             <span>${workInfo.workDetail.quantity}</span>
           </div>
           <div>
-            <span>${workInfo.workDetail.remnant}</span>
+            <span>${workInfo.workDetail.is_remnant}</span>
           </div>
         </div>
       </div>
@@ -70,6 +84,12 @@ const workInfoList = (workInfo) => {
     `;
 };
 
+/**
+ *
+ * @param {{}} workOrder
+ * @param {{}} client
+ * @returns text/html
+ */
 const workOrderList = (workOrder, client) => {
   return `
     <div class="work-order-container" id="workOrderContainer"
@@ -79,10 +99,12 @@ const workOrderList = (workOrder, client) => {
         <div class="preview">
             <div class="preview-top">
                 <div>
-                <span>${workOrder.is_complete ? "complete" : "resolving"}</span>
+                  <span>${
+                    workOrder.is_complete ? "complete" : "resolving"
+                  }</span>
                 </div>
                 <div>
-                <span>${workOrder.is_urgent ? "urgent" : ""}</span>
+                  <span>${workOrder.is_urgent ? "urgent" : ""}</span>
                 </div>
             </div>
             <div class="preview-bottom">
@@ -110,11 +132,15 @@ const workOrderList = (workOrder, client) => {
     `;
 };
 
+/**
+ *
+ * @returns text/html
+ */
 const workDetailList = () => {
   return `
     <div class='work-detail' id='workDetail'>
       <div>
-        <input type='text' id='item'>
+        <input type='text' id='item' readonly>
       </div>
       <div>
         <input type='text' id='depth'>
@@ -138,57 +164,105 @@ const workDetailList = () => {
     `;
 };
 
-const zoneList = (zone) => {
+const remnantZoneList = (zone) => {
   return `
   <div data-id=${zone.id} id='zone' class='zone-container'>
+    <span id='name'>${zone.name}</span>
+  </div>
+  `;
+};
+
+/**
+ *
+ * @param {{}} remnantDetail
+ * @param {{}} item
+ * @param {{}} remnantZone
+ * @param {string} creator
+ * @returns text/html
+ */
+const remnantList = (remnantDetail, item, remnantZone, creator) => {
+  return `
+  <div class="remnant-container" id="remnantContainer"
+  data-id="${remnantDetail.id}" data-item_id="${remnantDetail.item_id}"
+  data-zone_id="${remnantDetail.remnant_zone_id}"
+      data-creator_id="${remnantDetail.creator_id}">
+      <div class="preview">
+          <div class="preview-top">
+              <div id="item">${itemList(item)}</div>
+              <div id="zone">${remnantZoneList(remnantZone)}</div>
+          </div>
+          <div class="preview-bottom">
+              <div>
+                  <span>depth</span>
+                  <span>
+                      ${remnantDetail.depth}
+                  </span>
+              </div>
+              <div>
+                  <span>width</span>
+                  <div>
+                      <span>
+                          ${remnantDetail.width}
+                      </span>
+                  </div>
+              </div>
+              <div>
+                  <span>length</span>
+                  <span>
+                      ${remnantDetail.length}
+                  </span>
+              </div>
+              <div>
+                  <span>quantity</span>
+                  <span>
+                      ${remnantDetail.quantity}
+                  </span>
+              </div>
+          </div>
+      </div>
+      <div class="metadata">
+          <div id="creator">${creatorList(creator)}</div>
+          <div>
+              <span>
+                  ${remnantDetail.created_at}
+              </span>
+          </div>
+      </div>
+  </div>
+  `;
+};
+
+const remnantDetailList = () => {
+  return `
+  <div class='remnant-detail' id='remnantDetail'>
     <div>
-      <span id='name'>${zone.name}</span>
+      <input type='text' id='item' readonly>
     </div>
     <div>
-      <span>${zone.comment}</span>
+      <input type='text' id='depth'>
+    </div>
+    <div>
+      <input type='text' id='width'>
+    </div>
+    <div>
+      <input type='text' id='length'>
+    </div>
+    <div>
+      <input type='text' id='quantity'>
+    </div>
+    <div>
+      <input type='text' id='zone' readonly>
+    </div>
+    <div>
+      <button id='delete'>delete</button>
     </div>
   </div>
   `;
 };
 
-const remnantList = (remnantDetail) => {
+const creatorList = (creator) => {
   return `
-  <div class="remnant-container" id="remnantContainer"
-  data-id="${remnantDetail.id}" data-item_id="${remnantDetail.item_id}"
-  data-zone_id="${remnantDetail.remnant_zone_id}"
-  data-creator_id="${remnantDetail.creator_id}">
-      <div id="item"></div>
-      <div>
-          <div>
-              <span>depth</span>
-              <span>
-                  ${remnantDetail.depth}
-              </span>
-          </div>
-          <div>
-              <span>size</span>
-              <div>
-                  <span>
-                      ${remnantDetail.width}
-                  </span>
-                  <span>x</span>
-                  <span>
-                      ${remnantDetail.length}
-                  </span>
-              </div>
-          </div>
-          <div>
-              <span>quantity</span>
-              <span>
-                  ${remnantDetail.quantity}
-              </span>
-          </div>
-      </div>
-      <div>
-          <div id="zone"></div>
-          <div id="creator"></div>
-      </div>
-  </div>
+  <span>${creator}</span>
   `;
 };
 
@@ -198,6 +272,8 @@ export {
   workInfoList,
   workOrderList,
   workDetailList,
-  zoneList,
+  remnantZoneList,
   remnantList,
+  remnantDetailList,
+  creatorList,
 };

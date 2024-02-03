@@ -18,8 +18,6 @@ class MySQLAPI {
     enableKeepAlive: true,
     keepAliveInitialDelay: 0,
   });
-  static table;
-  static dateFormat;
 
   async connect() {
     (await MySQLAPI.pool.getConnection()).release();
@@ -43,7 +41,7 @@ class MySQLAPI {
   }
 
   static async getColumns() {
-    const sql = `SHOW COLUMNS FROM ${this.getTable()}`;
+    const sql = `SHOW COLUMNS FROM ${this.table}`;
     const [result] = await MySQLAPI.pool.execute(sql);
     return result;
   }
@@ -78,8 +76,6 @@ class MySQLAPI {
       throw new CustomError.BadRequestError("Provide filter");
     }
 
-    // const table = this.getTable();
-
     let sql = `INSERT INTO ${this.table}(`;
     const keys = Object.keys(filter);
     for (let i = 0; i < keys.length; i++) {
@@ -110,9 +106,6 @@ class MySQLAPI {
       throw new CustomError.BadRequestError("Provide filter");
     }
 
-    // const table = this.getTable();
-    const id = util.createId();
-
     let sql = `INSERT INTO ${this.table}(`.concat("id, ");
     const keys = Object.keys(filter);
     for (let i = 0; i < keys.length; i++) {
@@ -129,6 +122,7 @@ class MySQLAPI {
       }
       sql = sql.concat("?)");
     }
+    const id = util.createId();
     const values = [id, ...Object.values(filter)];
     await MySQLAPI.pool.execute(sql, values);
 
@@ -138,7 +132,6 @@ class MySQLAPI {
 
     for (const [key, value] of Object.entries(options)) {
       if (key === "new" && value) {
-        // const dateFormat = await this.formatDate();
         const sql = `SELECT *, ${this.dateFormat} FROM ${this.table} WHERE id = ?`;
         const values = [id];
         const [[result]] = await MySQLAPI.pool.execute(sql, values);
@@ -156,9 +149,6 @@ class MySQLAPI {
     if (!filter) {
       throw new CustomError.BadRequestError("Provide filter");
     }
-
-    // const table = this.getTable();
-    // const dateFormat = await this.formatDate();
 
     const keys = Object.keys(filter);
     if (!keys.length) {
@@ -224,9 +214,6 @@ class MySQLAPI {
       throw new CustomError.BadRequestError("Provide id");
     }
 
-    // const table = this.getTable();
-    // const dateFormat = await this.formatDate();
-
     const sql = `SELECT *, ${this.dateFormat} FROM ${this.table} WHERE id = ?`;
     const [[result]] = await MySQLAPI.pool.execute(sql, [id]);
 
@@ -249,8 +236,6 @@ class MySQLAPI {
     if (!filter) {
       throw new CustomError.BadRequestError("Provide filter");
     }
-
-    // const table = this.getTable();
 
     const keys = Object.keys(filter);
     if (!keys.length) {
@@ -278,8 +263,6 @@ class MySQLAPI {
     if (!filter) {
       throw new CustomError.BadRequestError("Provide filter");
     }
-
-    // const table = this.getTable();
 
     const keys = Object.keys(filter);
     if (!keys.length) {
@@ -313,8 +296,6 @@ class MySQLAPI {
     if (!keys.length) {
       throw new CustomError.BadRequestError("Provide key");
     }
-
-    // const table = this.getTable();
 
     const result = await this.selectById(id);
     if (!result) {
@@ -353,8 +334,6 @@ class MySQLAPI {
     if (!id) {
       throw new CustomError.BadRequestError("Provide id");
     }
-
-    // const table = this.getTable();
 
     const result = await this.selectById(id);
     if (!result) {

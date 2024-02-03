@@ -1,4 +1,5 @@
 import FetchAPI from "../fetch-api";
+import * as htmls from "../htmls";
 
 let workOrderContainerDOMs = document.querySelectorAll("#workOrderContainer");
 let remnantContainerDOMs = document.querySelectorAll("#remnantContainer");
@@ -97,42 +98,12 @@ if (workOrderContainerDOMs.length) {
       const data = await response.json();
 
       for (const workOrder of data.workOrders) {
-        let clientHtml;
-
         const response = await FetchAPI.get(`/clients/${workOrder.client_id}`);
         if (response) {
           const data = await response.json();
-          clientHtml = `
-          <div>
-            <span>${data.client.association}</span>
-          </div>
-          <div>
-            <span>${data.client.name}</span>
-          </div>
-          `;
+          const html = htmls.workOrderList(workOrder, data.client);
+          contentDOM.insertAdjacentHTML("beforeend", html);
         }
-
-        const html = `
-        <div class="work-order-container" id="workOrderContainer" data-client_id="${
-          workOrder.client_id
-        }" data-is_complete="${workOrder.is_complete}" data-is_urgent="${
-          workOrder.is_urgent
-        }">
-          <div>
-            <div>
-                <span>${workOrder.is_complete ? "complete" : "resolving"}</span>
-            </div>
-            <div>
-                <span>${workOrder.is_urgent ? "urgent" : ""}</span>
-            </div>
-          </div>
-          <div id="client">${clientHtml}</div>
-          <div>
-            <span>생성일자 ${workOrder.created_at}</span>
-          </div>
-        </div>
-        `;
-        contentDOM.insertAdjacentHTML("beforeend", html);
       }
     }
   };

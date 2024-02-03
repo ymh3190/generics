@@ -30,4 +30,4 @@ for (let i = 0; i < tables.length; i++) {
   statement = statement.concat("\n", "})();");
 }
 
-writeFileSync(process.cwd() + "/src/sub-db.js", statement);
+writeFileSync(process.cwd() + "/src/db-sub.js", statement);

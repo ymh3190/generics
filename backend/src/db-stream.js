@@ -11,7 +11,7 @@ readStream.on("data", (chunk) => {
 });
 
 readStream.on("end", () => {
-  const writeStream = createWriteStream(process.cwd() + "/src/deprecated.js");
+  const writeStream = createWriteStream(process.cwd() + "/src/db-stream.js");
 
   let statement = "import {";
   for (let i = 0; i < tables.length; i++) {

@@ -15,6 +15,7 @@ import {
 import * as CustomError from "./error";
 import memInfo from "./ssh";
 import util from "./util";
+import perf from "./perf";
 
 class ImageController {
   async create(req, res) {
@@ -388,7 +389,7 @@ class RemnantDetailController {
   }
 
   async select(req, res) {
-    const remnantDetails = await RemnantDetail.select({});
+    const remnantDetails = await RemnantDetail.select({}, "desc");
     res.status(200).json({ remnantDetails });
   }
 

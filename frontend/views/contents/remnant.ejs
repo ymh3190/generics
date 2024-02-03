@@ -5,38 +5,47 @@
             <div class="remnant-container" id="remnantContainer" data-id="<%= remnantDetail.id %>"
                 data-item_id="<%= remnantDetail.item_id %>" data-zone_id="<%= remnantDetail.remnant_zone_id %>"
                 data-creator_id="<%= remnantDetail.creator_id %>">
-                <div id="item"></div>
-                <div>
-                    <div>
-                        <span>depth</span>
-                        <span>
-                            <%= remnantDetail.depth %>
-                        </span>
+                <div class="preview">
+                    <div class="preview-top">
+                        <div id="item"></div>
+                        <div id="zone"></div>
                     </div>
-                    <div>
-                        <span>width</span>
+                    <div class="preview-bottom">
                         <div>
+                            <span>depth</span>
                             <span>
-                                <%= remnantDetail.width %>
+                                <%= remnantDetail.depth %>
+                            </span>
+                        </div>
+                        <div>
+                            <span>width</span>
+                            <div>
+                                <span>
+                                    <%= remnantDetail.width %>
+                                </span>
+                            </div>
+                        </div>
+                        <div>
+                            <span>length</span>
+                            <span>
+                                <%= remnantDetail.length %>
+                            </span>
+                        </div>
+                        <div>
+                            <span>quantity</span>
+                            <span>
+                                <%= remnantDetail.quantity %>
                             </span>
                         </div>
                     </div>
-                    <div>
-                        <span>length</span>
-                        <span>
-                            <%= remnantDetail.length %>
-                        </span>
-                    </div>
-                    <div>
-                        <span>quantity</span>
-                        <span>
-                            <%= remnantDetail.quantity %>
-                        </span>
-                    </div>
                 </div>
-                <div>
-                    <div id="zone"></div>
+                <div class="metadata">
                     <div id="creator"></div>
+                    <div>
+                        <span>
+                            <%= remnantDetail.created_at %>
+                        </span>
+                    </div>
                 </div>
             </div>
             <% } %>

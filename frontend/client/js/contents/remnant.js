@@ -84,31 +84,7 @@ const addHandler = async () => {
     }
   }
 
-  const html = `
-  <div class='remnant-detail' id='remnantDetail'>
-    <div>
-      <input type='text' id='item'>
-    </div>
-    <div>
-      <input type='text' id='depth'>
-    </div>
-    <div>
-      <input type='text' id='width'>
-    </div>
-    <div>
-      <input type='text' id='length'>
-    </div>
-    <div>
-      <input type='text' id='quantity'>
-    </div>
-    <div>
-      <input type='text' id='zone'>
-    </div>
-    <div>
-      <button id='delete'>delete</button>
-    </div>
-  </div>
-  `;
+  const html = htmls.remnantDetailList();
   remnantDetailsDOM.insertAdjacentHTML("beforeend", html);
 
   const newRemnantDetailDOM = remnantDetailsDOM.querySelector(
@@ -144,7 +120,7 @@ const addHandler = async () => {
     let html = "";
     const remnantZones = data.remnantZones;
     for (const zone of remnantZones) {
-      html += htmls.zoneList(zone);
+      html += htmls.remnantZoneList(zone);
     }
     zonesDOM.textContent = "";
     zonesDOM.insertAdjacentHTML("beforeend", html);
@@ -178,7 +154,28 @@ const saveHandler = async () => {
       return;
     }
 
-    const response = await FetchAPI.post("/remnant-details", {
+    let item;
+    let response = await FetchAPI.get(`/items/${item_id}`);
+    if (response) {
+      const data = await response.json();
+      item = data.item;
+    }
+    if (!item) {
+      return;
+    }
+
+    let remnantZone;
+    response = await FetchAPI.get(`/remnant-zones/${remnant_zone_id}`);
+    if (response) {
+      const data = await response.json();
+      remnantZone = data.remnantZone;
+    }
+    if (!remnantZone) {
+      return;
+    }
+
+    let remnantDetail;
+    response = await FetchAPI.post("/remnant-details", {
       item_id,
       depth,
       width,
@@ -188,14 +185,29 @@ const saveHandler = async () => {
     });
     if (response) {
       const data = await response.json();
-      const html = htmls.remnantList(data.remnantDetail);
-      contentDOM.insertAdjacentHTML("afterbegin", html);
-
-      popupDOM.classList.add("hidden");
-      const createRemnantDOM = document.getElementById("createRemnant");
-      const icon = createRemnantDOM.querySelector("i");
-      icon.className = icon.className.replace("solid", "regular");
+      remnantDetail = data.remnantDetail;
     }
+    if (!remnantDetail) {
+      return;
+    }
+
+    let creator;
+    response = await FetchAPI.get(`/users/${remnantDetail.creator_id}`);
+    if (response) {
+      const data = await response.json();
+      creator = data.user.username;
+    }
+    if (!creator) {
+      return;
+    }
+
+    const html = htmls.remnantList(remnantDetail, item, remnantZone, creator);
+    contentDOM.insertAdjacentHTML("afterbegin", html);
+
+    popupDOM.classList.add("hidden");
+    const createRemnantDOM = document.getElementById("createRemnant");
+    const icon = createRemnantDOM.querySelector("i");
+    icon.className = icon.className.replace("solid", "regular");
   }
 };
 
@@ -228,7 +240,7 @@ const createZoneFormHandler = async (event) => {
   const response = await FetchAPI.post("/remnant-zones", { name, comment });
   if (response) {
     const data = await response.json();
-    const html = htmls.zoneList(data.remnantZone);
+    const html = htmls.remnantZoneList(data.remnantZone);
     zonesDOM.insertAdjacentHTML("beforeend", html);
 
     const zoneDOM = zonesDOM.querySelector("#zone:last-child");
@@ -275,9 +287,9 @@ saveDOM.addEventListener("click", saveHandler);
 addDOM.addEventListener("click", addHandler);
 
 (async () => {
-  for (const remnantContainerDOM of remnantContainerDOMs) {
+  // asynchronous
+  remnantContainerDOMs.forEach(async (remnantContainerDOM) => {
     let id = remnantContainerDOM.dataset.item_id;
-
     let response = await FetchAPI.get(`/items/${id}`);
     if (response) {
       const data = await response.json();
@@ -285,23 +297,49 @@ addDOM.addEventListener("click", addHandler);
       const itemDOM = remnantContainerDOM.querySelector("#item");
       itemDOM.insertAdjacentHTML("beforeend", html);
     }
-
     id = remnantContainerDOM.dataset.zone_id;
     response = await FetchAPI.get(`/remnant-zones/${id}`);
     if (response) {
       const data = await response.json();
-      const html = htmls.zoneList(data.remnantZone);
+      const html = htmls.remnantZoneList(data.remnantZone);
       const zoneDOM = remnantContainerDOM.querySelector("#zone");
       zoneDOM.insertAdjacentHTML("beforeend", html);
     }
-
     id = remnantContainerDOM.dataset.creator_id;
     response = await FetchAPI.get(`/users/${id}`);
     if (response) {
       const data = await response.json();
-      const html = `<span>${data.user.username}</span>`;
+      const html = htmls.creatorList(data.user.username);
       const creatorDOM = remnantContainerDOM.querySelector("#creator");
       creatorDOM.insertAdjacentHTML("beforeend", html);
     }
-  }
+  });
+
+  // synchronous
+  // for (const remnantContainerDOM of remnantContainerDOMs) {
+  //   let id = remnantContainerDOM.dataset.item_id;
+  //   let response = await FetchAPI.get(`/items/${id}`);
+  //   if (response) {
+  //     const data = await response.json();
+  //     const html = htmls.itemList(data.item);
+  //     const itemDOM = remnantContainerDOM.querySelector("#item");
+  //     itemDOM.insertAdjacentHTML("beforeend", html);
+  //   }
+  //   id = remnantContainerDOM.dataset.zone_id;
+  //   response = await FetchAPI.get(`/remnant-zones/${id}`);
+  //   if (response) {
+  //     const data = await response.json();
+  //     const html = htmls.remnantZoneList(data.remnantZone);
+  //     const zoneDOM = remnantContainerDOM.querySelector("#zone");
+  //     zoneDOM.insertAdjacentHTML("beforeend", html);
+  //   }
+  //   id = remnantContainerDOM.dataset.creator_id;
+  //   response = await FetchAPI.get(`/users/${id}`);
+  //   if (response) {
+  //     const data = await response.json();
+  //     const html = htmls.creatorList(data.user.username);
+  //     const creatorDOM = remnantContainerDOM.querySelector("#creator");
+  //     creatorDOM.insertAdjacentHTML("beforeend", html);
+  //   }
+  // }
 })();

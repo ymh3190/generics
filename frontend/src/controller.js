@@ -1,6 +1,7 @@
 import FetchAPI from "./fetch-api";
 import * as CustomError from "./error";
 import util from "./util";
+import perf from "./perf";
 
 class RootController {
   getIndex(req, res) {
@@ -346,6 +347,16 @@ class RemnantDetailController {
     });
     const data = await response.json();
     res.status(201).json({ remnantDetail: data.remnantDetail });
+
+    // const remnantDetail = data.remnantDetail;
+
+    // response = await FetchAPI.get(`/users/${remnantDetail.creator_id}`, {
+    //   cookie: req.headers.cookie,
+    // });
+    // data = await response.json();
+    // const creator = data.user.username;
+
+    // res.status(201).json({ remnantDetail, creator });
   }
 
   async select(req, res) {
