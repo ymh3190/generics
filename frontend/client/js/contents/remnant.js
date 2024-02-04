@@ -58,6 +58,31 @@ async function clickZoneHandler() {
   }
 }
 
+function bodyHandler(event) {
+  if (event.target === remnantDetailPopupDOM) {
+    return;
+  }
+  console.log(remnantDetailPopupDOM);
+
+  const spanDOMs = remnantDetailPopupDOM.querySelectorAll("span");
+  for (const spanDOM of spanDOMs) {
+    if (event.target === spanDOM) {
+      return;
+    }
+  }
+
+  const divDOMs = remnantDetailPopupDOM.querySelectorAll("div");
+  for (const divDOM of divDOMs) {
+    if (event.target === divDOM) {
+      return;
+    }
+  }
+
+  bodyDOM.removeEventListener("click", bodyHandler);
+  popupDOM.classList.add("hidden");
+  remnantDetailPopupDOM.classList.add("hidden");
+}
+
 const addHandler = async () => {
   itemsPopupDOM.classList.remove("hidden");
   searchZonePopupDOM.classList.remove("hidden");
@@ -287,9 +312,7 @@ saveDOM.addEventListener("click", saveHandler);
 addDOM.addEventListener("click", addHandler);
 
 (async () => {
-  // asynchronous
-  let start = performance.now();
-  remnantContainerDOMs.forEach(async (remnantContainerDOM, i) => {
+  remnantContainerDOMs.forEach(async (remnantContainerDOM) => {
     let id = remnantContainerDOM.dataset.item_id;
     let response = await FetchAPI.get(`/items/${id}`);
     if (response) {
@@ -313,39 +336,6 @@ addDOM.addEventListener("click", addHandler);
       const html = htmls.creatorList(data.user.username);
       const creatorDOM = remnantContainerDOM.querySelector("#creator");
       creatorDOM.insertAdjacentHTML("beforeend", html);
-    }
-    if (i === remnantContainerDOMs.length - 1) {
-      console.log(`forEach DONE in: ${performance.now() - start}ms`);
     }
   });
-
-  // synchronous
-  start = performance.now();
-  for (const remnantContainerDOM of remnantContainerDOMs) {
-    let id = remnantContainerDOM.dataset.item_id;
-    let response = await FetchAPI.get(`/items/${id}`);
-    if (response) {
-      const data = await response.json();
-      const html = htmls.itemList(data.item);
-      const itemDOM = remnantContainerDOM.querySelector("#item");
-      itemDOM.insertAdjacentHTML("beforeend", html);
-    }
-    id = remnantContainerDOM.dataset.zone_id;
-    response = await FetchAPI.get(`/remnant-zones/${id}`);
-    if (response) {
-      const data = await response.json();
-      const html = htmls.remnantZoneList(data.remnantZone);
-      const zoneDOM = remnantContainerDOM.querySelector("#zone");
-      zoneDOM.insertAdjacentHTML("beforeend", html);
-    }
-    id = remnantContainerDOM.dataset.creator_id;
-    response = await FetchAPI.get(`/users/${id}`);
-    if (response) {
-      const data = await response.json();
-      const html = htmls.creatorList(data.user.username);
-      const creatorDOM = remnantContainerDOM.querySelector("#creator");
-      creatorDOM.insertAdjacentHTML("beforeend", html);
-    }
-  }
-  console.log(`for loop DONE in: ${performance.now() - start}ms`);
 })();

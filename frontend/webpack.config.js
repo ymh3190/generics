@@ -17,6 +17,7 @@ module.exports = {
     watch: path.join(__dirname, contentsPath, "watch"),
     workOrder: path.join(__dirname, contentsPath, "workOrder"),
     remnant: path.join(__dirname, contentsPath, "remnant"),
+    client: path.join(__dirname, contentsPath, "client"),
   },
   output: {
     path: path.resolve(__dirname, "./public"),

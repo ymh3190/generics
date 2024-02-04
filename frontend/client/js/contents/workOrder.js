@@ -453,27 +453,6 @@ clientInputDOM.addEventListener("focus", clientInputFocusHandler);
       clientDOM.insertAdjacentHTML("beforeend", html);
     }
   });
-
-  // for (const workOrderContainerDOM of workOrderContainerDOMs) {
-  //   workOrderContainerDOM.addEventListener("click", workOrderContainerHandler);
-
-  //   const id = workOrderContainerDOM.dataset.client_id;
-
-  //   const response = await FetchAPI.get(`/clients/${id}`);
-  //   if (response) {
-  //     const clientDOM = workOrderContainerDOM.querySelector("#client");
-  //     const data = await response.json();
-  //     const html = `
-  //     <div class='left'>
-  //       <span>${data.client.association}</span>
-  //     </div>
-  //     <div class='right'>
-  //       <span>${data.client.name}</span>
-  //     </div>
-  //     `;
-  //     clientDOM.insertAdjacentHTML("beforeend", html);
-  //   }
-  // }
 })();
 
 const webSocket = new WebSocket(`ws://${window.location.host}`);

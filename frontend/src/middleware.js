@@ -1,46 +1,48 @@
 class Middleware {
   locals(req, res, next) {
-    const cookies = req.headers.cookie?.split("; ");
-    const access_token = cookies?.find((el) => el.startsWith("access_token"));
-    if (access_token) {
-      res.locals.auth = true;
-      res.locals.url = req.url;
-      return next();
-    }
-    const refresh_token = cookies?.find((el) => el.startsWith("refresh_token"));
-    if (refresh_token) {
-      res.locals.auth = true;
-      res.locals.url = req.url;
-      return next();
-    }
-    res.locals.auth = false;
     res.locals.url = req.url;
     next();
   }
 
-  tokenExists(req, res, next) {
-    const isAuth = res.locals.auth;
-    if (isAuth) {
+  authenticateUser(req, res, next) {
+    try {
+      const cookies = req.headers.cookie.split("; ");
+
+      const access_token = cookies.find((el) => el.startsWith("access_token"));
+      if (access_token) {
+        const payload = JSON.parse(
+          Buffer.from(
+            access_token.match(/\.(\w+)\./g).join(""),
+            "base64"
+          ).toString("utf-8")
+        );
+        res.locals.user = payload.user;
+        return next();
+      }
+
+      const refresh_token = cookies.find((el) =>
+        el.startsWith("refresh_token")
+      );
+      const payload = JSON.parse(
+        Buffer.from(
+          refresh_token.match(/\.(\w+)\./g).join(""),
+          "base64"
+        ).toString("utf-8")
+      );
+      res.locals.user = payload.user;
       return next();
+    } catch (error) {
+      return res.redirect("/signin");
     }
-    res.redirect("/signin");
   }
 
-  tokenNotExists(req, res, next) {
-    const isAuth = res.locals.auth;
-    if (isAuth) {
-      return res.redirect("/");
-    }
-    next();
-  }
-
-  sIdExists(req, res, next) {
-    const cookies = req.headers.cookie?.split("; ");
-    const sId = cookies?.find((el) => el.startsWith("sId"));
-    if (sId) {
-      return next();
-    }
-    res.redirect("/signin");
+  authorizePermissions(...roles) {
+    return (req, res, next) => {
+      if (!roles.includes(res.locals.user.role)) {
+        return res.redirect("/signin");
+      }
+      next();
+    };
   }
 
   notFound(req, res) {

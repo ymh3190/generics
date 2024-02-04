@@ -7,14 +7,15 @@
   padding-left: 250px;
 
   .work-order-container,
-  .remnant-container {
+  .remnant-container,
+  .client-container {
     padding: 1rem;
     border: 1px solid rgba(0, 0, 0, 0.2);
     border-radius: 1rem;
   }
 
-  .remnant-container:hover,
-  .work-order-container:hover {
+  .work-order-container:hover,
+  .client-container {
     cursor: pointer;
   }
 

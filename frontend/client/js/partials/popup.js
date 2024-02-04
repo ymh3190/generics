@@ -3,6 +3,7 @@ import * as htmls from "../htmls";
 
 const createWorkOrderDOM = document.getElementById("createWorkOrder");
 const createRemnantDOM = document.getElementById("createRemnant");
+const createClientDOM = document.getElementById("createClient");
 
 const popupDOM = document.getElementById("popup");
 const closeDOM = document.getElementById("close");
@@ -134,4 +135,26 @@ if (createRemnantDOM) {
 
   createRemnantDOM.addEventListener("click", createRemnantHandler);
   closeDOM.addEventListener("click", createRemnantHandler);
+}
+
+if (createClientDOM) {
+  const createClientHandler = () => {
+    const icon = createClientDOM.querySelector("i");
+    if (popupDOM.classList.contains("hidden")) {
+      popupDOM.classList.remove("hidden");
+      icon.className = icon.className.replace("regular", "solid");
+      // const remnantDetailsDOMs =
+      //   createClientDOM.querySelectorAll("#client");
+      // for (const remnantDetailsDOM of remnantDetailsDOMs) {
+      //   remnantDetailsDOM.remove();
+      // }
+      return;
+    }
+
+    popupDOM.classList.add("hidden");
+    itemsPopupDOM.classList.add("hidden");
+    icon.className = icon.className.replace("solid", "regular");
+  };
+
+  createClientDOM.addEventListener("click", createClientHandler);
 }

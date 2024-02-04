@@ -1,69 +1,71 @@
 <nav class="nav" id="nav">
-    <% if (url==='/' ) { %>
-        <div class="nav-list nav-click">
-            <a href="/" class="flex">
-                <i class="fa-solid fa-house margin-right"></i>
-                <span>home</span>
-            </a>
-        </div>
-        <% } else { %>
-            <div class="nav-list">
+    <% if (user?.role==='admin' ) { %>
+        <% if (url==='/' ) { %>
+            <div class="nav-list nav-click">
                 <a href="/" class="flex">
                     <i class="fa-solid fa-house margin-right"></i>
                     <span>home</span>
                 </a>
             </div>
-            <% } %>
-                <% if (url==='/work-order' ) {%>
-                    <div class="nav-list nav-click">
-                        <a href="/work-order" class="flex">
-                            <i class="fa-solid fa-pen margin-right"></i>
-                            <span>order</span>
-                        </a>
-                    </div>
-                    <%} else { %>
-                        <div class="nav-list">
+            <% } else { %>
+                <div class="nav-list">
+                    <a href="/" class="flex">
+                        <i class="fa-solid fa-house margin-right"></i>
+                        <span>home</span>
+                    </a>
+                </div>
+                <% } %>
+                    <% if (url==='/work-order' ) {%>
+                        <div class="nav-list nav-click">
                             <a href="/work-order" class="flex">
                                 <i class="fa-solid fa-pen margin-right"></i>
                                 <span>order</span>
                             </a>
                         </div>
-                        <% } %>
-
-                            <% if (url==='/remnant' ) {%>
-                                <div class="nav-list nav-click">
-                                    <a href="/remnant" class="flex">
-                                        <i class="fa-solid fa-note-sticky margin-right"></i>
-                                        <span>remnant</span>
-                                    </a>
-                                </div>
-                                <%} else { %>
-                                    <div class="nav-list">
+                        <%} else { %>
+                            <div class="nav-list">
+                                <a href="/work-order" class="flex">
+                                    <i class="fa-solid fa-pen margin-right"></i>
+                                    <span>order</span>
+                                </a>
+                            </div>
+                            <% } %>
+                                <% if (url==='/remnant' ) {%>
+                                    <div class="nav-list nav-click">
                                         <a href="/remnant" class="flex">
                                             <i class="fa-solid fa-note-sticky margin-right"></i>
                                             <span>remnant</span>
                                         </a>
                                     </div>
-                                    <% } %>
-                                        <% if (url==='/client' ) {%>
-                                            <div class="nav-list nav-click">
-                                                <a href="/client" class="flex">
-                                                    <i class="fa-solid fa-building margin-right"></i>
-                                                    <span>client</span>
-                                                </a>
-                                            </div>
-                                            <%} else { %>
-                                                <div class="nav-list">
+                                    <%} else { %>
+                                        <div class="nav-list">
+                                            <a href="/remnant" class="flex">
+                                                <i class="fa-solid fa-note-sticky margin-right"></i>
+                                                <span>remnant</span>
+                                            </a>
+                                        </div>
+                                        <% } %>
+                                            <% if (url==='/client' ) {%>
+                                                <div class="nav-list nav-click">
                                                     <a href="/client" class="flex">
                                                         <i class="fa-solid fa-building margin-right"></i>
                                                         <span>client</span>
                                                     </a>
                                                 </div>
-                                                <% } %>
+                                                <%} else { %>
                                                     <div class="nav-list">
-                                                        <a href="" class="flex">
-                                                            <i class="fa-solid fa-expand margin-right"></i>
-                                                            <span>field</span>
+                                                        <a href="/client" class="flex">
+                                                            <i class="fa-solid fa-building margin-right"></i>
+                                                            <span>client</span>
                                                         </a>
                                                     </div>
+                                                    <% } %>
+                                                        <% } %>
+                                                            <div class="nav-list">
+                                                                <a href="" class="flex">
+                                                                    <i class="fa-solid fa-expand margin-right"></i>
+                                                                    <span>field</span>
+                                                                </a>
+                                                            </div>
+
 </nav>

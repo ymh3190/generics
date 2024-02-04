@@ -122,15 +122,39 @@ class RootController {
   }
 
   getSignup(req, res) {
+    if (req.headers.cookie) {
+      return res.redirect("/");
+    }
     res.status(200).render("signup", { pageTitle: "Sign up" });
   }
 
   getSignin(req, res) {
+    if (req.headers.cookie) {
+      return res.redirect("/");
+    }
     res.status(200).render("signin", { pageTitle: "Sign in" });
   }
 
-  getClient(req, res) {
-    res.status(200).render("client", { pageTitle: "Generics" });
+  async getClient(req, res) {
+    const response = await FetchAPI.get("/clients", {
+      cookie: req.headers.cookie,
+    });
+
+    const data = await response.json();
+    const clients = data.clients;
+
+    const cookies = response.headers.raw()["set-cookie"];
+    if (!cookies) {
+      return res
+        .status(200)
+        .render("client", { pageTitle: "Generics", clients });
+    }
+
+    const access_token = cookies.find((el) => el.startsWith("access_token"));
+    const refresh_token = cookies.find((el) => el.startsWith("refresh_token"));
+    res.cookie(access_token);
+    res.cookie(refresh_token);
+    res.status(200).render("client", { pageTitle: "Generics", clients });
   }
 }
 
@@ -367,15 +391,15 @@ class RemnantDetailController {
     res.status(200).json({ RemnantDetails: data.RemnantDetails });
   }
 
-  // async selectById(req, res) {
-  //   const { id } = req.params;
+  async selectById(req, res) {
+    const { id } = req.params;
 
-  //   const response = await FetchAPI.get(`/remnant-details/${id}`, {
-  //     cookie: req.headers.cookie,
-  //   });
-  //   const data = await response.json();
-  //   res.status(200).json({ remnantDetail: data.remnantDetail });
-  // }
+    const response = await FetchAPI.get(`/remnant-details/${id}`, {
+      cookie: req.headers.cookie,
+    });
+    const data = await response.json();
+    res.status(200).json({ remnantDetail: data.remnantDetail });
+  }
 
   // async update(req, res) {
   //   const { id } = req.params;

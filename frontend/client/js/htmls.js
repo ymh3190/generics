@@ -167,7 +167,12 @@ const workDetailList = () => {
 const remnantZoneList = (zone) => {
   return `
   <div data-id=${zone.id} id='zone' class='zone-container'>
-    <span id='name'>${zone.name}</span>
+    <div>
+      <span id='name'>${zone.name}</span>
+    </div>
+    <div>
+      <span>${zone.comment}</span>
+    </div>
   </div>
   `;
 };

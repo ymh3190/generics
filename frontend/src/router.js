@@ -22,43 +22,44 @@ class RootRouter extends Router {
   constructor() {
     super();
 
-    this.router.get("/", middleware.tokenExists, rootController.getIndex);
+    this.router.get("/", middleware.authenticateUser, rootController.getIndex);
 
     this.router.get(
       "/work-order",
-      middleware.tokenExists,
+      middleware.authenticateUser,
+      middleware.authorizePermissions("admin"),
       rootController.getWorkOrder
     );
 
     this.router.get(
       "/remnant",
-      middleware.tokenExists,
+      middleware.authenticateUser,
+      middleware.authorizePermissions("admin"),
       rootController.getRemnant
     );
 
-    this.router.get("/image", middleware.tokenExists, rootController.getImage);
-
     this.router.get(
-      "/signin",
-      middleware.tokenNotExists,
-      rootController.getSignin
+      "/image",
+      middleware.authenticateUser,
+      middleware.authorizePermissions("admin"),
+      rootController.getImage
     );
 
-    this.router.get(
-      "/signup",
-      middleware.tokenNotExists,
-      rootController.getSignup
-    );
+    this.router.get("/signin", rootController.getSignin);
+
+    this.router.get("/signup", rootController.getSignup);
 
     this.router.get(
       "/watch/:id(\\d|\\w{32})",
-      middleware.tokenExists,
+      middleware.authenticateUser,
+      middleware.authorizePermissions("admin"),
       rootController.getWatch
     );
 
     this.router.get(
       "/client",
-      middleware.tokenExists,
+      middleware.authenticateUser,
+      middleware.authorizePermissions("admin"),
       rootController.getClient
     );
   }
@@ -74,7 +75,7 @@ class AuthRouter extends Router {
 
     this.router.delete(
       "/signout",
-      middleware.tokenExists,
+      middleware.authenticateUser,
       authController.signout
     );
   }
@@ -86,10 +87,24 @@ class ClientRouter extends Router {
 
     this.router
       .route("/")
-      .post(middleware.tokenExists, clientController.create)
-      .get(middleware.tokenExists, clientController.select);
+      .post(
+        middleware.authenticateUser,
+        middleware.authorizePermissions("admin"),
+        clientController.create
+      )
+      .get(
+        middleware.authenticateUser,
+        middleware.authorizePermissions("admin"),
+        clientController.select
+      );
 
-    this.router.route("/:id(\\d|\\w{32})").get(clientController.selectById);
+    this.router
+      .route("/:id(\\d|\\w{32})")
+      .get(
+        middleware.authenticateUser,
+        middleware.authorizePermissions("admin"),
+        clientController.selectById
+      );
   }
 }
 
@@ -99,22 +114,32 @@ class WorkOrderRouter extends Router {
 
     this.router
       .route("/")
-      .post(middleware.tokenExists, workOrderController.create);
-    // .get(middleware.tokenExists, workOrderController.select);
+      .post(
+        middleware.authenticateUser,
+        middleware.authorizePermissions("admin"),
+        workOrderController.create
+      );
+    // .get(middleware.authenticateUser, workOrderController.select);
 
     this.router
       .route("/:id(\\d|\\w{32})")
-      .get(middleware.tokenExists, workOrderController.selectById);
+      .get(
+        middleware.authenticateUser,
+        middleware.authorizePermissions("admin"),
+        workOrderController.selectById
+      );
 
     this.router.post(
       "/date",
-      middleware.tokenExists,
+      middleware.authenticateUser,
+      middleware.authorizePermissions("admin"),
       workOrderController.select
     );
 
     this.router.get(
       "/:id(\\d|\\w{32})/details",
-      middleware.tokenExists,
+      middleware.authenticateUser,
+      middleware.authorizePermissions("admin"),
       workDetailController.selectByWorkOrderId
     );
   }
@@ -124,7 +149,13 @@ class WorkDetailRouter extends Router {
   constructor() {
     super();
 
-    this.router.route("/").post(workDetailController.create);
+    this.router
+      .route("/")
+      .post(
+        middleware.authenticateUser,
+        middleware.authorizePermissions("admin"),
+        workDetailController.create
+      );
 
     // this.router
     //   .route("/:id(\\d|\\w{32})")
@@ -139,12 +170,24 @@ class ItemRouter extends Router {
 
     this.router
       .route("/")
-      .post(middleware.tokenExists, itemController.create)
-      .get(middleware.tokenExists, itemController.select);
+      .post(
+        middleware.authenticateUser,
+        middleware.authorizePermissions("admin"),
+        itemController.create
+      )
+      .get(
+        middleware.authenticateUser,
+        middleware.authorizePermissions("admin"),
+        itemController.select
+      );
 
     this.router
       .route("/:id(\\d|\\w{32})")
-      .get(middleware.tokenExists, itemController.selectById);
+      .get(
+        middleware.authenticateUser,
+        middleware.authorizePermissions("admin"),
+        itemController.selectById
+      );
   }
 }
 
@@ -154,12 +197,24 @@ class RemnantZoneRouter extends Router {
 
     this.router
       .route("/")
-      .post(middleware.tokenExists, remnantZoneController.create)
-      .get(middleware.tokenExists, remnantZoneController.select);
+      .post(
+        middleware.authenticateUser,
+        middleware.authorizePermissions("admin"),
+        remnantZoneController.create
+      )
+      .get(
+        middleware.authenticateUser,
+        middleware.authorizePermissions("admin"),
+        remnantZoneController.select
+      );
 
     this.router
       .route("/:id(\\d|\\w{32})")
-      .get(middleware.tokenExists, remnantZoneController.selectById);
+      .get(
+        middleware.authenticateUser,
+        middleware.authorizePermissions("admin"),
+        remnantZoneController.selectById
+      );
     // .patch(remnantZoneController.update)
     // .delete(remnantZoneController.delete);
   }
@@ -171,14 +226,26 @@ class RemnantDetailRouter extends Router {
 
     this.router
       .route("/")
-      .post(middleware.tokenExists, remnantDetailController.create)
-      .get(middleware.tokenExists, remnantDetailController.select);
+      .post(
+        middleware.authenticateUser,
+        middleware.authorizePermissions("admin"),
+        remnantDetailController.create
+      )
+      .get(
+        middleware.authenticateUser,
+        middleware.authorizePermissions("admin"),
+        remnantDetailController.select
+      );
 
-    // this.router
-    //   .route("/:id(\\d|\\w{32})")
-    //   .get(remnantDetailController.selectById)
-    //   .patch(remnantDetailController.update)
-    //   .delete(remnantDetailController.delete);
+    this.router
+      .route("/:id(\\d|\\w{32})")
+      .get(
+        middleware.authenticateUser,
+        middleware.authorizePermissions("admin"),
+        remnantDetailController.selectById
+      );
+    // .patch(remnantDetailController.update)
+    // .delete(remnantDetailController.delete);
   }
 }
 
@@ -196,7 +263,11 @@ class UserRouter extends Router {
 
     this.router
       .route("/:id(\\d|\\w{32})")
-      .get(middleware.tokenExists, userController.selectById);
+      .get(
+        middleware.authenticateUser,
+        middleware.authorizePermissions("admin"),
+        userController.selectById
+      );
   }
 }
 

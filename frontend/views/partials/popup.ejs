@@ -171,7 +171,7 @@
             </div>
         </div>
         <% } else if (url==='/remnant' ) { %>
-            <div class="primary remnant-detail-popup">
+            <div class="primary remnant-detail-popup" id="remnantDetailPopup">
                 <div class="popup-header">
                     <div class="left">
                         <p>register remnant</p>
@@ -288,62 +288,140 @@
                     </div>
                 </div>
             </div>
-            <% } %>
-                <div class="secondary items-popup hidden" id="itemsPopup">
+            <% } else if (url==='/client' ) { %>
+                <div class="primary client-popup hidden" id="clientPopup">
                     <div class="popup-header">
                         <div class="left">
-                            <p>explore item</p>
+                            <p>place client</p>
                         </div>
                         <div class="right">
-                            <button id='closeItemsPopup'>x</button>
+                            <button id="close">x</button>
                         </div>
                     </div>
                     <div class="popup-body">
-                        <div class="search-create">
-                            <div class="left">
-                                <div id="searchItemPopup" class="search">
-                                    <div class="title">
-                                        <p>search item</p>
-                                    </div>
-                                    <form id="searchItemForm" class="search-form">
-                                        <input type="text" id="searchItem" autocomplete="off">
-                                        <button>
-                                            <i class="fa-solid fa-magnifying-glass"></i>
-                                        </button>
-                                    </form>
+                        <div class="container-top">
+                            <div class="input-container">
+                                <div class="title">
+                                    <span>client</span>
                                 </div>
-                                <div id="createItemPopup" class="create hidden">
-                                    <div class="title">
-                                        <p>create item</p>
-                                    </div>
-                                    <form id="createItemForm" class="item-create-form">
-                                        <div class="input-container">
-                                            <div class="title">
-                                                <span>name</span>
-                                            </div>
-                                            <div>
-                                                <input type="text" placeholder="name" id="name" autocomplete="on">
-                                            </div>
-                                        </div>
-                                        <div class="button">
-                                            <button id="createItem">create</button>
-                                        </div>
-                                    </form>
+                                <div class="search">
+                                    <input type="text" id="clientInput" placeholder="search client" readonly>
                                 </div>
                             </div>
-                            <div class="right">
+                            <div class="input-container">
                                 <div class="title">
-                                    <span>new</span>
+                                    <span>comment</span>
                                 </div>
-                                <div class="button">
-                                    <button id="newItem">
-                                        <i class="fa-regular fa-square-plus"></i>
-                                    </button>
+                                <div class="comment">
+                                    <input type="text" id="comment" placeholder="Add a comment..." autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="input-container">
+                                <div class="title">
+                                    <span>urgent</span>
+                                </div>
+                                <div class="urgent">
+                                    <input type="checkbox" id="urgent">
                                 </div>
                             </div>
                         </div>
-                        <div id="items" class="item-containers"></div>
+                        <div class="container-middle">
+                            <div class="title">
+                                <span>work-detail</span>
+                            </div>
+                            <div class="columns">
+                                <div class="column">
+                                    <span>item</span>
+                                </div>
+                                <div class="column">
+                                    <span>depth</span>
+                                </div>
+                                <div class="column">
+                                    <span>width</span>
+                                </div>
+                                <div class="column">
+                                    <span>length</span>
+                                </div>
+                                <div class="column">
+                                    <span>quantity</span>
+                                </div>
+                                <div class="column">
+                                    <span>remnant</span>
+                                </div>
+                                <div class="column">
+                                    <span>button</span>
+                                </div>
+                            </div>
+                            <div class="rows">
+                                <div id="workDetails"></div>
+                                <div class="add-row">
+                                    <button id="add">add</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="container-bottom">
+                            <div class="center">
+                                <button id="place">place</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
+                <% } %>
+                    <div class="secondary items-popup hidden" id="itemsPopup">
+                        <div class="popup-header">
+                            <div class="left">
+                                <p>explore item</p>
+                            </div>
+                            <div class="right">
+                                <button id='closeItemsPopup'>x</button>
+                            </div>
+                        </div>
+                        <div class="popup-body">
+                            <div class="search-create">
+                                <div class="left">
+                                    <div id="searchItemPopup" class="search">
+                                        <div class="title">
+                                            <p>search item</p>
+                                        </div>
+                                        <form id="searchItemForm" class="search-form">
+                                            <input type="text" id="searchItem" autocomplete="off">
+                                            <button>
+                                                <i class="fa-solid fa-magnifying-glass"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                    <div id="createItemPopup" class="create hidden">
+                                        <div class="title">
+                                            <p>create item</p>
+                                        </div>
+                                        <form id="createItemForm" class="item-create-form">
+                                            <div class="input-container">
+                                                <div class="title">
+                                                    <span>name</span>
+                                                </div>
+                                                <div>
+                                                    <input type="text" placeholder="name" id="name" autocomplete="on">
+                                                </div>
+                                            </div>
+                                            <div class="button">
+                                                <button id="createItem">create</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="right">
+                                    <div class="title">
+                                        <span>new</span>
+                                    </div>
+                                    <div class="button">
+                                        <button id="newItem">
+                                            <i class="fa-regular fa-square-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="items" class="item-containers"></div>
+                        </div>
+                    </div>
 </div>
 <script src="/public/js/popup.js"></script>

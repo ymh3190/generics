@@ -312,7 +312,7 @@ class ClientController {
   }
 
   async select(req, res) {
-    const clients = await Client.select({});
+    const clients = await Client.select({}, "desc");
     res.status(200).json({ clients });
   }
 
