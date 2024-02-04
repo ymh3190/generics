@@ -171,7 +171,7 @@
             </div>
         </div>
         <% } else if (url==='/remnant' ) { %>
-            <div class="primary remnant-detail-popup" id="remnantDetailPopup">
+            <div class="primary remnant-detail-popup hidden" id="remnantDetailPopup">
                 <div class="popup-header">
                     <div class="left">
                         <p>register remnant</p>
@@ -292,78 +292,62 @@
                 <div class="primary client-popup hidden" id="clientPopup">
                     <div class="popup-header">
                         <div class="left">
-                            <p>place client</p>
+                            <p>register client</p>
                         </div>
                         <div class="right">
-                            <button id="close">x</button>
+                            <button id='close'>x</button>
                         </div>
                     </div>
                     <div class="popup-body">
-                        <div class="container-top">
-                            <div class="input-container">
-                                <div class="title">
-                                    <span>client</span>
-                                </div>
-                                <div class="search">
-                                    <input type="text" id="clientInput" placeholder="search client" readonly>
+                        <div class="search-create">
+                            <div class="left">
+                                <div id="createClientPopup" class="create">
+                                    <div class="title">
+                                        <p>create client</p>
+                                    </div>
+                                    <form id="createClientForm" class="client-create-form">
+                                        <div class="input-container">
+                                            <div class="title">
+                                                <span>association</span>
+                                            </div>
+                                            <div class="association">
+                                                <input type="text" id="association" autocomplete="on">
+                                            </div>
+                                        </div>
+                                        <div class="input-container">
+                                            <div class="title">
+                                                <span>name</span>
+                                            </div>
+                                            <div class="name">
+                                                <input type="text" id="name" autocomplete="on">
+                                            </div>
+                                        </div>
+                                        <div class="input-container">
+                                            <div class="title">
+                                                <span>telephone</span>
+                                            </div>
+                                            <div class="telephone">
+                                                <input type="text" id="telephone" autocomplete="on">
+                                            </div>
+                                        </div>
+                                        <div class="button">
+                                            <button id="createClient">create</button>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
-                            <div class="input-container">
+                            <div class="right">
                                 <div class="title">
-                                    <span>comment</span>
+                                    <span>update</span>
                                 </div>
-                                <div class="comment">
-                                    <input type="text" id="comment" placeholder="Add a comment..." autocomplete="off">
-                                </div>
-                            </div>
-                            <div class="input-container">
-                                <div class="title">
-                                    <span>urgent</span>
-                                </div>
-                                <div class="urgent">
-                                    <input type="checkbox" id="urgent">
+                                <div class="button">
+                                    <button id="updateClient">
+                                        <i class="fa-solid fa-scissors"></i>
+                                    </button>
                                 </div>
                             </div>
                         </div>
-                        <div class="container-middle">
-                            <div class="title">
-                                <span>work-detail</span>
-                            </div>
-                            <div class="columns">
-                                <div class="column">
-                                    <span>item</span>
-                                </div>
-                                <div class="column">
-                                    <span>depth</span>
-                                </div>
-                                <div class="column">
-                                    <span>width</span>
-                                </div>
-                                <div class="column">
-                                    <span>length</span>
-                                </div>
-                                <div class="column">
-                                    <span>quantity</span>
-                                </div>
-                                <div class="column">
-                                    <span>remnant</span>
-                                </div>
-                                <div class="column">
-                                    <span>button</span>
-                                </div>
-                            </div>
-                            <div class="rows">
-                                <div id="workDetails"></div>
-                                <div class="add-row">
-                                    <button id="add">add</button>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="container-bottom">
-                            <div class="center">
-                                <button id="place">place</button>
-                            </div>
-                        </div>
+                        <div id="clients" class="client-containers"></div>
                     </div>
                 </div>
                 <% } %>

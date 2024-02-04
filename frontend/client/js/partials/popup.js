@@ -114,11 +114,13 @@ if (createWorkOrderDOM) {
 
 if (createRemnantDOM) {
   const remnantDetailsDOM = document.getElementById("remnantDetails");
+  const remnantDetailPopupDOM = document.getElementById("remnantDetailPopup");
 
   const createRemnantHandler = () => {
     const icon = createRemnantDOM.querySelector("i");
     if (popupDOM.classList.contains("hidden")) {
       popupDOM.classList.remove("hidden");
+      remnantDetailPopupDOM.classList.remove("hidden");
       icon.className = icon.className.replace("regular", "solid");
       const remnantDetailsDOMs =
         remnantDetailsDOM.querySelectorAll("#remnantDetail");
@@ -138,23 +140,22 @@ if (createRemnantDOM) {
 }
 
 if (createClientDOM) {
+  const clientPopupDOM = document.getElementById("clientPopup");
+
   const createClientHandler = () => {
     const icon = createClientDOM.querySelector("i");
     if (popupDOM.classList.contains("hidden")) {
       popupDOM.classList.remove("hidden");
+      clientPopupDOM.classList.remove("hidden");
       icon.className = icon.className.replace("regular", "solid");
-      // const remnantDetailsDOMs =
-      //   createClientDOM.querySelectorAll("#client");
-      // for (const remnantDetailsDOM of remnantDetailsDOMs) {
-      //   remnantDetailsDOM.remove();
-      // }
       return;
     }
 
     popupDOM.classList.add("hidden");
-    itemsPopupDOM.classList.add("hidden");
+    clientPopupDOM.classList.add("hidden");
     icon.className = icon.className.replace("solid", "regular");
   };
 
   createClientDOM.addEventListener("click", createClientHandler);
+  closeDOM.addEventListener("click", createClientHandler);
 }
