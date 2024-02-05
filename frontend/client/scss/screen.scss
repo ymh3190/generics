@@ -67,7 +67,7 @@
   .signin,
   .signup {
     grid-template-columns: none;
-    left: initial;
+    left: initial !important;
   }
 }
 
@@ -92,6 +92,6 @@
   .signin,
   .signup {
     grid-template-columns: none;
-    left: initial;
+    left: initial !important;
   }
 }

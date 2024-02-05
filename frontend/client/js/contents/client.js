@@ -42,7 +42,9 @@ async function clientContainerHandler(event) {
           <div class="top">
               <div>
                   <div id="completeInfo" class="complete-info">
-                    <span>${workOrder.is_complete ? "complete" : ""}</span>
+                    <span>${
+                      workOrder.is_complete ? "complete" : "resolving"
+                    }</span>
                   </div>
                   <div id="endDate" class="end-date">
                     <span>${workOrder.end_date ? workOrder.end_date : ""}</span>
@@ -61,6 +63,7 @@ async function clientContainerHandler(event) {
       </div>
       `;
     }
+    infoContainersDOM.textContent = "";
     infoContainersDOM.insertAdjacentHTML("beforeend", html);
   }
   if (!workOrders) {
