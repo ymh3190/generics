@@ -205,6 +205,13 @@ class WorkOrderRouter extends Router {
       workOrderController.select
     );
 
+    this.router.post(
+      "/client",
+      middleware.authenticateUser,
+      middleware.authorizePermissions("admin"),
+      workOrderController.select
+    );
+
     this.router
       .route("/:id(\\d|\\w{32})")
       .get(

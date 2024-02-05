@@ -1,3 +1,22 @@
+.work-order-container {
+  .preview-bottom {
+    display: flex;
+  }
+}
+
+.remnant-container {
+  .preview-bottom {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.client-container {
+  .preview {
+    height: initial;
+  }
+}
+
 .preview {
   height: 10vh;
   margin-bottom: 1rem;
@@ -5,11 +24,7 @@
   &-top {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 1rem;
-  }
-
-  &-bottom {
-    display: flex;
+    margin-bottom: 2rem;
   }
 }
 

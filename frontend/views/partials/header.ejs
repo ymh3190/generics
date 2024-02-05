@@ -15,24 +15,32 @@
     <div class="end">
         <% if (user) { %>
             <% if (url==='/work-order' ) { %>
+                <div></div>
                 <div class="end-create">
                     <a class="end-create__endpoint" id="createWorkOrder">
                         <i class="fa-regular fa-square-plus"></i>
                     </a>
                 </div>
                 <% } else if (url==='/remnant' ) { %>
+                    <div></div>
                     <div class="end-create">
                         <a class="end-create__endpoint" id="createRemnant">
                             <i class="fa-regular fa-square-plus"></i>
                         </a>
                     </div>
                     <% } else if (url==='/client' ) { %>
+                        <div class="end-update">
+                            <a class="end-update__endpoint" id="updateClient">
+                                <i class="fa-solid fa-scissors"></i>
+                            </a>
+                        </div>
                         <div class="end-create">
                             <a class="end-create__endpoint" id="createClient">
                                 <i class="fa-regular fa-square-plus"></i>
                             </a>
                         </div>
                         <% } else { %>
+                            <div></div>
                             <div></div>
                             <% } %>
                                 <div class="end-signout">

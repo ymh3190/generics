@@ -73,9 +73,11 @@ const createItemFormHandler = async (event) => {
   }
 };
 
-createItemFormDOM.addEventListener("submit", createItemFormHandler);
-newItemDOM.addEventListener("click", newItemHandler);
-searchItemFormDOM.addEventListener("submit", searchItemFormHandler);
+if (createWorkOrderDOM || createRemnantDOM) {
+  createItemFormDOM.addEventListener("submit", createItemFormHandler);
+  newItemDOM.addEventListener("click", newItemHandler);
+  searchItemFormDOM.addEventListener("submit", searchItemFormHandler);
+}
 
 if (createWorkOrderDOM) {
   const urgentDOM = document.getElementById("urgent");

@@ -256,10 +256,16 @@ class WorkOrderController {
   }
 
   async select(req, res) {
-    const response = await FetchAPI.post("/work-orders/date", req.body, {
+    const response = await FetchAPI.post(`/work-orders/${req.path}`, req.body, {
       cookie: req.headers.cookie,
     });
     const data = await response.json();
+
+    if (req.path === "/date") {
+      return res.status(200).json({ workOrders: data.workOrders });
+    }
+
+    // req.path === "/client";
     res.status(200).json({ workOrders: data.workOrders });
   }
 

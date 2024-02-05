@@ -143,7 +143,7 @@ class MySQLAPI {
   /**
    *
    * @param {{}} filter
-   * @param {string} projection
+   * @param {string | {}} projection
    */
   static async select(filter, projection) {
     if (!filter) {
@@ -159,7 +159,7 @@ class MySQLAPI {
         return result;
       }
 
-      if (projection.startsWith("-")) {
+      if (typeof projection === "string" && projection.startsWith("-")) {
         const [result] = await MySQLAPI.pool.execute(sql);
         const query = projection.replace("-", "");
         for (let i = 0; i < result.length; i++) {
@@ -168,11 +168,37 @@ class MySQLAPI {
         return result;
       }
 
-      if (projection === "desc") {
-        sql = sql.concat(" ", "ORDER BY created_at DESC");
+      // for (const [key, value] of Object.entries(projection)) {
+      //   if (value === "desc" || value === "asc") {
+      //     sql = sql.concat(" ", `ORDER BY ${key} ${value}`);
+      //     const [result] = await MySQLAPI.pool.execute(sql);
+      //     return result;
+      //   }
+      // }
+
+      const arr = Object.entries(projection);
+      if (arr.length === 1) {
+        const [key, value] = arr[0];
+        sql = sql.concat(" ", `ORDER BY ${key} ${value}`);
         const [result] = await MySQLAPI.pool.execute(sql);
         return result;
       }
+
+      for (let i = 0; i < arr.length; i++) {
+        const [key, value] = arr[i];
+        const isOrder = value === "desc" || "asc";
+
+        if (i !== arr.length - 1 && isOrder) {
+          sql = sql.concat(" ", `ORDER BY ${key} ${value}`, ",");
+          continue;
+        }
+
+        if (isOrder) {
+          sql = sql.concat(" ", `${key} ${value}`);
+        }
+      }
+      const [result] = await MySQLAPI.pool.execute(sql);
+      return result;
     }
 
     let sql = `SELECT *, ${this.dateFormat} FROM ${this.table} WHERE`;
@@ -197,11 +223,37 @@ class MySQLAPI {
       return result;
     }
 
-    if (projection === "desc") {
-      sql = sql.concat(" ", "ORDER BY created_at DESC");
+    // for (const [key, value] of Object.entries(projection)) {
+    //   if (value === "desc" || value === "asc") {
+    //     sql = sql.concat(" ", `ORDER BY ${key} ${value}`);
+    //     const [result] = await MySQLAPI.pool.execute(sql, values);
+    //     return result;
+    //   }
+    // }
+
+    const arr = Object.entries(projection);
+    if (arr.length === 1) {
+      const [key, value] = arr[0];
+      sql = sql.concat(" ", `ORDER BY ${key} ${value}`);
       const [result] = await MySQLAPI.pool.execute(sql, values);
       return result;
     }
+
+    for (let i = 0; i < arr.length; i++) {
+      const [key, value] = arr[i];
+      const isOrder = value === "desc" || "asc";
+
+      if (i !== arr.length - 1 && isOrder) {
+        sql = sql.concat(" ", `ORDER BY ${key} ${value}`, ",");
+        continue;
+      }
+
+      if (isOrder) {
+        sql = sql.concat(" ", `${key} ${value}`);
+      }
+    }
+    const [result] = await MySQLAPI.pool.execute(sql, values);
+    return result;
   }
 
   /**

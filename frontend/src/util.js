@@ -9,6 +9,14 @@ class Util {
     const seconds = String(dateTime.getSeconds()).padStart(2, "0");
     return { years, months, dates, hours, minutes, seconds };
   }
+
+  parseToken(token) {
+    return JSON.parse(
+      Buffer.from(token.match(/\.(\w+)\./g).join(""), "base64").toString(
+        "utf-8"
+      )
+    );
+  }
 }
 
 const util = new Util();

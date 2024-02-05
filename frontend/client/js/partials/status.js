@@ -86,9 +86,9 @@ if (workOrderContainerDOMs.length) {
   const dateHandler = async () => {
     spotlightChip(dateChipDOM);
     workOrderContainerDOMs = document.querySelectorAll("#workOrderContainer");
-    for (const workOrderContainerDOM of workOrderContainerDOMs) {
+    workOrderContainerDOMs.forEach((workOrderContainerDOM) => {
       workOrderContainerDOM.remove();
-    }
+    });
 
     const date = dateDOM.value;
     const response = await FetchAPI.post("/work-orders/date", {
@@ -97,14 +97,14 @@ if (workOrderContainerDOMs.length) {
     if (response) {
       const data = await response.json();
 
-      for (const workOrder of data.workOrders) {
+      data.workOrders.forEach(async (workOrder) => {
         const response = await FetchAPI.get(`/clients/${workOrder.client_id}`);
         if (response) {
           const data = await response.json();
           const html = htmls.workOrderList(workOrder, data.client);
           contentDOM.insertAdjacentHTML("beforeend", html);
         }
-      }
+      });
     }
   };
 

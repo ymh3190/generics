@@ -33,6 +33,39 @@ const clientList = (client) => {
     `;
 };
 
+const clientContainer = (client) => {
+  return `
+  <div class="client-container highlight" id="clientContainer" data-id="${client.id}">
+      <div class="preview">
+          <div class="preview-top">
+              <div class='left'>
+                  <span id='association'>
+                      ${client.association}
+                  </span>
+              </div>
+              <div>
+                  <span id='name'>
+                      ${client.name}
+                  </span>
+              </div>
+          </div>
+          <div class="preview-bottom">
+              <span id='telephone'>
+                  ${client.telephone}
+              </span>
+          </div>
+      </div>
+      <div class="metadata">
+          <div class="datetime">
+              <span>
+                  ${client.created_at}
+              </span>
+          </div>
+      </div>
+  </div>
+  `;
+};
+
 /**
  *
  * @param {{}} workInfo { item, workDetail }
@@ -281,4 +314,5 @@ export {
   remnantList,
   remnantDetailList,
   creatorList,
+  clientContainer,
 };

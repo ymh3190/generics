@@ -204,6 +204,54 @@ const addHandler = async () => {
 };
 
 const placeHandler = async () => {
+  const workDetailDOMs = orderPopupDetailsDOM.querySelectorAll("#workDetail");
+  for (const workDetailDOM of workDetailDOMs) {
+    const itemDOM = workDetailDOM.querySelector("#item");
+    const depthDOM = workDetailDOM.querySelector("#depth");
+    const widthDOM = workDetailDOM.querySelector("#width");
+    const lengthDOM = workDetailDOM.querySelector("#length");
+    const quantityDOM = workDetailDOM.querySelector("#quantity");
+
+    const item_id = itemDOM.dataset.id;
+    const depth = depthDOM.value;
+    const width = widthDOM.value;
+    const length = lengthDOM.value;
+    const quantity = quantityDOM.value;
+
+    // TODO: 잔재 관련 기능 추가
+    const remnant = workDetailDOM.querySelector("#remnant").value;
+
+    if (!item_id) {
+      alert("Provide item_id");
+      itemDOM.focus();
+      return;
+    }
+
+    if (!depth) {
+      alert("Provide depth");
+      depthDOM.focus();
+      return;
+    }
+
+    if (!width) {
+      alert("Provide width");
+      widthDOM.focus();
+      return;
+    }
+
+    if (!length) {
+      alert("Provide length");
+      lengthDOM.focus();
+      return;
+    }
+
+    if (!quantity) {
+      alert("Provide quantity");
+      quantityDOM.focus();
+      return;
+    }
+  }
+
   const client_id = clientInputDOM.dataset.id;
   if (!client_id) {
     alert("Client not found");
@@ -234,7 +282,6 @@ const placeHandler = async () => {
     return;
   }
 
-  const workDetailDOMs = orderPopupDetailsDOM.querySelectorAll("#workDetail");
   for (const workDetailDOM of workDetailDOMs) {
     const item_id = workDetailDOM.querySelector("#item").dataset.id;
     const depth = workDetailDOM.querySelector("#depth").value;
@@ -244,11 +291,6 @@ const placeHandler = async () => {
 
     // TODO: 잔재 관련 기능 추가
     const remnant = workDetailDOM.querySelector("#remnant").value;
-
-    if (!item_id || !depth || !width || !length || !quantity) {
-      alert("Provide all values");
-      return;
-    }
 
     response = await FetchAPI.post("/work-details", {
       work_order_id: workOrder.id,
@@ -428,32 +470,27 @@ closeClientsPopupDOM.addEventListener("click", closeClientsPopupHandler);
 searchClientFormDOM.addEventListener("submit", searchClientFormHandler);
 clientInputDOM.addEventListener("focus", clientInputFocusHandler);
 
-(async () => {
-  const workOrderContainerDOMs = document.querySelectorAll(
-    "#workOrderContainer"
-  );
+const workOrderContainerDOMs = document.querySelectorAll("#workOrderContainer");
+workOrderContainerDOMs.forEach(async (workOrderContainerDOM) => {
+  workOrderContainerDOM.addEventListener("click", workOrderContainerHandler);
 
-  workOrderContainerDOMs.forEach(async (workOrderContainerDOM) => {
-    workOrderContainerDOM.addEventListener("click", workOrderContainerHandler);
+  const id = workOrderContainerDOM.dataset.client_id;
 
-    const id = workOrderContainerDOM.dataset.client_id;
-
-    const response = await FetchAPI.get(`/clients/${id}`);
-    if (response) {
-      const clientDOM = workOrderContainerDOM.querySelector("#client");
-      const data = await response.json();
-      const html = `
-        <div class='left'>
-          <span>${data.client.association}</span>
-        </div>
-        <div class='right'>
-          <span>${data.client.name}</span>
-        </div>
-        `;
-      clientDOM.insertAdjacentHTML("beforeend", html);
-    }
-  });
-})();
+  const response = await FetchAPI.get(`/clients/${id}`);
+  if (response) {
+    const data = await response.json();
+    const html = `
+      <div class='left'>
+        <span>${data.client.association}</span>
+      </div>
+      <div class='right'>
+        <span>${data.client.name}</span>
+      </div>
+      `;
+    const clientDOM = workOrderContainerDOM.querySelector("#client");
+    clientDOM.insertAdjacentHTML("beforeend", html);
+  }
+});
 
 const webSocket = new WebSocket(`ws://${window.location.host}`);
 webSocket.onopen = () => {

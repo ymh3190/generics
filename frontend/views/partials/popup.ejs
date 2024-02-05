@@ -170,6 +170,62 @@
                 <div id="clients" class="client-containers"></div>
             </div>
         </div>
+        <div class="secondary items-popup hidden" id="itemsPopup">
+            <div class="popup-header">
+                <div class="left">
+                    <p>explore item</p>
+                </div>
+                <div class="right">
+                    <button id='closeItemsPopup'>x</button>
+                </div>
+            </div>
+            <div class="popup-body">
+                <div class="search-create">
+                    <div class="left">
+                        <div id="searchItemPopup" class="search">
+                            <div class="title">
+                                <p>search item</p>
+                            </div>
+                            <form id="searchItemForm" class="search-form">
+                                <input type="text" id="searchItem" autocomplete="off">
+                                <button>
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                </button>
+                            </form>
+                        </div>
+                        <div id="createItemPopup" class="create hidden">
+                            <div class="title">
+                                <p>create item</p>
+                            </div>
+                            <form id="createItemForm" class="item-create-form">
+                                <div class="input-container">
+                                    <div class="title">
+                                        <span>name</span>
+                                    </div>
+                                    <div>
+                                        <input type="text" placeholder="name" id="name" autocomplete="on">
+                                    </div>
+                                </div>
+                                <div class="button">
+                                    <button id="createItem">create</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="right">
+                        <div class="title">
+                            <span>new</span>
+                        </div>
+                        <div class="button">
+                            <button id="newItem">
+                                <i class="fa-regular fa-square-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div id="items" class="item-containers"></div>
+            </div>
+        </div>
         <% } else if (url==='/remnant' ) { %>
             <div class="primary remnant-detail-popup hidden" id="remnantDetailPopup">
                 <div class="popup-header">
@@ -288,6 +344,62 @@
                     </div>
                 </div>
             </div>
+            <div class="secondary items-popup hidden" id="itemsPopup">
+                <div class="popup-header">
+                    <div class="left">
+                        <p>explore item</p>
+                    </div>
+                    <div class="right">
+                        <button id='closeItemsPopup'>x</button>
+                    </div>
+                </div>
+                <div class="popup-body">
+                    <div class="search-create">
+                        <div class="left">
+                            <div id="searchItemPopup" class="search">
+                                <div class="title">
+                                    <p>search item</p>
+                                </div>
+                                <form id="searchItemForm" class="search-form">
+                                    <input type="text" id="searchItem" autocomplete="off">
+                                    <button>
+                                        <i class="fa-solid fa-magnifying-glass"></i>
+                                    </button>
+                                </form>
+                            </div>
+                            <div id="createItemPopup" class="create hidden">
+                                <div class="title">
+                                    <p>create item</p>
+                                </div>
+                                <form id="createItemForm" class="item-create-form">
+                                    <div class="input-container">
+                                        <div class="title">
+                                            <span>name</span>
+                                        </div>
+                                        <div>
+                                            <input type="text" placeholder="name" id="name" autocomplete="on">
+                                        </div>
+                                    </div>
+                                    <div class="button">
+                                        <button id="createItem">create</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="right">
+                            <div class="title">
+                                <span>new</span>
+                            </div>
+                            <div class="button">
+                                <button id="newItem">
+                                    <i class="fa-regular fa-square-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="items" class="item-containers"></div>
+                </div>
+            </div>
             <% } else if (url==='/client' ) { %>
                 <div class="primary client-popup hidden" id="clientPopup">
                     <div class="popup-header">
@@ -298,7 +410,7 @@
                             <button id='close'>x</button>
                         </div>
                     </div>
-                    <div class="popup-body">
+                    <div class="popup-body" id="popupBody">
                         <div class="search-create">
                             <div class="left">
                                 <div id="createClientPopup" class="create">
@@ -337,75 +449,26 @@
                                 </div>
                             </div>
                             <div class="right">
-                                <div class="title">
-                                    <span>update</span>
-                                </div>
-                                <div class="button">
-                                    <button id="updateClient">
-                                        <i class="fa-solid fa-scissors"></i>
-                                    </button>
-                                </div>
+                                <div class="title"></div>
+                                <div class="button"></div>
                             </div>
                         </div>
-                        <div id="clients" class="client-containers"></div>
+                    </div>
+                </div>
+                <div class="primary work-info-popup hidden" id="workInfoPopup">
+                    <div class="popup-header">
+                        <div class="left">
+                            <p>work-order list</p>
+                        </div>
+                        <div class="right">
+                            <button id="close">x</button>
+                        </div>
+                    </div>
+                    <div class="popup-body">
+                        <div class="info-containers" id="infoContainers"></div>
                     </div>
                 </div>
                 <% } %>
-                    <div class="secondary items-popup hidden" id="itemsPopup">
-                        <div class="popup-header">
-                            <div class="left">
-                                <p>explore item</p>
-                            </div>
-                            <div class="right">
-                                <button id='closeItemsPopup'>x</button>
-                            </div>
-                        </div>
-                        <div class="popup-body">
-                            <div class="search-create">
-                                <div class="left">
-                                    <div id="searchItemPopup" class="search">
-                                        <div class="title">
-                                            <p>search item</p>
-                                        </div>
-                                        <form id="searchItemForm" class="search-form">
-                                            <input type="text" id="searchItem" autocomplete="off">
-                                            <button>
-                                                <i class="fa-solid fa-magnifying-glass"></i>
-                                            </button>
-                                        </form>
-                                    </div>
-                                    <div id="createItemPopup" class="create hidden">
-                                        <div class="title">
-                                            <p>create item</p>
-                                        </div>
-                                        <form id="createItemForm" class="item-create-form">
-                                            <div class="input-container">
-                                                <div class="title">
-                                                    <span>name</span>
-                                                </div>
-                                                <div>
-                                                    <input type="text" placeholder="name" id="name" autocomplete="on">
-                                                </div>
-                                            </div>
-                                            <div class="button">
-                                                <button id="createItem">create</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                                <div class="right">
-                                    <div class="title">
-                                        <span>new</span>
-                                    </div>
-                                    <div class="button">
-                                        <button id="newItem">
-                                            <i class="fa-regular fa-square-plus"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="items" class="item-containers"></div>
-                        </div>
-                    </div>
+
 </div>
 <script src="/public/js/popup.js"></script>

@@ -1,3 +1,5 @@
+import util from "./util";
+
 class Middleware {
   locals(req, res, next) {
     res.locals.url = req.url;
@@ -10,12 +12,7 @@ class Middleware {
 
       const access_token = cookies.find((el) => el.startsWith("access_token"));
       if (access_token) {
-        const payload = JSON.parse(
-          Buffer.from(
-            access_token.match(/\.(\w+)\./g).join(""),
-            "base64"
-          ).toString("utf-8")
-        );
+        const payload = util.parseToken(access_token);
         res.locals.user = payload.user;
         return next();
       }
@@ -23,12 +20,7 @@ class Middleware {
       const refresh_token = cookies.find((el) =>
         el.startsWith("refresh_token")
       );
-      const payload = JSON.parse(
-        Buffer.from(
-          refresh_token.match(/\.(\w+)\./g).join(""),
-          "base64"
-        ).toString("utf-8")
-      );
+      const payload = util.parseToken(refresh_token);
       res.locals.user = payload.user;
       return next();
     } catch (error) {

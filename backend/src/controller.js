@@ -30,7 +30,7 @@ class ImageController {
   }
 
   async select(req, res) {
-    const images = await Image.select({}, "desc");
+    const images = await Image.select({}, { created_at: "desc" });
     res.status(200).json({ images });
   }
 
@@ -183,7 +183,7 @@ class ItemController {
   }
 
   async select(req, res) {
-    const items = await Item.select({});
+    const items = await Item.select({}, { name: "asc" });
     res.status(200).json({ items });
   }
 
@@ -220,14 +220,25 @@ class WorkOrderController {
   }
 
   async select(req, res) {
-    const { created_at } = req.body;
+    const { created_at, client_id } = req.body;
 
-    if (!created_at) {
-      const workOrders = await WorkOrder.select({}, "desc");
+    if (!created_at && !client_id) {
+      const workOrders = await WorkOrder.select({}, { created_at: "desc" });
       return res.status(200).json({ workOrders });
     }
 
-    const workOrders = await WorkOrder.select({ created_at }, "desc");
+    if (created_at) {
+      const workOrders = await WorkOrder.select(
+        { created_at },
+        { created_at: "desc" }
+      );
+      return res.status(200).json({ workOrders });
+    }
+
+    const workOrders = await WorkOrder.select(
+      { client_id },
+      { created_at: "desc" }
+    );
     res.status(200).json({ workOrders });
   }
 
@@ -312,7 +323,10 @@ class ClientController {
   }
 
   async select(req, res) {
-    const clients = await Client.select({}, "desc");
+    const clients = await Client.select(
+      {},
+      { association: "asc", name: "asc" }
+    );
     res.status(200).json({ clients });
   }
 
@@ -350,7 +364,7 @@ class RemnantZoneController {
   }
 
   async select(req, res) {
-    const remnantZones = await RemnantZone.select({});
+    const remnantZones = await RemnantZone.select({}, { name: "asc" });
     res.status(200).json({ remnantZones });
   }
 
@@ -389,7 +403,10 @@ class RemnantDetailController {
   }
 
   async select(req, res) {
-    const remnantDetails = await RemnantDetail.select({}, "desc");
+    const remnantDetails = await RemnantDetail.select(
+      {},
+      { created_at: "desc" }
+    );
     res.status(200).json({ remnantDetails });
   }
 
