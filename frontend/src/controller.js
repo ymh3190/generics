@@ -156,6 +156,10 @@ class RootController {
     res.cookie(refresh_token);
     res.status(200).render("client", { pageTitle: "Generics", clients });
   }
+
+  getField(req, res) {
+    res.status(200).render("field", { pageTitle: "Generics" });
+  }
 }
 
 class AuthController {

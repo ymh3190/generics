@@ -10,16 +10,14 @@ class Middleware {
     try {
       const cookies = req.headers.cookie.split("; ");
 
-      const access_token = cookies.find((el) => el.startsWith("access_token"));
+      const access_token = cookies.find((e) => e.startsWith("access_token"));
       if (access_token) {
         const payload = util.parseToken(access_token);
         res.locals.user = payload.user;
         return next();
       }
 
-      const refresh_token = cookies.find((el) =>
-        el.startsWith("refresh_token")
-      );
+      const refresh_token = cookies.find((e) => e.startsWith("refresh_token"));
       const payload = util.parseToken(refresh_token);
       res.locals.user = payload.user;
       next();

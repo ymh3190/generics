@@ -62,6 +62,12 @@ class RootRouter extends Router {
       middleware.authorizePermissions("admin"),
       rootController.getClient
     );
+
+    this.router.get(
+      "/field",
+      middleware.authenticateUser,
+      rootController.getField
+    );
   }
 }
 

@@ -495,20 +495,3 @@ clientInputDOM.addEventListener("focus", clientInputFocusHandler);
     }
   });
 })();
-
-// socket client
-const webSocket = new WebSocket(`ws://${window.location.host}`);
-webSocket.onopen = () => {
-  console.log("connection success");
-
-  webSocket.onmessage = (event) => {
-    console.log(event.data);
-  };
-
-  webSocket.onclose = () => {
-    console.log("connection close");
-  };
-
-  webSocket.send("halo");
-  webSocket.close();
-};

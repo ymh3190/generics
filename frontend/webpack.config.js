@@ -18,6 +18,7 @@ module.exports = {
     workOrder: path.join(__dirname, contentsPath, "workOrder"),
     remnant: path.join(__dirname, contentsPath, "remnant"),
     client: path.join(__dirname, contentsPath, "client"),
+    field: path.join(__dirname, contentsPath, "field"),
   },
   output: {
     path: path.resolve(__dirname, "./public"),
