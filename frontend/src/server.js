@@ -36,7 +36,7 @@ class Server {
     const server = this.#app.listen(port, () => {
       console.log(`Server is listening port ${port}`);
     });
-    socket(server);
+    socket.connect(server);
   }
 
   #setConfig() {

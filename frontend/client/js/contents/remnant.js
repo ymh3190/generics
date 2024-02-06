@@ -285,36 +285,38 @@ newZoneDOM.addEventListener("click", newZoneHandler);
 saveDOM.addEventListener("click", saveHandler);
 addDOM.addEventListener("click", addHandler);
 
-remnantContainerDOMs.forEach(async (remnantContainerDOM) => {
-  let id = remnantContainerDOM.dataset.item_id;
+(() => {
+  remnantContainerDOMs.forEach(async (remnantContainerDOM) => {
+    let id = remnantContainerDOM.dataset.item_id;
 
-  let itemHtml;
-  let response = await FetchAPI.get(`/items/${id}`);
-  if (response) {
-    const data = await response.json();
-    itemHtml = htmls.itemList(data.item);
-  }
+    let itemHtml;
+    let response = await FetchAPI.get(`/items/${id}`);
+    if (response) {
+      const data = await response.json();
+      itemHtml = htmls.itemList(data.item);
+    }
 
-  id = remnantContainerDOM.dataset.zone_id;
-  let zoneHtml;
-  response = await FetchAPI.get(`/remnant-zones/${id}`);
-  if (response) {
-    const data = await response.json();
-    zoneHtml = htmls.remnantZoneList(data.remnantZone);
-  }
+    id = remnantContainerDOM.dataset.zone_id;
+    let zoneHtml;
+    response = await FetchAPI.get(`/remnant-zones/${id}`);
+    if (response) {
+      const data = await response.json();
+      zoneHtml = htmls.remnantZoneList(data.remnantZone);
+    }
 
-  let creatorHtml;
-  id = remnantContainerDOM.dataset.creator_id;
-  response = await FetchAPI.get(`/users/${id}`);
-  if (response) {
-    const data = await response.json();
-    creatorHtml = htmls.creatorList(data.user.username);
-  }
+    let creatorHtml;
+    id = remnantContainerDOM.dataset.creator_id;
+    response = await FetchAPI.get(`/users/${id}`);
+    if (response) {
+      const data = await response.json();
+      creatorHtml = htmls.creatorList(data.user.username);
+    }
 
-  const itemDOM = remnantContainerDOM.querySelector("#item");
-  itemDOM.insertAdjacentHTML("beforeend", itemHtml);
-  const zoneDOM = remnantContainerDOM.querySelector("#zone");
-  zoneDOM.insertAdjacentHTML("beforeend", zoneHtml);
-  const creatorDOM = remnantContainerDOM.querySelector("#creator");
-  creatorDOM.insertAdjacentHTML("beforeend", creatorHtml);
-});
+    const itemDOM = remnantContainerDOM.querySelector("#item");
+    itemDOM.insertAdjacentHTML("beforeend", itemHtml);
+    const zoneDOM = remnantContainerDOM.querySelector("#zone");
+    zoneDOM.insertAdjacentHTML("beforeend", zoneHtml);
+    const creatorDOM = remnantContainerDOM.querySelector("#creator");
+    creatorDOM.insertAdjacentHTML("beforeend", creatorHtml);
+  });
+})();

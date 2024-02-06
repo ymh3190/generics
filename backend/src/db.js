@@ -1,3 +1,9 @@
+import { writeFileSync, existsSync } from "fs";
+if (!existsSync(process.cwd() + "/src/db-sub.js")) {
+  writeFileSync(process.cwd() + "/src/db-sub.js", "");
+}
+
+import "dotenv/config";
 import mysql from "mysql2/promise";
 import * as CustomError from "./error";
 import util from "./util";

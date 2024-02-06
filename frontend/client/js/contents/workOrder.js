@@ -470,16 +470,19 @@ closeClientsPopupDOM.addEventListener("click", closeClientsPopupHandler);
 searchClientFormDOM.addEventListener("submit", searchClientFormHandler);
 clientInputDOM.addEventListener("focus", clientInputFocusHandler);
 
-const workOrderContainerDOMs = document.querySelectorAll("#workOrderContainer");
-workOrderContainerDOMs.forEach(async (workOrderContainerDOM) => {
-  workOrderContainerDOM.addEventListener("click", workOrderContainerHandler);
+(() => {
+  const workOrderContainerDOMs = document.querySelectorAll(
+    "#workOrderContainer"
+  );
+  workOrderContainerDOMs.forEach(async (workOrderContainerDOM) => {
+    workOrderContainerDOM.addEventListener("click", workOrderContainerHandler);
 
-  const id = workOrderContainerDOM.dataset.client_id;
+    const id = workOrderContainerDOM.dataset.client_id;
 
-  const response = await FetchAPI.get(`/clients/${id}`);
-  if (response) {
-    const data = await response.json();
-    const html = `
+    const response = await FetchAPI.get(`/clients/${id}`);
+    if (response) {
+      const data = await response.json();
+      const html = `
       <div class='left'>
         <span>${data.client.association}</span>
       </div>
@@ -487,11 +490,13 @@ workOrderContainerDOMs.forEach(async (workOrderContainerDOM) => {
         <span>${data.client.name}</span>
       </div>
       `;
-    const clientDOM = workOrderContainerDOM.querySelector("#client");
-    clientDOM.insertAdjacentHTML("beforeend", html);
-  }
-});
+      const clientDOM = workOrderContainerDOM.querySelector("#client");
+      clientDOM.insertAdjacentHTML("beforeend", html);
+    }
+  });
+})();
 
+// socket client
 const webSocket = new WebSocket(`ws://${window.location.host}`);
 webSocket.onopen = () => {
   console.log("connection success");
@@ -499,4 +504,11 @@ webSocket.onopen = () => {
   webSocket.onmessage = (event) => {
     console.log(event.data);
   };
+
+  webSocket.onclose = () => {
+    console.log("connection close");
+  };
+
+  webSocket.send("halo");
+  webSocket.close();
 };

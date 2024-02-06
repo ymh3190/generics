@@ -73,91 +73,104 @@ const createItemFormHandler = async (event) => {
   }
 };
 
-if (createWorkOrderDOM || createRemnantDOM) {
-  createItemFormDOM.addEventListener("submit", createItemFormHandler);
-  newItemDOM.addEventListener("click", newItemHandler);
-  searchItemFormDOM.addEventListener("submit", searchItemFormHandler);
-}
+(() => {
+  if (createWorkOrderDOM || createRemnantDOM) {
+    createItemFormDOM.addEventListener("submit", createItemFormHandler);
+    newItemDOM.addEventListener("click", newItemHandler);
+    searchItemFormDOM.addEventListener("submit", searchItemFormHandler);
+  }
 
-if (createWorkOrderDOM) {
-  const urgentDOM = document.getElementById("urgent");
-  const clientInputDOM = document.getElementById("clientInput");
-  const workDetailsDOM = document.getElementById("workDetails");
-  const commentDOM = document.getElementById("comment");
-  const clientsPopupDOM = document.getElementById("clientsPopup");
-  const workOrderPopupDOM = document.getElementById("workOrderPopup");
+  if (createWorkOrderDOM) {
+    const urgentDOM = document.getElementById("urgent");
+    const clientInputDOM = document.getElementById("clientInput");
+    const workDetailsDOM = document.getElementById("workDetails");
+    const commentDOM = document.getElementById("comment");
+    const clientsPopupDOM = document.getElementById("clientsPopup");
+    const workOrderPopupDOM = document.getElementById("workOrderPopup");
 
-  const createWorkOrderHandler = () => {
-    const icon = createWorkOrderDOM.querySelector("i");
-    if (popupDOM.classList.contains("hidden")) {
-      popupDOM.classList.remove("hidden");
-      workOrderPopupDOM.classList.remove("hidden");
-      icon.className = icon.className.replace("regular", "solid");
-      urgentDOM.checked = false;
-      clientInputDOM.value = "";
-      commentDOM.value = "";
-      const workDetailsDOMs = workDetailsDOM.querySelectorAll("#workDetail");
-      for (const workDetailsDOM of workDetailsDOMs) {
-        workDetailsDOM.remove();
+    const createWorkOrderHandler = () => {
+      const icon = createWorkOrderDOM.querySelector("i");
+      if (popupDOM.classList.contains("hidden")) {
+        popupDOM.classList.remove("hidden");
+        workOrderPopupDOM.classList.remove("hidden");
+        icon.className = icon.className.replace("regular", "solid");
+        urgentDOM.checked = false;
+        clientInputDOM.value = "";
+        commentDOM.value = "";
+        const workDetailsDOMs = workDetailsDOM.querySelectorAll("#workDetail");
+        for (const workDetailsDOM of workDetailsDOMs) {
+          workDetailsDOM.remove();
+        }
+        return;
       }
-      return;
-    }
 
-    popupDOM.classList.add("hidden");
-    workOrderPopupDOM.classList.add("hidden");
-    itemsPopupDOM.classList.add("hidden");
-    clientsPopupDOM.classList.add("hidden");
-    icon.className = icon.className.replace("solid", "regular");
-  };
+      popupDOM.classList.add("hidden");
+      workOrderPopupDOM.classList.add("hidden");
+      itemsPopupDOM.classList.add("hidden");
+      clientsPopupDOM.classList.add("hidden");
+      icon.className = icon.className.replace("solid", "regular");
+    };
 
-  createWorkOrderDOM.addEventListener("click", createWorkOrderHandler);
-  closeDOM.addEventListener("click", createWorkOrderHandler);
-}
+    createWorkOrderDOM.addEventListener("click", createWorkOrderHandler);
+    closeDOM.addEventListener("click", createWorkOrderHandler);
+    return;
+  }
 
-if (createRemnantDOM) {
-  const remnantDetailsDOM = document.getElementById("remnantDetails");
-  const remnantDetailPopupDOM = document.getElementById("remnantDetailPopup");
+  if (createRemnantDOM) {
+    const remnantDetailsDOM = document.getElementById("remnantDetails");
+    const remnantDetailPopupDOM = document.getElementById("remnantDetailPopup");
 
-  const createRemnantHandler = () => {
-    const icon = createRemnantDOM.querySelector("i");
-    if (popupDOM.classList.contains("hidden")) {
-      popupDOM.classList.remove("hidden");
-      remnantDetailPopupDOM.classList.remove("hidden");
-      icon.className = icon.className.replace("regular", "solid");
-      const remnantDetailsDOMs =
-        remnantDetailsDOM.querySelectorAll("#remnantDetail");
-      for (const remnantDetailsDOM of remnantDetailsDOMs) {
-        remnantDetailsDOM.remove();
+    const createRemnantHandler = () => {
+      const icon = createRemnantDOM.querySelector("i");
+      if (popupDOM.classList.contains("hidden")) {
+        popupDOM.classList.remove("hidden");
+        remnantDetailPopupDOM.classList.remove("hidden");
+        icon.className = icon.className.replace("regular", "solid");
+        const remnantDetailsDOMs =
+          remnantDetailsDOM.querySelectorAll("#remnantDetail");
+        for (const remnantDetailsDOM of remnantDetailsDOMs) {
+          remnantDetailsDOM.remove();
+        }
+        return;
       }
-      return;
-    }
 
-    popupDOM.classList.add("hidden");
-    itemsPopupDOM.classList.add("hidden");
-    icon.className = icon.className.replace("solid", "regular");
-  };
+      popupDOM.classList.add("hidden");
+      itemsPopupDOM.classList.add("hidden");
+      icon.className = icon.className.replace("solid", "regular");
+    };
 
-  createRemnantDOM.addEventListener("click", createRemnantHandler);
-  closeDOM.addEventListener("click", createRemnantHandler);
-}
+    createRemnantDOM.addEventListener("click", createRemnantHandler);
+    closeDOM.addEventListener("click", createRemnantHandler);
+    return;
+  }
 
-if (createClientDOM) {
-  const clientPopupDOM = document.getElementById("clientPopup");
+  if (createClientDOM) {
+    const clientPopupDOM = document.getElementById("clientPopup");
+    const clientsDOM = document.getElementById("clients");
+    const workDetailPopupDOM = document.getElementById("workDetailPopup");
 
-  const createClientHandler = () => {
-    const icon = createClientDOM.querySelector("i");
-    if (popupDOM.classList.contains("hidden")) {
-      popupDOM.classList.remove("hidden");
-      clientPopupDOM.classList.remove("hidden");
-      icon.className = icon.className.replace("regular", "solid");
-      return;
-    }
+    const createClientHandler = () => {
+      const icon = createClientDOM.querySelector("i");
+      if (popupDOM.classList.contains("hidden")) {
+        popupDOM.classList.remove("hidden");
+        clientPopupDOM.classList.remove("hidden");
+        icon.className = icon.className.replace("regular", "solid");
+        clientsDOM
+          .querySelectorAll("#clientContainer")
+          .forEach((clientContainer) => {
+            clientContainer.remove();
+          });
+        return;
+      }
 
-    popupDOM.classList.add("hidden");
-    clientPopupDOM.classList.add("hidden");
-    icon.className = icon.className.replace("solid", "regular");
-  };
+      popupDOM.classList.add("hidden");
+      clientPopupDOM.classList.add("hidden");
+      workDetailPopupDOM.classList.add("hidden");
+      icon.className = icon.className.replace("solid", "regular");
+    };
 
-  createClientDOM.addEventListener("click", createClientHandler);
-  closeDOM.addEventListener("click", createClientHandler);
-}
+    createClientDOM.addEventListener("click", createClientHandler);
+    closeDOM.addEventListener("click", createClientHandler);
+    return;
+  }
+})();

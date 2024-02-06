@@ -22,7 +22,7 @@ class Middleware {
       );
       const payload = util.parseToken(refresh_token);
       res.locals.user = payload.user;
-      return next();
+      next();
     } catch (error) {
       return res.redirect("/signin");
     }

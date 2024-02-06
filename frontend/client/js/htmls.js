@@ -35,7 +35,7 @@ const clientList = (client) => {
 
 const clientContainer = (client) => {
   return `
-  <div class="client-container highlight" id="clientContainer" data-id="${client.id}">
+  <div class="client-container highlight cursor-default" id="clientContainer" data-id="${client.id}">
       <div class="preview">
           <div class="preview-top">
               <div class='left'>
@@ -64,6 +64,82 @@ const clientContainer = (client) => {
       </div>
   </div>
   `;
+};
+
+const clientWorkInfoList = (workOrder) => {
+  return `
+  <div class="info-container client-work-info" id='clientWorkInfoContainer'
+  data-id='${workOrder.id}'>
+      <div class="top">
+          <div>
+              <div id="completeInfo" class="complete-info">
+                <span>${workOrder.is_complete ? "complete" : "resolving"}</span>
+              </div>
+              <div id="endDate" class="end-date">
+                <span>${workOrder.end_date ? workOrder.end_date : ""}</span>
+              </div>
+          </div>
+          <div id="urgentInfo" class="urgent-info">
+            <span>${workOrder.is_urgent ? "urgent" : ""}</span>
+          </div>
+      </div>
+      <div class="bottom">
+          <span>${workOrder.comment ? workOrder.comment : ""}</span>
+      </div>
+      <div id="worker" class="worker-info">
+        <span>${workOrder.worker_id ? workOrder.worker_id : ""}</span>
+      </div>
+      <div class="datetime">
+        <span>${workOrder.created_at}</span>
+      </div>
+  </div>
+  `;
+};
+
+const detailInfoList = (workInfo) => {
+  return `
+    <div id='workInfo' class='work-info'>
+      <div class='top'>
+        <span>${workInfo.item.name}</span>
+      </div>
+      <div class='bottom'>
+        <div class='detail'>
+          <div>
+            <span>depth</span>
+          </div>
+          <div>
+            <span>width</span>
+          </div>
+          <div>
+            <span>length</span>
+          </div>
+          <div>
+            <span>quantity</span>
+          </div>
+          <div>
+            <span>remnant</span>
+          </div>
+        </div>
+        <div class='values'>
+          <div>
+            <span>${workInfo.workDetail.depth}</span>
+          </div>
+          <div>
+            <span>${workInfo.workDetail.width}</span>
+          </div>
+          <div>
+            <span>${workInfo.workDetail.length}</span>
+          </div>
+          <div>
+            <span>${workInfo.workDetail.quantity}</span>
+          </div>
+          <div>
+            <span>${workInfo.workDetail.is_remnant}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    `;
 };
 
 /**
@@ -126,7 +202,7 @@ const workInfoList = (workInfo) => {
 const workOrderList = (workOrder, client) => {
   return `
     <div class="work-order-container" id="workOrderContainer"
-    data-client_id="${workOrder.client_id}"
+    data-id="${workOrder.id}" data-client_id="${workOrder.client_id}"
     data-is_complete="${workOrder.is_complete}"
     data-is_urgent="${workOrder.is_urgent}">
         <div class="preview">
@@ -315,4 +391,6 @@ export {
   remnantDetailList,
   creatorList,
   clientContainer,
+  clientWorkInfoList,
+  detailInfoList,
 };

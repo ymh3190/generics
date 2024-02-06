@@ -185,24 +185,14 @@ class AuthController {
       { username, password },
       { ip, userAgent }
     );
-    // const data = await response.json();
 
     const cookies = response.headers.raw()["set-cookie"];
     const access_token = cookies.find((el) => el.startsWith("access_token"));
     const refresh_token = cookies.find((el) => el.startsWith("refresh_token"));
 
-    // const reg = /Expires=((\w|\,|\s|\:)+)/;
-    // const expiration = refresh_token.match(reg)[1];
-
     res.cookie(access_token);
     res.cookie(refresh_token);
     res.status(200).end();
-
-    // res.status(200).json({
-    //   data: data.user.user_id,
-    //   expiration: new Date(expiration).getTime(),
-    //   creation: new Date().getTime(),
-    // });
   }
 
   async signout(req, res) {

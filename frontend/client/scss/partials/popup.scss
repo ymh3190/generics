@@ -232,6 +232,7 @@
 
     .top {
       justify-content: space-between;
+      height: 2vh;
 
       .complete-info,
       .urgent-info {
@@ -239,6 +240,11 @@
         border-radius: 0;
         border: 0;
       }
+    }
+
+    .bottom {
+      margin-bottom: 1rem;
+      height: 2vh;
     }
   }
 

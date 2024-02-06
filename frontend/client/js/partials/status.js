@@ -5,6 +5,10 @@ let workOrderContainerDOMs = document.querySelectorAll("#workOrderContainer");
 let remnantContainerDOMs = document.querySelectorAll("#remnantContainer");
 
 if (workOrderContainerDOMs.length) {
+  let workDetailPopupDOM;
+  let popupDOM;
+  let workInfosDOM;
+
   const allChipDOM = document.getElementById("allChip");
   const resolvingChipDOM = document.getElementById("resolvingChip");
   const completeChipDOM = document.getElementById("completeChip");
@@ -12,6 +16,113 @@ if (workOrderContainerDOMs.length) {
   const dateChipDOM = document.getElementById("dateChip");
   const dateDOM = dateChipDOM.querySelector("#date");
   const contentDOM = document.getElementById("content");
+  const bodyDOM = document.querySelector("body");
+
+  async function workOrderContainerHandler(event) {
+    event.stopPropagation();
+
+    if (workDetailPopupDOM.classList.contains("hidden")) {
+      bodyDOM.addEventListener("click", bodyHandler);
+    }
+    popupDOM.classList.remove("hidden");
+    workDetailPopupDOM.classList.remove("hidden");
+
+    const workOrderId = this.dataset.id;
+
+    let workOrder;
+    let response = await FetchAPI.get(`/work-orders/${workOrderId}`);
+    if (response) {
+      const data = await response.json();
+      workOrder = data.workOrder;
+      let html = `
+      <div>
+        <div class='top'>
+          <span>${workOrder.is_complete ? "complete" : "resolving"}</span>
+        </div>
+        ${
+          workOrder.is_complete
+            ? `<div><span>${workOrder.end_date}</span></div>`
+            : ""
+        }
+      </div>
+      `;
+      const completeInfoDOM = workDetailPopupDOM.querySelector("#completeInfo");
+      completeInfoDOM.textContent = "";
+      completeInfoDOM.insertAdjacentHTML("beforeend", html);
+
+      html = `
+      <div>
+        <span>${workOrder.is_urgent ? "urgent" : ""}</span>
+      </div>
+      `;
+      const urgentInfoDOM = workDetailPopupDOM.querySelector("#urgentInfo");
+      urgentInfoDOM.textContent = "";
+      urgentInfoDOM.insertAdjacentHTML("beforeend", html);
+
+      html = `
+      <div>
+        <span>${workOrder.comment}</span>
+      </div>
+      `;
+      const commentInfoDOM = workDetailPopupDOM.querySelector("#commentInfo");
+      commentInfoDOM.textContent = "";
+      commentInfoDOM.insertAdjacentHTML("beforeend", html);
+    }
+
+    const clientId = this.dataset.client_id;
+    response = await FetchAPI.get(`/clients/${clientId}`);
+    if (response) {
+      const data = await response.json();
+      const clientDOM = workDetailPopupDOM.querySelector("#client");
+      const html = htmls.clientList(data.client);
+      clientDOM.textContent = "";
+      clientDOM.insertAdjacentHTML("beforeend", html);
+    }
+
+    response = await FetchAPI.get(`/work-orders/${workOrderId}/details`);
+    if (response) {
+      const data = await response.json();
+      const workDetails = data.workDetails;
+      let html = "";
+
+      for (const workDetail of workDetails) {
+        const itemId = workDetail.item_id;
+        const response = await FetchAPI.get(`/items/${itemId}`);
+        if (response) {
+          const data = await response.json();
+          const item = data.item;
+          const workInfo = { workDetail, item };
+          html += htmls.workInfoList(workInfo);
+        }
+      }
+      workInfosDOM.textContent = "";
+      workInfosDOM.insertAdjacentHTML("beforeend", html);
+    }
+  }
+
+  function bodyHandler(event) {
+    if (event.target === workDetailPopupDOM) {
+      return;
+    }
+
+    const spanDOMs = workDetailPopupDOM.querySelectorAll("span");
+    for (const spanDOM of spanDOMs) {
+      if (event.target === spanDOM) {
+        return;
+      }
+    }
+
+    const divDOMs = workDetailPopupDOM.querySelectorAll("div");
+    for (const divDOM of divDOMs) {
+      if (event.target === divDOM) {
+        return;
+      }
+    }
+
+    bodyDOM.removeEventListener("click", bodyHandler);
+    popupDOM.classList.add("hidden");
+    workDetailPopupDOM.classList.add("hidden");
+  }
 
   function spotlightChip(dom) {
     const chips = [
@@ -103,6 +214,15 @@ if (workOrderContainerDOMs.length) {
           const data = await response.json();
           const html = htmls.workOrderList(workOrder, data.client);
           contentDOM.insertAdjacentHTML("beforeend", html);
+          workOrderContainerDOMs = document.querySelectorAll(
+            "#workOrderContainer"
+          );
+          workOrderContainerDOMs.forEach((workOrderContainerDOM) => {
+            workOrderContainerDOM.addEventListener(
+              "click",
+              workOrderContainerHandler
+            );
+          });
         }
       });
     }
@@ -113,6 +233,11 @@ if (workOrderContainerDOMs.length) {
   completeChipDOM.addEventListener("click", completeChipHandler);
   resolvingChipDOM.addEventListener("click", resolvingChipHandler);
   allChipDOM.addEventListener("click", allChipHandler);
+  document.addEventListener("DOMContentLoaded", () => {
+    workDetailPopupDOM = document.getElementById("workDetailPopup");
+    popupDOM = document.getElementById("popup");
+    workInfosDOM = document.getElementById("workInfos");
+  });
 }
 
 if (remnantContainerDOMs.length) {

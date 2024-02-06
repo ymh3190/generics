@@ -1,4 +1,6 @@
-import "dotenv/config";
+import "./db-sync";
+import "./db-sub";
+
 import "./layer";
 import express from "express";
 import helmet from "helmet";
