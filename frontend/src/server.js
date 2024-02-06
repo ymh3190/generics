@@ -33,10 +33,10 @@ class Server {
 
   listen() {
     const port = process.env.PORT || 3000;
-    const server = this.#app.listen(port, () => {
+    const http = this.#app.listen(port, () => {
       console.log(`Server is listening port ${port}`);
     });
-    socket.connect(server);
+    socket.connect(http);
   }
 
   #setConfig() {
