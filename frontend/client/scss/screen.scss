@@ -8,6 +8,10 @@
     top: 7vh;
   }
 
+  .status {
+    top: 7vh;
+  }
+
   .content {
     grid-template-columns: repeat(4, 1fr);
   }
@@ -19,6 +23,13 @@
   .signin,
   .signup {
     grid-template-columns: none;
+  }
+
+  .popup-container {
+    .primary {
+      top: $primaryPopupTopDesktop;
+      height: $primaryPopupHeightDesktop;
+    }
   }
 }
 

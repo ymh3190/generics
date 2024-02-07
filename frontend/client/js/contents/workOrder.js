@@ -16,7 +16,7 @@ const itemsPopupDOM = document.getElementById("itemsPopup");
 const closeItemsPopupDOM = document.getElementById("closeItemsPopup");
 
 const urgentDOM = document.getElementById("urgent");
-const commentDOM = document.getElementById("comment");
+const commentDOM = document.querySelector("#workOrderPopup #comment");
 const popupDOM = document.getElementById("popup");
 
 const contentDOM = document.getElementById("content");
@@ -32,6 +32,7 @@ const createClientPopupDOM = document.getElementById("createClientPopup");
 const searchClientPopupDOM = document.getElementById("searchClientPopup");
 const newClientDOM = document.getElementById("newClient");
 const createClientFormDOM = document.getElementById("createClientForm");
+const clientCommentDOM = document.querySelector("#createClientForm #comment");
 const associationDOM = document.getElementById("association");
 const nameDOM = document.getElementById("name");
 const telephoneDOM = document.getElementById("telephone");
@@ -311,6 +312,10 @@ const placeHandler = async () => {
 
   const html = htmls.workOrderList(workOrder, client);
   contentDOM.insertAdjacentHTML("afterbegin", html);
+  const newWorkOrderContainerDOM = contentDOM.querySelector(
+    "#workOrderContainer:first-child"
+  );
+  newWorkOrderContainerDOM.addEventListener("click", workOrderContainerHandler);
   popupDOM.classList.add("hidden");
   const createWorkOrderDOM = document.getElementById("createWorkOrder");
   const icon = createWorkOrderDOM.querySelector("i");
@@ -417,12 +422,20 @@ const createClientFormHandler = async (event) => {
   const association = associationDOM.value;
   const name = nameDOM.value;
   const telephone = telephoneDOM.value;
+  const comment = clientCommentDOM.value;
 
   if (!association) {
     alert("Provide association");
     associationDOM.focus();
     return;
   }
+
+  // association valid check
+  // if (association.match(/\(|\)|\s/)) {
+  //   alert("Association invalid");
+  //   associationDOM.focus();
+  //   return;
+  // }
 
   if (!name) {
     alert("Provide name");
@@ -440,11 +453,13 @@ const createClientFormHandler = async (event) => {
     association,
     name,
     telephone,
+    comment: comment ? comment : "",
   });
   if (response) {
     associationDOM.value = "";
     nameDOM.value = "";
     telephoneDOM.value = "";
+    clientCommentDOM.value = "";
 
     const data = await response.json();
     const html = htmls.clientList(data.client);
@@ -490,12 +505,12 @@ const docsHandler = (event) => {
   const isESC = event.key === "Escape";
   if (isESC) {
     bodyDOM.removeEventListener("click", bodyHandler);
-    popupDOM.classList.add("hidden");
-    workDetailPopupDOM.classList.add("hidden");
     popupDOM.classList.remove("blur");
     workDetailPopupDOM.classList.remove("blur");
     navDOM.classList.remove("blur");
     headerDOM.classList.remove("blur");
+    popupDOM.classList.add("hidden");
+    workDetailPopupDOM.classList.add("hidden");
   }
 };
 
@@ -534,6 +549,7 @@ clientInputDOM.addEventListener("focus", clientInputFocusHandler);
       `;
       const clientDOM = workOrderContainerDOM.querySelector("#client");
       clientDOM.insertAdjacentHTML("beforeend", html);
+      return;
     }
   });
 })();

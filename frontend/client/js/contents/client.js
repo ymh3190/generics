@@ -20,6 +20,7 @@ const clientsDOM = document.getElementById("clients");
 const workDetailPopupDOM = document.getElementById("workDetailPopup");
 const closeWorkDetailPopupDOM = document.getElementById("closeWorkDetailPopup");
 const workInfosDOM = document.getElementById("workInfos");
+const commentDOM = document.getElementById("comment");
 
 async function clientWorkInfoContainerHandler() {
   workInfoPopupDOM.removeEventListener("mouseleave", workInfoPopupHandler);
@@ -150,6 +151,7 @@ const createClientFormHandler = async (event) => {
   const association = associationDOM.value;
   const name = nameDOM.value;
   const telephone = telephoneDOM.value;
+  const comment = commentDOM.value;
 
   if (!association) {
     alert("Provide association");
@@ -173,6 +175,7 @@ const createClientFormHandler = async (event) => {
     association,
     name,
     telephone,
+    comment: comment ? comment : "",
   });
   if (response) {
     const data = await response.json();
@@ -189,6 +192,7 @@ const createClientFormHandler = async (event) => {
   associationDOM.value = "";
   nameDOM.value = "";
   telephoneDOM.value = "";
+  commentDOM.value = "";
 };
 
 const closeWorkInfoPopupHandler = () => {
@@ -218,7 +222,7 @@ const workInfoPopupHandler = (event) => {
   popupDOM.classList.add("mouse-leave");
 };
 
-const documentHandler = (event) => {
+const docsHandler = (event) => {
   const isESC = event.key === "Escape";
   if (isESC) {
     bodyDOM.removeEventListener("click", bodyHandler);
@@ -231,7 +235,7 @@ const documentHandler = (event) => {
   }
 };
 
-document.addEventListener("keydown", documentHandler);
+document.addEventListener("keydown", docsHandler);
 workInfoPopupDOM.addEventListener("mouseleave", workInfoPopupHandler);
 workInfoPopupDOM.addEventListener("mouseenter", workInfoPopupHandler);
 closeWorkDetailPopupDOM.addEventListener("click", closeWorkDetailPopupHandler);

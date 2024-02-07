@@ -149,8 +149,8 @@ class AuthController {
     }
 
     const refresh_token = util.createToken();
-    // const ip = req.headers["x-forwared-for"];
-    const ip = req.ip;
+    const ip = req.headers["x-forwared-for"];
+    // const ip = req.ip;
     const user_agent = req.headers["user-agent"];
     const user_id = user.id;
 

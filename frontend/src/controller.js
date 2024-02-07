@@ -20,9 +20,25 @@ class RootController {
     //     cookie: req.headers.cookie,
     //   }
     // );
-    const response = await FetchAPI.get("/work-orders", {
-      cookie: req.headers.cookie,
-    });
+
+    let response;
+    try {
+      response = await FetchAPI.get("/work-orders", {
+        cookie: req.headers.cookie,
+      });
+    } catch (error) {
+      res.cookie("refresh_token", "signout", {
+        httpOnly: true,
+        expires: new Date(Date.now()),
+      });
+      return res
+        .status(error.statusCode)
+        .render("error", { pageTitle: "404", error });
+    }
+
+    // const response = await FetchAPI.get("/work-orders", {
+    //   cookie: req.headers.cookie,
+    // });
 
     const data = await response.json();
     const workOrders = data.workOrders;

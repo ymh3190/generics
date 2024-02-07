@@ -74,6 +74,29 @@ const createItemFormHandler = async (event) => {
 };
 
 (() => {
+  if (createWorkOrderDOM || createRemnantDOM || createClientDOM) {
+    const docsHandler = (event) => {
+      const isESC = event.key === "Escape";
+      if (isESC && createWorkOrderDOM) {
+        const icon = createWorkOrderDOM.querySelector("i");
+        icon.className = icon.className.replace("solid", "regular");
+        return;
+      }
+
+      if (isESC && createRemnantDOM) {
+        const icon = createRemnantDOM.querySelector("i");
+        icon.className = icon.className.replace("solid", "regular");
+        return;
+      }
+
+      if (isESC && createClientDOM) {
+        const icon = createClientDOM.querySelector("i");
+        icon.className = icon.className.replace("solid", "regular");
+      }
+    };
+    document.addEventListener("keydown", docsHandler);
+  }
+
   if (createWorkOrderDOM || createRemnantDOM) {
     createItemFormDOM.addEventListener("submit", createItemFormHandler);
     newItemDOM.addEventListener("click", newItemHandler);

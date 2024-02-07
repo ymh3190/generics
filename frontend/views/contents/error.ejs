@@ -12,10 +12,13 @@
 <body>
     <div class="root">
         <h1>
-            <%= message %>
+            <%= error.message %>
         </h1>
-        <a href="../">&rarr; Back</a>
-        <a href="/signin">&rarr; Signin</a>
+        <% if (error.statusCode===401 ) { %>
+            <a href="/signin">&rarr; Signin</a>
+            <% } else { %>
+                <a href="../">&rarr; Back</a>
+                <% } %>
     </div>
 </body>
 
