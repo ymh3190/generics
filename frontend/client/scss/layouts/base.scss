@@ -15,11 +15,18 @@
   }
 
   .work-order-container:hover,
-  .client-container {
+  .remnant-container:hover,
+  .client-container:hover {
+    border-color: $hoverColorBorder;
+  }
+
+  .work-order-container:hover,
+  .client-container:hover {
     cursor: pointer;
   }
 
-  .work-order-container {
+  .work-order-container,
+  .client-container {
     height: 15vh;
   }
 }

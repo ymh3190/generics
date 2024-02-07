@@ -12,9 +12,7 @@
 }
 
 .client-container {
-  .preview {
-    height: initial;
-  }
+  display: grid;
 }
 
 .preview {
@@ -29,6 +27,8 @@
 }
 
 .metadata {
+  align-self: self-end;
+
   .client {
     display: flex;
 

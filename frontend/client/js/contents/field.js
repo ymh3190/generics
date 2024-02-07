@@ -9,6 +9,4 @@ webSocket.onopen = () => {
   webSocket.onclose = () => {
     console.log("connection close");
   };
-
-  webSocket.send("from client halo");
 };

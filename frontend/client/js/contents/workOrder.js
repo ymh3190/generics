@@ -38,6 +38,9 @@ const telephoneDOM = document.getElementById("telephone");
 const searchItemPopupDOM = document.getElementById("searchItemPopup");
 const createItemPopupDOM = document.getElementById("createItemPopup");
 
+const navDOM = document.getElementById("nav");
+const headerDOM = document.getElementById("header");
+
 async function clickClientHandler() {
   const id = this.dataset.id;
   const response = await FetchAPI.get(`/clients/${id}`);
@@ -87,6 +90,10 @@ function bodyHandler(event) {
   bodyDOM.removeEventListener("click", bodyHandler);
   popupDOM.classList.add("hidden");
   workDetailPopupDOM.classList.add("hidden");
+  popupDOM.classList.remove("blur");
+  workDetailPopupDOM.classList.remove("blur");
+  navDOM.classList.remove("blur");
+  headerDOM.classList.remove("blur");
 }
 
 const clientInputFocusHandler = async () => {
@@ -322,6 +329,8 @@ async function workOrderContainerHandler(event) {
   }
   popupDOM.classList.remove("hidden");
   workDetailPopupDOM.classList.remove("hidden");
+  navDOM.classList.add("blur");
+  headerDOM.classList.add("blur");
   const workOrderId = this.dataset.id;
 
   let workOrder;
@@ -460,6 +469,39 @@ const newClientHandler = () => {
   icon.className = icon.className.replace("solid", "regular");
 };
 
+const workDetailPopupHandler = (event) => {
+  const isMouseEnter = event.type === "mouseenter";
+  if (isMouseEnter) {
+    workDetailPopupDOM.classList.remove("blur");
+    workDetailPopupDOM.classList.add("clean");
+    popupDOM.classList.remove("blur");
+    popupDOM.classList.add("clean");
+    return;
+  }
+
+  // mouse leave
+  workDetailPopupDOM.classList.remove("clean");
+  workDetailPopupDOM.classList.add("blur");
+  popupDOM.classList.remove("clean");
+  popupDOM.classList.add("blur");
+};
+
+const docsHandler = (event) => {
+  const isESC = event.key === "Escape";
+  if (isESC) {
+    bodyDOM.removeEventListener("click", bodyHandler);
+    popupDOM.classList.add("hidden");
+    workDetailPopupDOM.classList.add("hidden");
+    popupDOM.classList.remove("blur");
+    workDetailPopupDOM.classList.remove("blur");
+    navDOM.classList.remove("blur");
+    headerDOM.classList.remove("blur");
+  }
+};
+
+document.addEventListener("keydown", docsHandler);
+workDetailPopupDOM.addEventListener("mouseenter", workDetailPopupHandler);
+workDetailPopupDOM.addEventListener("mouseleave", workDetailPopupHandler);
 newClientDOM.addEventListener("click", newClientHandler);
 createClientFormDOM.addEventListener("submit", createClientFormHandler);
 closeWorkDetailPopupDOM.addEventListener("click", closeWorkDetailPopupHandler);

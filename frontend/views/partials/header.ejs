@@ -1,4 +1,4 @@
-<header class="header">
+<header class="header" id="header">
     <div class="start">
         <i class="fa-solid fa-bars" id="bars"></i>
     </div>
@@ -13,50 +13,48 @@
         </div>
     </div>
     <div class="end">
-        <% if (user) { %>
-            <% if (url==='/work-order' ) { %>
+        <% if (url==='/work-order' ) { %>
+            <div class="end-update">
+                <a class="end-update__endpoint" id="updateWorkOrder">
+                    <i class="fa-solid fa-scissors"></i>
+                </a>
+            </div>
+            <div class="end-create">
+                <a class="end-create__endpoint" id="createWorkOrder">
+                    <i class="fa-regular fa-square-plus"></i>
+                </a>
+            </div>
+            <% } else if (url==='/remnant' ) { %>
                 <div class="end-update">
-                    <a class="end-update__endpoint" id="updateWorkOrder">
+                    <a class="end-update__endpoint" id="updateRemnant">
                         <i class="fa-solid fa-scissors"></i>
                     </a>
                 </div>
                 <div class="end-create">
-                    <a class="end-create__endpoint" id="createWorkOrder">
+                    <a class="end-create__endpoint" id="createRemnant">
                         <i class="fa-regular fa-square-plus"></i>
                     </a>
                 </div>
-                <% } else if (url==='/remnant' ) { %>
+                <% } else if (url==='/client' ) { %>
                     <div class="end-update">
-                        <a class="end-update__endpoint" id="updateRemnant">
+                        <a class="end-update__endpoint" id="updateClient">
                             <i class="fa-solid fa-scissors"></i>
                         </a>
                     </div>
                     <div class="end-create">
-                        <a class="end-create__endpoint" id="createRemnant">
+                        <a class="end-create__endpoint" id="createClient">
                             <i class="fa-regular fa-square-plus"></i>
                         </a>
                     </div>
-                    <% } else if (url==='/client' ) { %>
-                        <div class="end-update">
-                            <a class="end-update__endpoint" id="updateClient">
-                                <i class="fa-solid fa-scissors"></i>
-                            </a>
-                        </div>
-                        <div class="end-create">
-                            <a class="end-create__endpoint" id="createClient">
-                                <i class="fa-regular fa-square-plus"></i>
-                            </a>
-                        </div>
-                        <% } else { %>
-                            <div></div>
-                            <div></div>
-                            <% } %>
-                                <div class="end-signout">
-                                    <a class="end-signout__endpoint" id="signout">
-                                        <i class="fa-solid fa-arrow-right-from-bracket"></i>
-                                    </a>
-                                </div>
-                                <% } %>
+                    <% } else { %>
+                        <div></div>
+                        <div></div>
+                        <% } %>
+                            <div class="end-signout">
+                                <a class="end-signout__endpoint" id="signout">
+                                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                                </a>
+                            </div>
     </div>
 </header>
 <script src="/public/js/signout.js"></script>

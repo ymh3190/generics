@@ -17,6 +17,7 @@ import {
 } from "./router";
 import middleware from "./middleware";
 
+import "./alarm";
 import socket from "./socket";
 
 class Server {

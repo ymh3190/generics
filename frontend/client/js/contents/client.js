@@ -22,6 +22,7 @@ const closeWorkDetailPopupDOM = document.getElementById("closeWorkDetailPopup");
 const workInfosDOM = document.getElementById("workInfos");
 
 async function clientWorkInfoContainerHandler() {
+  workInfoPopupDOM.removeEventListener("mouseleave", workInfoPopupHandler);
   const work_order_id = this.dataset.id;
 
   let workOrder;
@@ -62,7 +63,7 @@ async function clientContainerHandler(event) {
   event.stopPropagation();
 
   if (workInfoPopupDOM.classList.contains("hidden")) {
-    // bodyDOM.addEventListener("click", bodyHandler);
+    bodyDOM.addEventListener("click", bodyHandler);
   }
 
   popupDOM.classList.remove("hidden");
@@ -111,16 +112,36 @@ function bodyHandler(event) {
     }
   }
 
-  const divDOMs = workInfoPopupDOM.querySelectorAll("div");
-  for (const divDOM of divDOMs) {
+  const infoDOMs = workInfoPopupDOM.querySelectorAll("div");
+  for (const divDOM of infoDOMs) {
     if (event.target === divDOM) {
       return;
     }
   }
 
+  if (event.target === workDetailPopupDOM) {
+    return;
+  }
+
+  const detailDOMs = workDetailPopupDOM.querySelectorAll("div");
+  for (const divDOM of detailDOMs) {
+    if (event.target === divDOM) {
+      return;
+    }
+  }
+
+  const closeDOM = workDetailPopupDOM.querySelector("button");
+  if (event.target === closeDOM) {
+    return;
+  }
+
   bodyDOM.removeEventListener("click", bodyHandler);
+  workInfoPopupDOM.addEventListener("mouseleave", workInfoPopupHandler);
   popupDOM.classList.add("hidden");
   workInfoPopupDOM.classList.add("hidden");
+  workDetailPopupDOM.classList.add("hidden");
+  popupDOM.classList.remove("mouse-leave");
+  workInfoPopupDOM.classList.remove("mouse-leave");
 }
 
 const createClientFormHandler = async (event) => {
@@ -180,6 +201,39 @@ const closeWorkDetailPopupHandler = () => {
   workDetailPopupDOM.classList.add("hidden");
 };
 
+const workInfoPopupHandler = (event) => {
+  const isMouseEnter = event.type === "mouseenter";
+  if (isMouseEnter) {
+    workInfoPopupDOM.classList.remove("mouse-leave");
+    workInfoPopupDOM.classList.add("mouse-enter");
+    popupDOM.classList.remove("mouse-leave");
+    popupDOM.classList.add("mouse-enter");
+    return;
+  }
+
+  // mouse leave
+  workInfoPopupDOM.classList.remove("mouse-enter");
+  workInfoPopupDOM.classList.add("mouse-leave");
+  popupDOM.classList.remove("mouse-enter");
+  popupDOM.classList.add("mouse-leave");
+};
+
+const documentHandler = (event) => {
+  const isESC = event.key === "Escape";
+  if (isESC) {
+    bodyDOM.removeEventListener("click", bodyHandler);
+    workInfoPopupDOM.addEventListener("mouseleave", workInfoPopupHandler);
+    popupDOM.classList.add("hidden");
+    workInfoPopupDOM.classList.add("hidden");
+    workDetailPopupDOM.classList.add("hidden");
+    popupDOM.classList.remove("mouse-leave");
+    workInfoPopupDOM.classList.remove("mouse-leave");
+  }
+};
+
+document.addEventListener("keydown", documentHandler);
+workInfoPopupDOM.addEventListener("mouseleave", workInfoPopupHandler);
+workInfoPopupDOM.addEventListener("mouseenter", workInfoPopupHandler);
 closeWorkDetailPopupDOM.addEventListener("click", closeWorkDetailPopupHandler);
 closeWorkInfoPopupDOM.addEventListener("click", closeWorkInfoPopupHandler);
 createClientFormDOM.addEventListener("submit", createClientFormHandler);

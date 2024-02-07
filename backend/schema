@@ -54,6 +54,7 @@ create table client(
     association varchar(20) not null,
     name varchar(10) not null,
     telephone varchar(13) not null,
+    comment varchar(100) not null,
     creator_id char(32) not null,
     created_at datetime not null default current_timestamp,
     unique key (association, name),

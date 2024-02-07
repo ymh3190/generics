@@ -174,14 +174,6 @@ class MySQLAPI {
         return result;
       }
 
-      // for (const [key, value] of Object.entries(projection)) {
-      //   if (value === "desc" || value === "asc") {
-      //     sql = sql.concat(" ", `ORDER BY ${key} ${value}`);
-      //     const [result] = await MySQLAPI.pool.execute(sql);
-      //     return result;
-      //   }
-      // }
-
       const arr = Object.entries(projection);
       if (arr.length === 1) {
         const [key, value] = arr[0];
@@ -228,14 +220,6 @@ class MySQLAPI {
       const [result] = await MySQLAPI.pool.execute(sql, values);
       return result;
     }
-
-    // for (const [key, value] of Object.entries(projection)) {
-    //   if (value === "desc" || value === "asc") {
-    //     sql = sql.concat(" ", `ORDER BY ${key} ${value}`);
-    //     const [result] = await MySQLAPI.pool.execute(sql, values);
-    //     return result;
-    //   }
-    // }
 
     const arr = Object.entries(projection);
     if (arr.length === 1) {

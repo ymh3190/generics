@@ -2,6 +2,7 @@ import FetchAPI from "./fetch-api";
 import * as CustomError from "./error";
 import util from "./util";
 import perf from "./perf";
+import placeOrder from "./alarm";
 
 class RootController {
   getIndex(req, res) {
@@ -143,18 +144,31 @@ class RootController {
     const data = await response.json();
     const clients = data.clients;
 
+    const associations = [
+      ...new Set(clients.map((client) => client.association)),
+    ];
+    const names = [...new Set(clients.map((client) => client.name))];
+
     const cookies = response.headers.raw()["set-cookie"];
     if (!cookies) {
-      return res
-        .status(200)
-        .render("client", { pageTitle: "Generics", clients });
+      return res.status(200).render("client", {
+        pageTitle: "Generics",
+        clients,
+        associations,
+        names,
+      });
     }
 
     const access_token = cookies.find((el) => el.startsWith("access_token"));
     const refresh_token = cookies.find((el) => el.startsWith("refresh_token"));
     res.cookie(access_token);
     res.cookie(refresh_token);
-    res.status(200).render("client", { pageTitle: "Generics", clients });
+    res.status(200).render("client", {
+      pageTitle: "Generics",
+      clients,
+      associations,
+      names,
+    });
   }
 
   getField(req, res) {
@@ -246,6 +260,7 @@ class WorkOrderController {
       cookie: req.headers.cookie,
     });
     const data = await response.json();
+    placeOrder.notifyObservers("place");
     res.status(201).json({ workOrder: data.workOrder });
   }
 
@@ -289,7 +304,7 @@ class WorkDetailController {
       cookie: req.headers.cookie,
     });
     const data = await response.json();
-    res.status(201).json({ workDetails: data.workDetails });
+    res.status(200).json({ workDetails: data.workDetails });
   }
 }
 
