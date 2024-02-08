@@ -6,7 +6,7 @@ import placeOrder from "./alarm";
 
 class RootController {
   getIndex(req, res) {
-    res.status(200).render("index", { pageTitle: "Generics" });
+    res.status(200).render("index", { pageTitle: "Home" });
   }
 
   async getWorkOrder(req, res) {
@@ -33,7 +33,7 @@ class RootController {
       });
       return res
         .status(error.statusCode)
-        .render("error", { pageTitle: "404", error });
+        .render("error", { pageTitle: "404", message: error.message });
     }
 
     // const response = await FetchAPI.get("/work-orders", {
@@ -45,9 +45,10 @@ class RootController {
 
     const cookies = response.headers.raw()["set-cookie"];
     if (!cookies) {
-      return res
-        .status(200)
-        .render("work-order", { pageTitle: "Generics", workOrders /* date */ });
+      return res.status(200).render("work-order", {
+        pageTitle: "Work Order",
+        workOrders /* date */,
+      });
     }
 
     const access_token = cookies.find((el) => el.startsWith("access_token"));
@@ -56,7 +57,7 @@ class RootController {
     res.cookie(refresh_token);
     res
       .status(200)
-      .render("work-order", { pageTitle: "Generics", workOrders /* date */ });
+      .render("work-order", { pageTitle: "Work Order", workOrders /* date */ });
   }
 
   async getRemnant(req, res) {
@@ -81,7 +82,7 @@ class RootController {
     const cookies = response.headers.raw()["set-cookie"];
     if (!cookies) {
       return res.status(200).render("remnant", {
-        pageTitle: "Generics",
+        pageTitle: "Remnant",
         remnantDetails,
         items,
         remnantZones,
@@ -93,7 +94,7 @@ class RootController {
     res.cookie(access_token);
     res.cookie(refresh_token);
     res.status(200).render("remnant", {
-      pageTitle: "Generics",
+      pageTitle: "Remnant",
       remnantDetails,
       items,
       remnantZones,
@@ -168,7 +169,7 @@ class RootController {
     const cookies = response.headers.raw()["set-cookie"];
     if (!cookies) {
       return res.status(200).render("client", {
-        pageTitle: "Generics",
+        pageTitle: "Client",
         clients,
         associations,
         names,
@@ -180,7 +181,7 @@ class RootController {
     res.cookie(access_token);
     res.cookie(refresh_token);
     res.status(200).render("client", {
-      pageTitle: "Generics",
+      pageTitle: "Client",
       clients,
       associations,
       names,
@@ -188,7 +189,7 @@ class RootController {
   }
 
   getField(req, res) {
-    res.status(200).render("field", { pageTitle: "Generics" });
+    res.status(200).render("field", { pageTitle: "Field" });
   }
 }
 

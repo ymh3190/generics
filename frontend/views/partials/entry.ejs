@@ -1,0 +1,28 @@
+<div class="entry" id="entry">
+    <div class="left">
+        <div class="page-title">
+            <% if (url==='/work-order' ) { %>
+                <a id="createWorkOrder" class="endpoint__create">
+                    <span class="title">
+                        <%= pageTitle %>
+                    </span>
+                    <i class="fa-solid fa-sort-down"></i>
+                </a>
+                <% } else if (url==='/remnant' ) { %>
+                    <a id="createRemnant" class="endpoint__create">
+                        <span class="title">
+                            <%= pageTitle %>
+                        </span>
+                        <i class="fa-solid fa-sort-down"></i>
+                    </a>
+                    <% } else if (url==='/client' ) { %>
+                        <a id="createClient" class="endpoint__create">
+                            <span class="title">
+                                <%= pageTitle %>
+                            </span>
+                            <i class="fa-solid fa-sort-down"></i>
+                        </a>
+                        <% } %>
+        </div>
+    </div>
+</div>

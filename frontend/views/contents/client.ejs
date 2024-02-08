@@ -21,7 +21,11 @@
                             </span>
                         </div>
                     </div>
-                    <div class="preview-bottom"></div>
+                    <div class="preview-bottom">
+                        <span id='comment'>
+                            <%= client.comment %>
+                        </span>
+                    </div>
                 </div>
                 <div class="metadata">
                     <div class="datetime">
@@ -33,7 +37,8 @@
             </div>
             <% } %>
     </div>
-    <%- include('../partials/status') %>
-        <%- include('../partials/popup') %>
-            <script src="/public/js/client.js"></script>
-            <%- include('../partials/footer') %>
+    <%- include('../partials/entry') %>
+        <%- include('../partials/status') %>
+            <%- include('../partials/popup') %>
+                <script src="/public/js/client.js"></script>
+                <%- include('../partials/footer') %>

@@ -1,15 +1,26 @@
 .nav {
   position: fixed;
-  z-index: 1;
   top: 5vh;
-  height: 100vh;
-  background-color: white;
+  left: 0;
+  height: 100%;
+  width: $navWidth;
+  z-index: 1;
+  background-color: $rootColorBg;
+  padding-right: $rootRightMargin;
+  // background-color: white;
 
   &-list {
-    padding: 10px;
-    border-radius: 10px;
+    display: flex;
+    width: 100%;
+    margin-left: calc($rootLeftMargin / 2);
+    border-radius: 0.5rem;
 
     a {
+      // display: inline-block;
+      width: 100%;
+      padding: 1rem calc($rootLeftMargin / 2) 1rem 0;
+      padding-left: calc($rootLeftMargin / 2);
+
       i {
         margin-right: 24px;
       }
@@ -30,6 +41,10 @@
   i {
     margin-right: 0 !important;
   }
+}
+
+.column-nav-width {
+  width: $navWidthColumn;
 }
 
 .flex {

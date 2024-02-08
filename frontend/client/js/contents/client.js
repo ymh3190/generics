@@ -3,7 +3,6 @@ import * as htmls from "../htmls";
 
 const bodyDOM = document.querySelector("body");
 const popupDOM = document.getElementById("popup");
-const createClientDOM = document.getElementById("createClient");
 const createClientFormDOM = document.querySelector(
   "#createClientPopup #createClientForm"
 );
@@ -21,6 +20,11 @@ const workDetailPopupDOM = document.getElementById("workDetailPopup");
 const closeWorkDetailPopupDOM = document.getElementById("closeWorkDetailPopup");
 const workInfosDOM = document.getElementById("workInfos");
 const commentDOM = document.getElementById("comment");
+
+const navDOM = document.getElementById("nav");
+const headerDOM = document.getElementById("header");
+
+const clientPopupDOM = document.getElementById("clientPopup");
 
 async function clientWorkInfoContainerHandler() {
   workInfoPopupDOM.removeEventListener("mouseleave", workInfoPopupHandler);
@@ -69,8 +73,8 @@ async function clientContainerHandler(event) {
 
   popupDOM.classList.remove("hidden");
   workInfoPopupDOM.classList.remove("hidden");
-  const icon = createClientDOM.querySelector("i");
-  icon.className = icon.className.replace("solid", "regular");
+  navDOM.classList.add("blur");
+  headerDOM.classList.add("blur");
 
   const client_id = this.dataset.id;
 
@@ -141,8 +145,10 @@ function bodyHandler(event) {
   popupDOM.classList.add("hidden");
   workInfoPopupDOM.classList.add("hidden");
   workDetailPopupDOM.classList.add("hidden");
-  popupDOM.classList.remove("mouse-leave");
-  workInfoPopupDOM.classList.remove("mouse-leave");
+  popupDOM.classList.remove("blur");
+  workInfoPopupDOM.classList.remove("blur");
+  navDOM.classList.remove("blur");
+  headerDOM.classList.remove("blur");
 }
 
 const createClientFormHandler = async (event) => {
@@ -208,30 +214,32 @@ const closeWorkDetailPopupHandler = () => {
 const workInfoPopupHandler = (event) => {
   const isMouseEnter = event.type === "mouseenter";
   if (isMouseEnter) {
-    workInfoPopupDOM.classList.remove("mouse-leave");
-    workInfoPopupDOM.classList.add("mouse-enter");
-    popupDOM.classList.remove("mouse-leave");
-    popupDOM.classList.add("mouse-enter");
+    workInfoPopupDOM.classList.remove("blur");
+    workInfoPopupDOM.classList.add("clean");
+    popupDOM.classList.remove("blur");
+    popupDOM.classList.add("clean");
     return;
   }
 
   // mouse leave
-  workInfoPopupDOM.classList.remove("mouse-enter");
-  workInfoPopupDOM.classList.add("mouse-leave");
-  popupDOM.classList.remove("mouse-enter");
-  popupDOM.classList.add("mouse-leave");
+  workInfoPopupDOM.classList.remove("clean");
+  workInfoPopupDOM.classList.add("blur");
+  popupDOM.classList.remove("clean");
+  popupDOM.classList.add("blur");
 };
 
 const docsHandler = (event) => {
   const isESC = event.key === "Escape";
-  if (isESC) {
+  if (isESC && !clientPopupDOM.classList.contains("hidden")) {
     bodyDOM.removeEventListener("click", bodyHandler);
     workInfoPopupDOM.addEventListener("mouseleave", workInfoPopupHandler);
     popupDOM.classList.add("hidden");
-    workInfoPopupDOM.classList.add("hidden");
     workDetailPopupDOM.classList.add("hidden");
-    popupDOM.classList.remove("mouse-leave");
-    workInfoPopupDOM.classList.remove("mouse-leave");
+    workInfoPopupDOM.classList.add("hidden");
+    popupDOM.classList.remove("blur");
+    workInfoPopupDOM.classList.remove("blur");
+    navDOM.classList.remove("blur");
+    headerDOM.classList.remove("blur");
   }
 };
 

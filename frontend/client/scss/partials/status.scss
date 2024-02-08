@@ -1,9 +1,11 @@
 .status {
   display: flex;
   position: fixed;
-  top: 5vh;
-  left: 250px + $rootLeftMargin;
+  top: 10vh;
+  left: calc($navWidth + $rootRightMargin);
   width: 100%;
+  padding: 1rem;
+  // background-color: $entryColorBg;
   background-color: white;
 
   &-text {

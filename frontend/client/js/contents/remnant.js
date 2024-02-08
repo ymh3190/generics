@@ -24,6 +24,9 @@ const closeZonesPopupDOM = document.getElementById("closeZonesPopup");
 
 const searchZonesDOM = document.getElementById("searchZones");
 
+const navDOM = document.getElementById("nav");
+const headerDOM = document.getElementById("header");
+
 async function clickItemHandler() {
   const id = this.dataset.id;
 
@@ -277,6 +280,23 @@ const searchZonesFormHandler = (event) => {
   }
 };
 
+const docsHandler = (event) => {
+  const isESC = event.key === "Escape";
+  if (isESC) {
+    // bodyDOM.removeEventListener("click", bodyHandler);
+    popupDOM.classList.remove("blur");
+    // workDetailPopupDOM.classList.remove("blur");
+    navDOM.classList.remove("blur");
+    headerDOM.classList.remove("blur");
+    popupDOM.classList.add("hidden");
+    zonesPopupDOM.classList.add("hidden");
+    // workDetailPopupDOM.classList.add("hidden");
+    itemsPopupDOM.classList.add("hidden");
+    // clientsPopupDOM.classList.add("hidden");
+  }
+};
+
+document.addEventListener("keydown", docsHandler);
 searchZonesFormDOM.addEventListener("submit", searchZonesFormHandler);
 closeZonesPopupDOM.addEventListener("click", closeZonesPopupHandler);
 closeItemsPopupDOM.addEventListener("click", closeItemsPopupHandler);

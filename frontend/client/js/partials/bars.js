@@ -5,6 +5,7 @@ if (barsDOM) {
   const anchorDOMs = navDOM.querySelectorAll("a");
   const contentDOM = document.getElementById("content");
   const statusDOM = document.getElementById("status");
+  const entryDOM = document.getElementById("entry");
 
   const barsHandler = () => {
     for (const anchorDOM of anchorDOMs) {
@@ -31,10 +32,14 @@ if (barsDOM) {
 
     if (statusDOM.classList.contains("position-left")) {
       statusDOM.classList.remove("position-left");
+      entryDOM.classList.remove("position-left");
+      navDOM.classList.remove("column-nav-width");
       return;
     }
 
     statusDOM.classList.add("position-left");
+    entryDOM.classList.add("position-left");
+    navDOM.classList.add("column-nav-width");
   };
 
   barsDOM.addEventListener("click", barsHandler);

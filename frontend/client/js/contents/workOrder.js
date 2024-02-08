@@ -317,13 +317,14 @@ const placeHandler = async () => {
   );
   newWorkOrderContainerDOM.addEventListener("click", workOrderContainerHandler);
   popupDOM.classList.add("hidden");
-  const createWorkOrderDOM = document.getElementById("createWorkOrder");
-  const icon = createWorkOrderDOM.querySelector("i");
-  icon.className = icon.className.replace("solid", "regular");
 };
 
 const closeItemsPopupHandler = () => {
   itemsPopupDOM.classList.add("hidden");
+  const workDetailDOM = orderPopupDetailsDOM.querySelector(
+    "#workDetail:last-child"
+  );
+  workDetailDOM.remove();
 };
 
 async function workOrderContainerHandler(event) {
@@ -511,6 +512,8 @@ const docsHandler = (event) => {
     headerDOM.classList.remove("blur");
     popupDOM.classList.add("hidden");
     workDetailPopupDOM.classList.add("hidden");
+    itemsPopupDOM.classList.add("hidden");
+    clientsPopupDOM.classList.add("hidden");
   }
 };
 

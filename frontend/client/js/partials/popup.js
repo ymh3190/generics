@@ -74,29 +74,6 @@ const createItemFormHandler = async (event) => {
 };
 
 (() => {
-  if (createWorkOrderDOM || createRemnantDOM || createClientDOM) {
-    const docsHandler = (event) => {
-      const isESC = event.key === "Escape";
-      if (isESC && createWorkOrderDOM) {
-        const icon = createWorkOrderDOM.querySelector("i");
-        icon.className = icon.className.replace("solid", "regular");
-        return;
-      }
-
-      if (isESC && createRemnantDOM) {
-        const icon = createRemnantDOM.querySelector("i");
-        icon.className = icon.className.replace("solid", "regular");
-        return;
-      }
-
-      if (isESC && createClientDOM) {
-        const icon = createClientDOM.querySelector("i");
-        icon.className = icon.className.replace("solid", "regular");
-      }
-    };
-    document.addEventListener("keydown", docsHandler);
-  }
-
   if (createWorkOrderDOM || createRemnantDOM) {
     createItemFormDOM.addEventListener("submit", createItemFormHandler);
     newItemDOM.addEventListener("click", newItemHandler);
@@ -110,13 +87,14 @@ const createItemFormHandler = async (event) => {
     const commentDOM = document.getElementById("comment");
     const clientsPopupDOM = document.getElementById("clientsPopup");
     const workOrderPopupDOM = document.getElementById("workOrderPopup");
+    const workDetailPopupDOM = document.getElementById("workDetailPopup");
 
     const createWorkOrderHandler = () => {
-      const icon = createWorkOrderDOM.querySelector("i");
       if (popupDOM.classList.contains("hidden")) {
         popupDOM.classList.remove("hidden");
+        popupDOM.classList.remove("blur");
         workOrderPopupDOM.classList.remove("hidden");
-        icon.className = icon.className.replace("regular", "solid");
+        workDetailPopupDOM.classList.remove("blur");
         urgentDOM.checked = false;
         clientInputDOM.value = "";
         commentDOM.value = "";
@@ -131,7 +109,6 @@ const createItemFormHandler = async (event) => {
       workOrderPopupDOM.classList.add("hidden");
       itemsPopupDOM.classList.add("hidden");
       clientsPopupDOM.classList.add("hidden");
-      icon.className = icon.className.replace("solid", "regular");
     };
 
     createWorkOrderDOM.addEventListener("click", createWorkOrderHandler);
@@ -144,11 +121,9 @@ const createItemFormHandler = async (event) => {
     const remnantDetailPopupDOM = document.getElementById("remnantDetailPopup");
 
     const createRemnantHandler = () => {
-      const icon = createRemnantDOM.querySelector("i");
       if (popupDOM.classList.contains("hidden")) {
         popupDOM.classList.remove("hidden");
         remnantDetailPopupDOM.classList.remove("hidden");
-        icon.className = icon.className.replace("regular", "solid");
         const remnantDetailsDOMs =
           remnantDetailsDOM.querySelectorAll("#remnantDetail");
         for (const remnantDetailsDOM of remnantDetailsDOMs) {
@@ -159,7 +134,6 @@ const createItemFormHandler = async (event) => {
 
       popupDOM.classList.add("hidden");
       itemsPopupDOM.classList.add("hidden");
-      icon.className = icon.className.replace("solid", "regular");
     };
 
     createRemnantDOM.addEventListener("click", createRemnantHandler);
@@ -173,11 +147,9 @@ const createItemFormHandler = async (event) => {
     const workDetailPopupDOM = document.getElementById("workDetailPopup");
 
     const createClientHandler = () => {
-      const icon = createClientDOM.querySelector("i");
       if (popupDOM.classList.contains("hidden")) {
         popupDOM.classList.remove("hidden");
         clientPopupDOM.classList.remove("hidden");
-        icon.className = icon.className.replace("regular", "solid");
         clientsDOM
           .querySelectorAll("#clientContainer")
           .forEach((clientContainer) => {
@@ -189,7 +161,6 @@ const createItemFormHandler = async (event) => {
       popupDOM.classList.add("hidden");
       clientPopupDOM.classList.add("hidden");
       workDetailPopupDOM.classList.add("hidden");
-      icon.className = icon.className.replace("solid", "regular");
     };
 
     createClientDOM.addEventListener("click", createClientHandler);

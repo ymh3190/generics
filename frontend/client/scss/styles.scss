@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600&display=swap");
 
 @import "./variable.scss";
 @import "./reset.scss";
@@ -12,6 +12,7 @@
 @import "./partials/popup.scss";
 @import "./partials/status.scss";
 @import "./partials/preview.scss";
+@import "./partials/entry.scss";
 
 @import "./contents/watch.scss";
 @import "./contents/video.scss";
@@ -27,7 +28,7 @@ body {
 
 .root {
   padding-left: $rootLeftMargin;
-  padding-right: 40px;
+  padding-right: $rootRightMargin;
 }
 
 a {
@@ -47,11 +48,11 @@ button {
 }
 
 .padding-left {
-  padding-left: 100px;
+  padding-left: calc($navWidthColumn + $rootLeftMargin);
 }
 
 .position-left {
-  left: 100px + $rootLeftMargin;
+  left: calc($navWidthColumn + $rootRightMargin);
 }
 
 .click {

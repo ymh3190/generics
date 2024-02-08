@@ -1,0 +1,30 @@
+.entry {
+  display: grid;
+  width: 100%;
+  height: 5vh;
+  position: fixed;
+  top: 5vh;
+  left: calc($navWidth + $rootRightMargin);
+  background-color: white;
+  // background-color: $navColorBg;
+  // background-color: $entryColorBg;
+
+  .left {
+    display: flex;
+    align-self: center;
+    padding-left: 1rem;
+
+    .endpoint__create {
+      display: flex;
+    }
+
+    .title {
+      font-size: 1.4em;
+      margin-right: 0.5rem;
+    }
+
+    .endpoint__create:hover {
+      cursor: pointer;
+    }
+  }
+}
