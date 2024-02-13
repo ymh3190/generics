@@ -13,6 +13,7 @@
 @import "./partials/status.scss";
 @import "./partials/preview.scss";
 @import "./partials/entry.scss";
+@import "./partials/embedded.scss";
 
 @import "./contents/watch.scss";
 @import "./contents/video.scss";
@@ -45,6 +46,10 @@ button {
 .item-hidden,
 .zone-hidden {
   display: none;
+}
+
+.invisible {
+  visibility: hidden;
 }
 
 .padding-left {

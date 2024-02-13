@@ -1,33 +1,58 @@
-class PlaceOrder {
-  #observers;
+class Orderer {
+  #fields;
 
-  constructor(...observers) {
-    this.#observers = observers;
-    this.event = "";
+  constructor() {
+    this.#fields = [];
   }
 
-  addObserver(observer) {
-    this.#observers.push(observer);
+  addField(field) {
+    this.#fields.push(field);
   }
 
-  removeObserver(observer) {
-    return this.#observers.filter((obs) => obs !== observer);
+  removeField(field) {
+    return this.#fields.filter((ws) => ws !== field);
   }
 
-  notifyObservers(event) {
-    this.event = event;
-    this.#observers.forEach((observer) => {
-      observer.notify(event);
+  notifyFields(event) {
+    this.#fields.forEach((ws) => {
+      ws.send(event);
     });
   }
 }
 
-class Field {
-  notify(event) {
-    console.log(event);
-  }
-}
+const orderer = new Orderer();
+export default orderer;
 
-const field = new Field();
-const placeOrder = new PlaceOrder(field);
-export default placeOrder;
+// class PlaceOrder {
+//   #observers;
+
+//   constructor(...observers) {
+//     this.#observers = observers;
+//     this.event = "";
+//   }
+
+//   addObserver(observer) {
+//     this.#observers.push(observer);
+//   }
+
+//   removeObserver(observer) {
+//     return this.#observers.filter((obs) => obs !== observer);
+//   }
+
+//   notifyObservers(event) {
+//     this.event = event;
+//     this.#observers.forEach((observer) => {
+//       observer.notify(event);
+//     });
+//   }
+// }
+
+// class Field {
+//   notify(event) {
+//     console.log(event);
+//   }
+// }
+
+// const field = new Field();
+// const placeOrder = new PlaceOrder(field);
+// export default placeOrder;

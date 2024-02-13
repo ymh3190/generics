@@ -7,22 +7,30 @@
                 data-is_urgent="<%=workOrder.is_urgent %>">
                 <div class="preview">
                     <div class="preview-top">
-                        <div>
-                            <% if (!workOrder.is_complete) { %>
-                                <span>resolving</span>
-                                <% } else { %>
-                                    <span>complete</span>
-                                    <div>
-                                        <span>
-                                            <%= workOrder.end_date %>
-                                        </span>
-                                    </div>
+                        <div class="left">
+                            <div>
+                                <% if (!workOrder.is_complete) { %>
+                                    <span>resolving</span>
+                                    <% } else { %>
+                                        <span>complete</span>
+                                        <div>
+                                            <span>
+                                                <%= workOrder.end_date %>
+                                            </span>
+                                        </div>
+                                        <% } %>
+                            </div>
+                            <div>
+                                <% if (workOrder.is_urgent) { %>
+                                    <span>urgent</span>
                                     <% } %>
+                            </div>
                         </div>
-                        <div>
-                            <% if (workOrder.is_urgent) { %>
-                                <span>urgent</span>
-                                <% } %>
+                        <div class="right">
+                            <a id="ellipsis">
+                                <i class="fa-solid fa-ellipsis-vertical"></i>
+                            </a>
+                            <%- include('../partials/embedded', {workOrder}); %>
                         </div>
                     </div>
                     <div class="preview-bottom">

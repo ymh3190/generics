@@ -61,15 +61,19 @@ async function clickItemHandler() {
     const workDetailDOM = orderPopupDetailsDOM.querySelector(
       "#workDetail:last-child"
     );
-    const inputDOM = workDetailDOM.querySelector("input:first-child");
-    const itemIdDOM = inputDOM;
-    itemIdDOM.value = data.item.name;
-    itemIdDOM.dataset.id = data.item.id;
+    const itemDOM = workDetailDOM.querySelector("input:first-child");
+    itemDOM.value = data.item.name;
+    itemDOM.dataset.id = data.item.id;
     itemsPopupDOM.classList.add("hidden");
   }
 }
 
 function bodyHandler(event) {
+  const embeddedDOMs = contentDOM.querySelectorAll("#embedded");
+  embeddedDOMs.forEach((embeddedDOM) => {
+    embeddedDOM.classList.add("hidden");
+  });
+
   if (event.target === workDetailPopupDOM) {
     return;
   }
@@ -89,12 +93,18 @@ function bodyHandler(event) {
   }
 
   bodyDOM.removeEventListener("click", bodyHandler);
+
   popupDOM.classList.add("hidden");
   workDetailPopupDOM.classList.add("hidden");
+
   popupDOM.classList.remove("blur");
   workDetailPopupDOM.classList.remove("blur");
   navDOM.classList.remove("blur");
   headerDOM.classList.remove("blur");
+  const workInfoDOMs = workInfosDOM.querySelectorAll("#workInfo");
+  workInfoDOMs.forEach((workInfoDOM) => {
+    workInfoDOM.remove();
+  });
 }
 
 const clientInputFocusHandler = async () => {
@@ -330,11 +340,43 @@ const closeItemsPopupHandler = () => {
 async function workOrderContainerHandler(event) {
   event.stopPropagation();
 
+  const rightDOM = this.querySelector(".right");
+  const anchorDOMs = rightDOM.querySelectorAll("a");
+  const iconDOMs = rightDOM.querySelectorAll("i");
+  const embeddedDOM = rightDOM.querySelector(".embedded");
+  const spanDOMs = rightDOM.querySelectorAll("span");
+
+  if (event.target === embeddedDOM) {
+    return;
+  }
+
+  if (event.target === rightDOM) {
+    return;
+  }
+
+  for (const spanDOM of spanDOMs) {
+    if (event.target === spanDOM) {
+      return;
+    }
+  }
+
+  for (const anchorDOM of anchorDOMs) {
+    if (event.target === anchorDOM) {
+      return;
+    }
+  }
+
+  for (const iconDOM of iconDOMs) {
+    if (event.target === iconDOM) {
+      return;
+    }
+  }
+
   if (workDetailPopupDOM.classList.contains("hidden")) {
     bodyDOM.addEventListener("click", bodyHandler);
   }
-  popupDOM.classList.remove("hidden");
-  workDetailPopupDOM.classList.remove("hidden");
+  popupDOM.classList.remove("hidden", "blur");
+  workDetailPopupDOM.classList.remove("hidden", "blur");
   navDOM.classList.add("blur");
   headerDOM.classList.add("blur");
   const workOrderId = this.dataset.id;
@@ -409,6 +451,32 @@ async function workOrderContainerHandler(event) {
     workInfosDOM.insertAdjacentHTML("beforeend", html);
   }
 }
+
+function rightHandler() {
+  bodyDOM.addEventListener("click", bodyHandler);
+
+  const embeddedDOMs = contentDOM.querySelectorAll("#embedded");
+  const embeddedDOM = this.querySelector("#embedded");
+  embeddedDOMs.forEach((dom) => {
+    if (dom !== embeddedDOM) {
+      dom.classList.add("hidden");
+      return;
+    }
+
+    embeddedDOM.classList.remove("hidden");
+  });
+}
+
+async function deleteHandler() {
+  const id = this.dataset.id;
+  const response = await FetchAPI.delete(`/work-orders/${id}`);
+  if (response) {
+    const data = await response.json();
+    alert(data.message);
+  }
+}
+
+function updateHandler() {}
 
 const closeWorkDetailPopupHandler = () => {
   bodyDOM.removeEventListener("click", bodyHandler);
@@ -506,14 +574,24 @@ const docsHandler = (event) => {
   const isESC = event.key === "Escape";
   if (isESC) {
     bodyDOM.removeEventListener("click", bodyHandler);
-    popupDOM.classList.remove("blur");
-    workDetailPopupDOM.classList.remove("blur");
-    navDOM.classList.remove("blur");
-    headerDOM.classList.remove("blur");
+
     popupDOM.classList.add("hidden");
     workDetailPopupDOM.classList.add("hidden");
     itemsPopupDOM.classList.add("hidden");
     clientsPopupDOM.classList.add("hidden");
+
+    popupDOM.classList.remove("blur");
+    workDetailPopupDOM.classList.remove("blur");
+    navDOM.classList.remove("blur");
+    headerDOM.classList.remove("blur");
+    const workInfoDOMs = workInfosDOM.querySelectorAll("#workInfo");
+    workInfoDOMs.forEach((workInfoDOM) => {
+      workInfoDOM.remove();
+    });
+    const embeddedDOMs = contentDOM.querySelectorAll("#embedded");
+    embeddedDOMs.forEach((embeddedDOM) => {
+      embeddedDOM.classList.add("hidden");
+    });
   }
 };
 
@@ -536,6 +614,12 @@ clientInputDOM.addEventListener("focus", clientInputFocusHandler);
   );
   workOrderContainerDOMs.forEach(async (workOrderContainerDOM) => {
     workOrderContainerDOM.addEventListener("click", workOrderContainerHandler);
+    const rightDOM = workOrderContainerDOM.querySelector(".right");
+    rightDOM.addEventListener("click", rightHandler);
+    const deleteDOM = workOrderContainerDOM.querySelector("#delete");
+    deleteDOM.addEventListener("click", deleteHandler);
+    const updateDOM = workOrderContainerDOM.querySelector("#update");
+    updateDOM.addEventListener("click", updateHandler);
 
     const id = workOrderContainerDOM.dataset.client_id;
 
@@ -552,7 +636,6 @@ clientInputDOM.addEventListener("focus", clientInputFocusHandler);
       `;
       const clientDOM = workOrderContainerDOM.querySelector("#client");
       clientDOM.insertAdjacentHTML("beforeend", html);
-      return;
     }
   });
 })();

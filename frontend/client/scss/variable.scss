@@ -7,17 +7,12 @@ $rootLeftMargin: 30px;
 $rootRightMargin: 40px;
 $rootColorBg: #f8fafd;
 
-$leftSign: 40%;
-$topSign: 30%;
-$heightSign: 40%;
+$heightSign: 40vh;
 
 $primaryPopupLeft: 25%;
 $primaryPopupWidth: 50%;
 $primaryPopupTop: 5%;
 $primaryPopupHeight: 90%;
-
-$primaryPopupTopDesktop: 7%;
-$primaryPopupHeightDesktop: 86%;
 
 $secondaryPopupLeft: 30%;
 $secondaryPopupWidth: 40%;
@@ -31,8 +26,28 @@ $clickColorBg: black;
 $clickColorFont: white;
 
 $hoverColorBorder: red;
-$clickColorBorder: red;
+
 $navWidth: 10vw;
 $navWidthColumn: 5vw;
 
-$entryColorBg: #eceff5;
+$positionTopDesktop: 7vh;
+$primaryPopupTopDesktop: 7vh;
+$primaryPopupHeightDesktop: 86%;
+$navWidthDesktop: 14vw;
+$navWidthColumnDesktop: 7vw;
+
+$positionTopLaptop: 7vh;
+$primaryPopupTopLaptop: 7vh;
+$primaryPopupHeightLaptop: 86%;
+$navWidthLaptop: 14vw;
+$navWidthColumnLaptop: 10vw;
+
+$positionTopTablet: 7vh;
+$primaryPopupTopTablet: 7vh;
+$primaryPopupHeightTablet: 86%;
+$navWidthColumnTablet: 20vw;
+
+$positionTopMobile: 7vh;
+$primaryPopupTopMobile: 7vh;
+$primaryPopupHeightMobile: 86%;
+$navWidthColumnMobile: 30vw;

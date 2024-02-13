@@ -1,5 +1,7 @@
 import crypto from "crypto";
 import { readdirSync, renameSync } from "fs";
+import FetchAPI from "./fetch-api";
+import fetch from "node-fetch";
 
 const writeDiskAndDB = async ({ images, videoExts }) => {
   const url = `${process.env.REMOTE_ORIGIN}/api/v1/images`;

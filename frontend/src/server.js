@@ -17,7 +17,6 @@ import {
 } from "./router";
 import middleware from "./middleware";
 
-import "./alarm";
 import socket from "./socket";
 
 class Server {
@@ -38,6 +37,12 @@ class Server {
       console.log(`Server is listening port ${port}`);
     });
     socket.connect(http);
+
+    // const http = createServer(this.#app);
+    // socket.connect(http);
+    // http.listen(port, () => {
+    //   console.log(`Server is listening port ${port}`);
+    // });
   }
 
   #setConfig() {

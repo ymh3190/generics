@@ -1,8 +1,8 @@
 .watch {
   display: grid;
   grid-template-columns: 2fr 1fr;
-  padding-left: 0;
-  padding-top: 70px;
+  padding-left: 0 !important;
+  padding-top: calc($positionTopDesktop * 2) !important;
 
   &-container {
     video {

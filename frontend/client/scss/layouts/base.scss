@@ -17,6 +17,11 @@
     border-radius: 1rem;
   }
 
+  .work-order-container,
+  .client-container {
+    height: 15vh;
+  }
+
   .work-order-container:hover,
   .remnant-container:hover,
   .client-container:hover {
@@ -26,10 +31,5 @@
   .work-order-container:hover,
   .client-container:hover {
     cursor: pointer;
-  }
-
-  .work-order-container,
-  .client-container {
-    height: 15vh;
   }
 }

@@ -133,6 +133,11 @@ class WorkOrderRouter extends Router {
         middleware.authenticateUser,
         middleware.authorizePermissions("admin"),
         workOrderController.selectById
+      )
+      .delete(
+        middleware.authenticateUser,
+        middleware.authorizePermissions("admin"),
+        workOrderController.deleteById
       );
 
     this.router.post(

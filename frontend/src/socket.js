@@ -1,7 +1,7 @@
 import { WebSocketServer } from "ws";
 import * as CustomError from "./error";
 import util from "./util";
-import placeOrder from "./alarm";
+import orderer from "./alarm";
 
 class Socket {
   constructor() {
@@ -29,6 +29,11 @@ class Socket {
     });
 
     this.wss.on("connection", (ws, req) => {
+      orderer.addField(ws);
+      // ws['str'] = ''
+      // socket is object
+      console.log("connection success");
+
       ws.on("error", console.error);
 
       ws.on("message", (data) => {
@@ -36,15 +41,17 @@ class Socket {
       });
 
       ws.on("close", () => {
+        orderer.removeField(ws);
         console.log("connection close");
       });
 
-      setInterval(() => {
-        if (placeOrder.event) {
-          ws.send(placeOrder.event);
-          placeOrder.event = "";
-        }
-      }, 5000);
+      // setInterval(() => {
+      //   if (placeOrder.event) {
+      //     ws.send(placeOrder.event);
+      //     this.wss.emit("place", placeOrder.event);
+      //     placeOrder.event = "";
+      //   }
+      // }, 5000);
 
       // TODO: authentication logic
       // try {

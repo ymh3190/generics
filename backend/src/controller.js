@@ -266,6 +266,7 @@ class WorkOrderController {
   async delete(req, res) {
     const { id } = req.params;
 
+    await WorkDetail.selectOneAndDelete({ work_order_id: id });
     await WorkOrder.selectByIdAndDelete(id);
     res.status(200).json({ message: "Delete success" });
   }

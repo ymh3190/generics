@@ -2,7 +2,7 @@ import FetchAPI from "./fetch-api";
 import * as CustomError from "./error";
 import util from "./util";
 import perf from "./perf";
-import placeOrder from "./alarm";
+import orderer from "./alarm";
 
 class RootController {
   getIndex(req, res) {
@@ -277,11 +277,12 @@ class WorkOrderController {
       cookie: req.headers.cookie,
     });
     const data = await response.json();
-    placeOrder.notifyObservers("place");
+    orderer.notifyFields("place");
     res.status(201).json({ workOrder: data.workOrder });
   }
 
   async select(req, res) {
+    // req.path: '/date' | '/client'
     const response = await FetchAPI.post(`/work-orders/${req.path}`, req.body, {
       cookie: req.headers.cookie,
     });
@@ -303,6 +304,17 @@ class WorkOrderController {
     });
     const data = await response.json();
     res.status(200).json({ workOrder: data.workOrder });
+  }
+
+  async deleteById(req, res) {
+    const { id } = req.params;
+
+    const response = await FetchAPI.delete(`/work-orders/${id}`, {
+      cookie: req.headers.cookie,
+    });
+    const data = await response.json();
+    orderer.notifyFields("delete");
+    res.status(200).json({ message: data.message });
   }
 }
 

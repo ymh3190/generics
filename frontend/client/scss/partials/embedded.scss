@@ -1,0 +1,25 @@
+.embedded {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  position: fixed;
+  background-color: white;
+
+  .primary {
+    .embedded-list {
+      display: flex;
+      padding: 1rem;
+
+      a {
+        display: flex;
+        align-items: center;
+
+        span {
+          padding-left: 1rem;
+        }
+      }
+    }
+
+    .embedded-list:last-child {
+      border-top: 1px solid rgba(0, 0, 0, 0.2);
+    }
+  }
+}

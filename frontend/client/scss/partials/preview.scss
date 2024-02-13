@@ -22,7 +22,20 @@
   &-top {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     margin-bottom: 2rem;
+
+    .left {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      column-gap: 1rem;
+    }
+
+    .right {
+      padding: 1px 5px 1px 5px;
+      border-radius: 5px;
+      background-color: rgba(188, 185, 185, 0.756);
+    }
   }
 }
 

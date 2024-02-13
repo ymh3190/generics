@@ -1,19 +1,28 @@
 @media screen and (max-width: $desktop) {
   .header {
-    height: 7vh;
+    height: $positionTopDesktop;
   }
 
   .nav {
-    padding-right: 15px;
-    top: 7vh;
+    top: $positionTopDesktop;
+    width: $navWidthDesktop;
+  }
+
+  .entry {
+    top: $positionTopDesktop;
+    height: $positionTopDesktop;
+    left: calc($navWidthDesktop + $rootRightMargin);
   }
 
   .status {
-    top: 7vh;
+    top: calc($positionTopDesktop * 2);
+    left: calc($navWidthDesktop + $rootRightMargin);
   }
 
   .content {
     grid-template-columns: repeat(4, 1fr);
+    padding-top: calc($positionTopDesktop * 4);
+    padding-left: calc($navWidthDesktop + $rootLeftMargin);
   }
 
   .watch {
@@ -31,16 +40,90 @@
       height: $primaryPopupHeightDesktop;
     }
   }
+
+  .column-nav-width {
+    width: $navWidthColumnDesktop !important;
+  }
+
+  .padding-left {
+    padding-left: calc($navWidthColumnDesktop + $rootLeftMargin) !important;
+  }
+
+  .position-left {
+    left: calc($navWidthColumnDesktop + $rootRightMargin) !important;
+  }
 }
 
 @media screen and (max-width: $laptop) {
   .header {
+    height: $positionTopLaptop;
+  }
+
+  .nav {
+    top: $positionTopLaptop;
+    width: $navWidthLaptop;
+  }
+
+  .entry {
+    top: $positionTopLaptop;
+    height: $positionTopLaptop;
+    left: calc($navWidthLaptop + $rootRightMargin);
+  }
+
+  .status {
+    top: calc($positionTopLaptop * 2);
+    left: calc($navWidthLaptop + $rootRightMargin);
+  }
+
+  .content {
+    grid-template-columns: repeat(3, 1fr);
+    padding-top: calc($positionTopLaptop * 4);
+    padding-left: calc($navWidthLaptop + $rootLeftMargin);
+  }
+
+  .watch {
+    grid-template-columns: 2fr 1fr;
+  }
+
+  .signin,
+  .signup {
+    grid-template-columns: none;
+  }
+
+  .popup-container {
+    .primary {
+      top: $primaryPopupTopLaptop;
+      height: $primaryPopupHeightLaptop;
+    }
+  }
+
+  .column-nav-width {
+    width: $navWidthColumnLaptop !important;
+  }
+
+  .padding-left {
+    padding-left: calc($navWidthColumnLaptop + $rootLeftMargin) !important;
+  }
+
+  .position-left {
+    left: calc($navWidthColumnLaptop + $rootRightMargin) !important;
+  }
+
+  /* .header {
     height: 7vh;
   }
 
   .nav {
-    padding-right: 15px;
     top: 7vh;
+  }
+
+  .entry {
+    top: 7vh;
+    height: 7vh;
+  }
+
+  .status {
+    top: 14vh;
   }
 
   .content {
@@ -54,16 +137,79 @@
   .signin,
   .signup {
     grid-template-columns: none;
-  }
+  } */
 }
 
 @media screen and (max-width: $tablet) {
   .header {
+    height: $positionTopTablet;
+  }
+
+  .nav {
+    top: $positionTopTablet;
+    width: $navWidthColumnTablet;
+  }
+
+  .entry {
+    top: $positionTopTablet;
+    height: $positionTopTablet;
+    left: $rootLeftMargin;
+
+    .left {
+      padding-left: 0;
+    }
+  }
+
+  .status {
+    top: calc($positionTopTablet * 2);
+    left: $rootLeftMargin;
+    padding-left: 0;
+
+    // left: calc($navWidthTablet + $rootRightMargin);
+  }
+
+  .content {
+    grid-template-columns: repeat(2, 1fr);
+    padding-top: calc($positionTopTablet * 3.5);
+    padding-left: 0;
+    // padding-top: calc($positionTopTablet * 4);
+    // padding-left: calc($navWidthTablet + $rootLeftMargin);
+  }
+
+  .watch {
+    grid-template-columns: 2fr 1fr;
+  }
+
+  .signin,
+  .signup {
+    grid-template-columns: none;
+  }
+
+  .popup-container {
+    .primary {
+      top: $primaryPopupTopTablet;
+      height: $primaryPopupHeightTablet;
+    }
+  }
+
+  .column-nav-width {
+    width: $navWidthColumnTablet !important;
+  }
+
+  .padding-left {
+    padding-left: calc($navWidthColumnTablet + $rootLeftMargin) !important;
+    // padding-left: 0 !important;
+  }
+
+  .position-left {
+    left: calc($navWidthColumnTablet + $rootRightMargin) !important;
+  }
+
+  /* .header {
     height: 5vh;
   }
 
   .nav {
-    padding-right: 10px;
     top: 5vh;
   }
 
@@ -79,16 +225,81 @@
   .signup {
     grid-template-columns: none;
     left: initial !important;
-  }
+  } */
 }
 
 @media screen and (max-width: $mobile) {
   .header {
+    height: $positionTopMobile;
+  }
+
+  .nav {
+    top: $positionTopMobile;
+    width: $navWidthColumnMobile;
+  }
+
+  .entry {
+    top: $positionTopMobile;
+    height: $positionTopMobile;
+    left: $rootLeftMargin;
+
+    .left {
+      padding-left: 0;
+    }
+  }
+
+  .status {
+    top: calc($positionTopMobile * 2);
+    left: $rootLeftMargin;
+    padding-left: 0;
+    overflow-x: auto;
+    // left: calc($navWidthMobile + $rootRightMargin);
+  }
+
+  .content {
+    grid-template-columns: none;
+    padding-top: calc($positionTopMobile * 3.5);
+    padding-left: 0;
+    // padding-top: calc($positionTopMobile * 4);
+    // padding-left: calc($navWidthMobile + $rootLeftMargin);
+  }
+
+  .watch {
+    grid-template-columns: 2fr 1fr;
+  }
+
+  .signin,
+  .signup {
+    // position: initial !important;
+    grid-template-columns: none;
+    // left: calc($leftSignMobile + 5px) !important;
+  }
+
+  .popup-container {
+    .primary {
+      top: $primaryPopupTopMobile;
+      height: $primaryPopupHeightMobile;
+    }
+  }
+
+  .column-nav-width {
+    width: $navWidthColumnMobile !important;
+  }
+
+  .padding-left {
+    padding-left: calc($navWidthColumnMobile + $rootLeftMargin) !important;
+    // padding-left: 0 !important;
+  }
+
+  .position-left {
+    left: calc($navWidthColumnMobile + $rootRightMargin) !important;
+  }
+
+  /* .header {
     height: 7vh;
   }
 
   .nav {
-    padding-right: 5px;
     top: 7vh;
   }
 
@@ -104,5 +315,5 @@
   .signup {
     grid-template-columns: none;
     left: initial !important;
-  }
+  } */
 }

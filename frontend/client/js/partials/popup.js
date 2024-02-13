@@ -70,6 +70,13 @@ const createItemFormHandler = async (event) => {
     searchItemFormDOM.classList.remove("hidden");
     createItemPopupDOM.classList.add("hidden");
     itemsPopupDOM.classList.add("hidden");
+    const orderPopupDetailsDOM = document.getElementById("workDetails");
+    const workDetailDOM = orderPopupDetailsDOM.querySelector(
+      "#workDetail:last-child"
+    );
+    const itemDOM = workDetailDOM.querySelector("input:first-child");
+    itemDOM.value = data.item.name;
+    itemDOM.dataset.id = data.item.id;
   }
 };
 

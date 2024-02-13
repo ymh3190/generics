@@ -60,12 +60,13 @@
                                                         </a>
                                                     </div>
                                                     <% } %>
-                                                        <% } %>
+                                                        <% } else if (user.role==='user' ) { %>
                                                             <div class="nav-list">
                                                                 <a href="/field" class="flex">
                                                                     <i class="fa-solid fa-expand margin-right"></i>
                                                                     <span>field</span>
                                                                 </a>
                                                             </div>
+                                                            <% } %>
 
 </nav>

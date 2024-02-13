@@ -1,9 +1,0 @@
-<%- include('../layouts/base') %>
-
-    <div class="content video">
-        <% for (const video of videos) {%>
-            <video src="<%= video.path %>" poster="<%= video.poster%>" controls></video>
-            <%}%>
-                <div></div>
-    </div>
-    <%- include('../partials/footer') %>
