@@ -342,7 +342,7 @@ const placeHandler = async () => {
     const length = lengthDOM.value;
     const quantity = quantityDOM.value;
 
-    // TODO: 잔재 관련 기능 추가
+    // 잔재 관련 기능 추가
     const remnant = workDetailDOM.querySelector("#remnant").value;
 
     if (!item_id) {
@@ -413,7 +413,7 @@ const placeHandler = async () => {
     const length = workDetailDOM.querySelector("#length").value;
     const quantity = workDetailDOM.querySelector("#quantity").value;
 
-    // TODO: 잔재 관련 기능 추가
+    // 잔재 관련 기능 추가
     const remnant = workDetailDOM.querySelector("#remnant").value;
 
     response = await FetchAPI.post("/work-details", {
@@ -436,6 +436,11 @@ const placeHandler = async () => {
 };
 
 const closeItemsPopupHandler = () => {
+  if (isUpdate) {
+    updateWorkDetailPopupDOM.classList.remove("hidden");
+    itemsPopupDOM.classList.add("hidden");
+    return;
+  }
   itemsPopupDOM.classList.add("hidden");
   const workDetailDOM = orderPopupDetailsDOM.querySelector(
     "#workDetail:last-child"
@@ -580,6 +585,10 @@ function rightHandler() {
 async function deleteHandler(event) {
   event.stopPropagation();
 
+  if (!confirm("Delete forever?")) {
+    return;
+  }
+
   const id = this.dataset.id;
   const response = await FetchAPI.delete(`/work-orders/${id}`);
   if (response) {
@@ -685,10 +694,11 @@ async function updateHandler(event) {
       workInfoDOM.classList.add("update");
 
       workInfoDOM.addEventListener("click", () => {
-        // TODO
         isUpdate = true;
 
         updateWorkDetailPopupDOM.classList.remove("hidden");
+        workDetailPopupDOM.classList.remove("clean");
+        workDetailPopupDOM.classList.add("blur");
 
         let html = `
         <span>item</span>
@@ -698,6 +708,35 @@ async function updateHandler(event) {
         `;
         itemDOM.textContent = "";
         itemDOM.insertAdjacentHTML("beforeend", html);
+        const itemInput = itemDOM.querySelector("input");
+        itemInput.addEventListener("focus", async () => {
+          itemsPopupDOM.classList.remove("hidden");
+          updateWorkDetailPopupDOM.classList.add("hidden");
+
+          const response = await FetchAPI.get("/items");
+          if (response) {
+            const data = await response.json();
+            let html = "";
+
+            for (const item of data.items) {
+              html += htmls.itemList(item);
+            }
+            itemsDOM.textContent = "";
+            itemsDOM.insertAdjacentHTML("beforeend", html);
+
+            const itemDOMs = itemsDOM.querySelectorAll("#item");
+            for (const itemDOM of itemDOMs) {
+              itemDOM.addEventListener("click", () => {
+                updateWorkDetailPopupDOM.classList.remove("hidden");
+                itemsPopupDOM.classList.add("hidden");
+
+                const itemName = itemDOM.querySelector("#name").textContent;
+                const itemInput = columnsDOM.querySelector("#item input");
+                itemInput.value = itemName;
+              });
+            }
+          }
+        });
 
         html = `
         <span>depth</span>
@@ -770,13 +809,6 @@ const createClientFormHandler = async (event) => {
     associationDOM.focus();
     return;
   }
-
-  // association valid check
-  // if (association.match(/\(|\)|\s/)) {
-  //   alert("Association invalid");
-  //   associationDOM.focus();
-  //   return;
-  // }
 
   if (!name) {
     alert("Provide name");
@@ -902,9 +934,12 @@ const updatedUrgentHandler = () => {
 
 const closeUpdateWorkDetailPopupHandler = () => {
   updateWorkDetailPopupDOM.classList.add("hidden");
+  workDetailPopupDOM.classList.remove("blur");
 };
 
 const updateWorkDetailHandler = () => {
+  workDetailPopupDOM.classList.remove("blur");
+
   const itemInput = itemDOM.querySelector("input");
   const item = itemInput.value;
   const depthInput = depthDOM.querySelector("input");
@@ -948,7 +983,7 @@ const updateWorkDetailHandler = () => {
     return;
   }
 
-  // TODO: 잔재
+  // 잔재
   // if (!remnant) {
   //   remnantInput.focus();
   //   alert("Remnant not found");
@@ -964,6 +999,7 @@ const updateWorkDetailHandler = () => {
   // workInfoDOMs[index].querySelector("#remnant").textContent = remnant;
 
   updateWorkDetailPopupDOM.classList.add("hidden");
+  workInfoDOMs[index].classList.add("updated");
 };
 
 updateWorkDetailDOM.addEventListener("click", updateWorkDetailHandler);

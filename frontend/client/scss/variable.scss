@@ -19,10 +19,8 @@ $secondaryPopupWidth: 40%;
 $secondaryPopupTop: 10%;
 $secondaryPopupHeight: 80%;
 
-$tertiaryPopupLeft: 40%;
-$tertiaryPopupWidth: 10%;
-$tertiaryPopupTop: 30%;
-$tertiaryPopupHeight: 20%;
+$tertiaryPopupLeft: calc($secondaryPopupLeft + $secondaryPopupWidth/3);
+$tertiaryPopupTop: calc($secondaryPopupTop * 3);
 
 $bgColor: #e5e5e5;
 $fontColor: #3f3f3f;
