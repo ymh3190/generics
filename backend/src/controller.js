@@ -256,6 +256,8 @@ class WorkOrderController {
   async update(req, res) {
     const { id } = req.params;
 
+    console.log(id, req.body);
+
     req.body.worker_id = req.user.user_id;
     const workOrder = await WorkOrder.selectByIdAndUpdate(id, req.body, {
       new: true,

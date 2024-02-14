@@ -22,9 +22,7 @@ const popupDOM = document.getElementById("popup");
 const contentDOM = document.getElementById("content");
 
 const workDetailPopupDOM = document.getElementById("workDetailPopup");
-const closeWorkDetailPopupDOM = document.querySelector(
-  "#workDetailPopup #close"
-);
+const closeWorkDetailPopupDOM = document.getElementById("closeWorkDetailPopup");
 const workInfosDOM = document.getElementById("workInfos");
 const bodyDOM = document.querySelector("body");
 const newItemDOM = document.getElementById("newItem");
@@ -42,6 +40,31 @@ const createItemPopupDOM = document.getElementById("createItemPopup");
 const navDOM = document.getElementById("nav");
 const headerDOM = document.getElementById("header");
 
+//#region update work-order
+const urgentPopupDOM = document.getElementById("urgentPopup");
+const closeUrgentPopupDOM = document.getElementById("closeUrgentPopup");
+const updatedUrgentDOM = document.getElementById("updatedUrgent");
+const updateWorkDetailPopupDOM = document.getElementById(
+  "updateWorkDetailPopup"
+);
+const closeUpdateWorkDetailPopupDOM = document.getElementById(
+  "closeUpdateWorkDetailPopup"
+);
+const itemDOM = document.getElementById("item");
+const depthDOM = document.getElementById("depth");
+const widthDOM = document.getElementById("width");
+const lengthDOM = document.getElementById("length");
+const quantityDOM = document.getElementById("quantity");
+const remnantDOM = document.getElementById("remnant");
+const updateWorkDetailDOM = document.getElementById("updateWorkDetail");
+const columnsDOM = document.getElementById("columns");
+//#endregion
+
+//#region status variable
+let isUpdate;
+//#endregion
+
+//#region sub-handler
 async function clickClientHandler() {
   const id = this.dataset.id;
   const response = await FetchAPI.get(`/clients/${id}`);
@@ -69,12 +92,21 @@ async function clickItemHandler() {
 }
 
 function bodyHandler(event) {
+  if (isUpdate) {
+    return;
+  }
+
   const embeddedDOMs = contentDOM.querySelectorAll("#embedded");
   embeddedDOMs.forEach((embeddedDOM) => {
     embeddedDOM.classList.add("hidden");
   });
 
   if (event.target === workDetailPopupDOM) {
+    return;
+  }
+
+  const paragraphDOM = workDetailPopupDOM.querySelector("#paragraph");
+  if (event.target === paragraphDOM) {
     return;
   }
 
@@ -105,7 +137,72 @@ function bodyHandler(event) {
   workInfoDOMs.forEach((workInfoDOM) => {
     workInfoDOM.remove();
   });
+  const urgentInfoDOM = workDetailPopupDOM.querySelector("#urgentInfo");
+  urgentInfoDOM.classList.remove("update");
+  const commentInfoDOM = workDetailPopupDOM.querySelector("#commentInfo");
+  commentInfoDOM.classList.remove("update");
 }
+
+async function clientInfoUpdateHandler() {
+  isUpdate = true;
+
+  popupDOM.classList.remove("hidden");
+  clientsPopupDOM.classList.remove("hidden");
+  workDetailPopupDOM.classList.remove("clean");
+
+  workDetailPopupDOM.classList.add("blur");
+  headerDOM.classList.add("blur");
+  navDOM.classList.add("blur");
+
+  const response = await FetchAPI.get("/clients");
+  if (response) {
+    const data = await response.json();
+    let html = "";
+
+    for (const client of data.clients) {
+      html += htmls.clientList(client);
+    }
+
+    clientsDOM.textContent = "";
+    clientsDOM.insertAdjacentHTML("beforeend", html);
+
+    const clientDOMs = clientsDOM.querySelectorAll("#client");
+    clientDOMs.forEach((clientDOM) => {
+      clientDOM.addEventListener("click", async () => {
+        const client_id = clientDOM.dataset.id;
+
+        const response = await FetchAPI.get(`/clients/${client_id}`);
+        if (response) {
+          const data = await response.json();
+
+          const associationDOM = this.querySelector("#association");
+          associationDOM.textContent = data.client.association;
+          const nameDOM = this.querySelector("#name");
+          nameDOM.textContent = data.client.name;
+          const telephoneDOM = this.querySelector("#telephone");
+          telephoneDOM.textContent = data.client.telephone;
+
+          clientsPopupDOM.classList.add("hidden");
+          workDetailPopupDOM.classList.remove("blur");
+          workDetailPopupDOM.querySelector("#client").classList.add("updated");
+        }
+      });
+    });
+  }
+}
+
+async function urgentInfoUpdateHandler() {
+  isUpdate = true;
+
+  popupDOM.classList.remove("hidden");
+  urgentPopupDOM.classList.remove("hidden");
+  workDetailPopupDOM.classList.remove("clean");
+
+  workDetailPopupDOM.classList.add("blur");
+  headerDOM.classList.add("blur");
+  navDOM.classList.add("blur");
+}
+//#endregion
 
 const clientInputFocusHandler = async () => {
   if (clientsPopupDOM.classList.contains("hidden")) {
@@ -171,6 +268,10 @@ const searchClientFormHandler = async (event) => {
 };
 
 const closeClientsPopupHandler = () => {
+  workDetailPopupDOM.classList.remove("blur");
+  headerDOM.classList.remove("blur");
+  navDOM.classList.remove("blur");
+
   clientsPopupDOM.classList.add("hidden");
 };
 
@@ -223,6 +324,11 @@ const addHandler = async () => {
 
 const placeHandler = async () => {
   const workDetailDOMs = orderPopupDetailsDOM.querySelectorAll("#workDetail");
+  if (!workDetailDOMs.length) {
+    alert("Work-detail not found");
+    return;
+  }
+
   for (const workDetailDOM of workDetailDOMs) {
     const itemDOM = workDetailDOM.querySelector("#item");
     const depthDOM = workDetailDOM.querySelector("#depth");
@@ -379,6 +485,10 @@ async function workOrderContainerHandler(event) {
   workDetailPopupDOM.classList.remove("hidden", "blur");
   navDOM.classList.add("blur");
   headerDOM.classList.add("blur");
+
+  const paragraphDOM = workDetailPopupDOM.querySelector("#paragraph");
+  paragraphDOM.textContent = "work info";
+
   const workOrderId = this.dataset.id;
 
   let workOrder;
@@ -425,10 +535,10 @@ async function workOrderContainerHandler(event) {
   response = await FetchAPI.get(`/clients/${clientId}`);
   if (response) {
     const data = await response.json();
-    const clientDOM = workDetailPopupDOM.querySelector("#client");
+    const clientInfoDOM = workDetailPopupDOM.querySelector("#clientInfo");
     const html = htmls.clientList(data.client);
-    clientDOM.textContent = "";
-    clientDOM.insertAdjacentHTML("beforeend", html);
+    clientInfoDOM.textContent = "";
+    clientInfoDOM.insertAdjacentHTML("beforeend", html);
   }
 
   response = await FetchAPI.get(`/work-orders/${workOrderId}/details`);
@@ -467,7 +577,9 @@ function rightHandler() {
   });
 }
 
-async function deleteHandler() {
+async function deleteHandler(event) {
+  event.stopPropagation();
+
   const id = this.dataset.id;
   const response = await FetchAPI.delete(`/work-orders/${id}`);
   if (response) {
@@ -476,7 +588,167 @@ async function deleteHandler() {
   }
 }
 
-function updateHandler() {}
+async function updateHandler(event) {
+  event.stopPropagation();
+
+  popupDOM.classList.remove("hidden");
+  workDetailPopupDOM.classList.remove("hidden");
+
+  const embeddedDOMs = contentDOM.querySelectorAll("#embedded");
+  embeddedDOMs.forEach((embeddedDOM) => {
+    embeddedDOM.classList.add("hidden");
+  });
+
+  const paragraphDOM = workDetailPopupDOM.querySelector("#paragraph");
+  paragraphDOM.textContent = "update work info";
+
+  const workOrderId = this.dataset.id;
+
+  let workOrder;
+  let response = await FetchAPI.get(`/work-orders/${workOrderId}`);
+  if (response) {
+    const data = await response.json();
+    workOrder = data.workOrder;
+    let html = `
+    <div>
+      <div class='top'>
+        <span>${workOrder.is_complete ? "complete" : "resolving"}</span>
+      </div>
+      ${
+        workOrder.is_complete
+          ? `<div><span>${workOrder.end_date}</span></div>`
+          : ""
+      }
+    </div>
+    `;
+    const completeInfoDOM = workDetailPopupDOM.querySelector("#completeInfo");
+    completeInfoDOM.textContent = "";
+    completeInfoDOM.insertAdjacentHTML("beforeend", html);
+
+    html = `
+    <div>
+      <span>${workOrder.is_urgent ? "urgent" : ""}</span>
+    </div>
+    `;
+    const urgentInfoDOM = workDetailPopupDOM.querySelector("#urgentInfo");
+    urgentInfoDOM.textContent = "";
+    urgentInfoDOM.classList.add("update");
+    urgentInfoDOM.insertAdjacentHTML("beforeend", html);
+    urgentInfoDOM.addEventListener("click", urgentInfoUpdateHandler);
+    updatedUrgentDOM.checked = workOrder.is_urgent;
+
+    html = `
+    <div>
+      <span>${workOrder.comment}</span>
+    </div>
+    `;
+    const commentInfoDOM = workDetailPopupDOM.querySelector("#commentInfo");
+    commentInfoDOM.textContent = "";
+    commentInfoDOM.classList.add("update");
+    commentInfoDOM.insertAdjacentHTML("beforeend", html);
+  }
+
+  const clientId = this.dataset.client_id;
+  response = await FetchAPI.get(`/clients/${clientId}`);
+  if (response) {
+    const data = await response.json();
+    const clientInfoDOM = workDetailPopupDOM.querySelector("#clientInfo");
+    const html = htmls.clientList(data.client);
+    clientInfoDOM.textContent = "";
+    clientInfoDOM.insertAdjacentHTML("beforeend", html);
+    clientInfoDOM.addEventListener("click", clientInfoUpdateHandler);
+    const clientDOM = clientInfoDOM.querySelector("#client");
+    clientDOM.classList.add("update");
+  }
+
+  response = await FetchAPI.get(`/work-orders/${workOrderId}/details`);
+  if (response) {
+    const data = await response.json();
+    const workInfos = [];
+
+    let html = "";
+    for (const workDetail of data.workDetails) {
+      const itemId = workDetail.item_id;
+      const response = await FetchAPI.get(`/items/${itemId}`);
+      if (response) {
+        const data = await response.json();
+        const item = data.item;
+        const workInfo = { workDetail, item };
+        workInfos.push(workInfo);
+        html += htmls.workInfoList(workInfo);
+      }
+    }
+    workInfosDOM.textContent = "";
+    workInfosDOM.insertAdjacentHTML("beforeend", html);
+    const workInfoDOMs = workInfosDOM.querySelectorAll("#workInfo");
+    workInfoDOMs.forEach((workInfoDOM, i) => {
+      workInfoDOM.classList.add("update");
+
+      workInfoDOM.addEventListener("click", () => {
+        // TODO
+        isUpdate = true;
+
+        updateWorkDetailPopupDOM.classList.remove("hidden");
+
+        let html = `
+        <span>item</span>
+        <div>
+          <input type="text" value='${workInfos[i].item.name}'>
+        </div>
+        `;
+        itemDOM.textContent = "";
+        itemDOM.insertAdjacentHTML("beforeend", html);
+
+        html = `
+        <span>depth</span>
+        <div>
+          <input type="text" value='${workInfos[i].workDetail.depth}'>
+        </div>
+        `;
+        depthDOM.textContent = "";
+        depthDOM.insertAdjacentHTML("beforeend", html);
+
+        html = `
+        <span>width</span>
+        <div>
+          <input type="text" value='${workInfos[i].workDetail.width}'>
+        </div>
+        `;
+        widthDOM.textContent = "";
+        widthDOM.insertAdjacentHTML("beforeend", html);
+
+        html = `
+        <span>length</span>
+        <div>
+          <input type="text" value='${workInfos[i].workDetail.length}'>
+        </div>
+        `;
+        lengthDOM.textContent = "";
+        lengthDOM.insertAdjacentHTML("beforeend", html);
+
+        html = `
+        <span>quantity</span>
+        <div>
+          <input type="text" value='${workInfos[i].workDetail.quantity}'>
+        </div>
+        `;
+        quantityDOM.textContent = "";
+        quantityDOM.insertAdjacentHTML("beforeend", html);
+
+        html = `
+        <span>remnant</span>
+        <div>
+          <input type="text" value='${workInfos[i].workDetail.remnant}'>
+        </div>
+        `;
+        remnantDOM.textContent = "";
+        remnantDOM.insertAdjacentHTML("beforeend", html);
+
+        columnsDOM.dataset.index = i;
+      });
+    });
+  }
+}
 
 const closeWorkDetailPopupHandler = () => {
   bodyDOM.removeEventListener("click", bodyHandler);
@@ -554,6 +826,10 @@ const newClientHandler = () => {
 };
 
 const workDetailPopupHandler = (event) => {
+  if (isUpdate) {
+    return;
+  }
+
   const isMouseEnter = event.type === "mouseenter";
   if (isMouseEnter) {
     workDetailPopupDOM.classList.remove("blur");
@@ -574,20 +850,30 @@ const docsHandler = (event) => {
   const isESC = event.key === "Escape";
   if (isESC) {
     bodyDOM.removeEventListener("click", bodyHandler);
-
-    popupDOM.classList.add("hidden");
-    workDetailPopupDOM.classList.add("hidden");
-    itemsPopupDOM.classList.add("hidden");
-    clientsPopupDOM.classList.add("hidden");
+    isUpdate = false;
 
     popupDOM.classList.remove("blur");
     workDetailPopupDOM.classList.remove("blur");
     navDOM.classList.remove("blur");
     headerDOM.classList.remove("blur");
+    urgentPopupDOM.classList.remove("blur");
+
+    const urgentInfoDOM = workDetailPopupDOM.querySelector("#urgentInfo");
+    urgentInfoDOM.classList.remove("update");
+    const commentInfoDOM = workDetailPopupDOM.querySelector("#commentInfo");
+    commentInfoDOM.classList.remove("update");
+
     const workInfoDOMs = workInfosDOM.querySelectorAll("#workInfo");
     workInfoDOMs.forEach((workInfoDOM) => {
       workInfoDOM.remove();
     });
+
+    popupDOM.classList.add("hidden");
+    workDetailPopupDOM.classList.add("hidden");
+    itemsPopupDOM.classList.add("hidden");
+    clientsPopupDOM.classList.add("hidden");
+    urgentPopupDOM.classList.add("hidden");
+
     const embeddedDOMs = contentDOM.querySelectorAll("#embedded");
     embeddedDOMs.forEach((embeddedDOM) => {
       embeddedDOM.classList.add("hidden");
@@ -595,6 +881,98 @@ const docsHandler = (event) => {
   }
 };
 
+const closeUrgentPopupHandler = () => {
+  workDetailPopupDOM.classList.remove("blur");
+  headerDOM.classList.remove("blur");
+  navDOM.classList.remove("blur");
+
+  urgentPopupDOM.classList.add("hidden");
+};
+
+const updatedUrgentHandler = () => {
+  const urgentInfoDOM = workDetailPopupDOM.querySelector("#urgentInfo");
+  const spanDOM = urgentInfoDOM.querySelector("span");
+  spanDOM.textContent = updatedUrgentDOM.checked ? "urgent" : "";
+
+  workDetailPopupDOM.classList.remove("blur");
+
+  urgentPopupDOM.classList.add("hidden");
+  urgentInfoDOM.classList.add("updated");
+};
+
+const closeUpdateWorkDetailPopupHandler = () => {
+  updateWorkDetailPopupDOM.classList.add("hidden");
+};
+
+const updateWorkDetailHandler = () => {
+  const itemInput = itemDOM.querySelector("input");
+  const item = itemInput.value;
+  const depthInput = depthDOM.querySelector("input");
+  const depth = depthInput.value;
+  const widthInput = widthDOM.querySelector("input");
+  const width = widthInput.value;
+  const lengthInput = lengthDOM.querySelector("input");
+  const length = lengthInput.value;
+  const quantityInput = quantityDOM.querySelector("input");
+  const quantity = quantityInput.value;
+  const remnantInput = remnantDOM.querySelector("input");
+  const remnant = remnantInput.value;
+
+  if (!item) {
+    itemInput.focus();
+    alert("Item not found");
+    return;
+  }
+
+  if (!depth) {
+    depthInput.focus();
+    alert("Depth not found");
+    return;
+  }
+
+  if (!width) {
+    widthInput.focus();
+    alert("Width not found");
+    return;
+  }
+
+  if (!length) {
+    lengthInput.focus();
+    alert("Length not found");
+    return;
+  }
+
+  if (!quantity) {
+    quantityInput.focus();
+    alert("quantity not found");
+    return;
+  }
+
+  // TODO: 잔재
+  // if (!remnant) {
+  //   remnantInput.focus();
+  //   alert("Remnant not found");
+  //   return;
+  // }
+  const index = columnsDOM.dataset.index;
+  const workInfoDOMs = workInfosDOM.querySelectorAll("#workInfo");
+  workInfoDOMs[index].querySelector("#item").textContent = item;
+  workInfoDOMs[index].querySelector("#depth").textContent = depth;
+  workInfoDOMs[index].querySelector("#width").textContent = width;
+  workInfoDOMs[index].querySelector("#length").textContent = length;
+  workInfoDOMs[index].querySelector("#quantity").textContent = quantity;
+  // workInfoDOMs[index].querySelector("#remnant").textContent = remnant;
+
+  updateWorkDetailPopupDOM.classList.add("hidden");
+};
+
+updateWorkDetailDOM.addEventListener("click", updateWorkDetailHandler);
+closeUpdateWorkDetailPopupDOM.addEventListener(
+  "click",
+  closeUpdateWorkDetailPopupHandler
+);
+updatedUrgentDOM.addEventListener("change", updatedUrgentHandler);
+closeUrgentPopupDOM.addEventListener("click", closeUrgentPopupHandler);
 document.addEventListener("keydown", docsHandler);
 workDetailPopupDOM.addEventListener("mouseenter", workDetailPopupHandler);
 workDetailPopupDOM.addEventListener("mouseleave", workDetailPopupHandler);
@@ -614,6 +992,7 @@ clientInputDOM.addEventListener("focus", clientInputFocusHandler);
   );
   workOrderContainerDOMs.forEach(async (workOrderContainerDOM) => {
     workOrderContainerDOM.addEventListener("click", workOrderContainerHandler);
+
     const rightDOM = workOrderContainerDOM.querySelector(".right");
     rightDOM.addEventListener("click", rightHandler);
     const deleteDOM = workOrderContainerDOM.querySelector("#delete");
@@ -622,18 +1001,10 @@ clientInputDOM.addEventListener("focus", clientInputFocusHandler);
     updateDOM.addEventListener("click", updateHandler);
 
     const id = workOrderContainerDOM.dataset.client_id;
-
     const response = await FetchAPI.get(`/clients/${id}`);
     if (response) {
       const data = await response.json();
-      const html = `
-      <div class='left'>
-        <span>${data.client.association}</span>
-      </div>
-      <div class='right'>
-        <span>${data.client.name}</span>
-      </div>
-      `;
+      const html = htmls.clientPreview(data.client);
       const clientDOM = workOrderContainerDOM.querySelector("#client");
       clientDOM.insertAdjacentHTML("beforeend", html);
     }

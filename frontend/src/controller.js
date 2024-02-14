@@ -306,7 +306,17 @@ class WorkOrderController {
     res.status(200).json({ workOrder: data.workOrder });
   }
 
-  async deleteById(req, res) {
+  async update(req, res) {
+    const { id } = req.params;
+
+    const response = await FetchAPI.patch(`/work-orders/${id}`, req.body, {
+      cookie: req.headers.cookie,
+    });
+    const data = await response.json();
+    res.status(200).json({ workOrder: data.workOrder });
+  }
+
+  async delete(req, res) {
     const { id } = req.params;
 
     const response = await FetchAPI.delete(`/work-orders/${id}`, {
@@ -364,6 +374,7 @@ class ItemController {
     res.status(200).json({ item: data.item });
   }
 }
+
 class RemnantZoneController {
   async create(req, res) {
     const response = await FetchAPI.post("/remnant-zones", req.body, {

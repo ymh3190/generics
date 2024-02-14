@@ -134,10 +134,15 @@ class WorkOrderRouter extends Router {
         middleware.authorizePermissions("admin"),
         workOrderController.selectById
       )
+      .patch(
+        middleware.authenticateUser,
+        middleware.authorizePermissions("admin"),
+        workOrderController.update
+      )
       .delete(
         middleware.authenticateUser,
         middleware.authorizePermissions("admin"),
-        workOrderController.deleteById
+        workOrderController.delete
       );
 
     this.router.post(

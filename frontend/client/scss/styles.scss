@@ -32,6 +32,10 @@ body {
   padding-right: $rootRightMargin;
 }
 
+main {
+  height: 100vh;
+}
+
 a {
   text-decoration: none;
   color: black;
@@ -88,4 +92,13 @@ button {
 
 .clean {
   opacity: 1;
+}
+
+.updated {
+  border-color: $hoverColorBorder !important;
+}
+
+.update:hover {
+  cursor: pointer !important;
+  border-color: $hoverColorBorder !important;
 }

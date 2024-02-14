@@ -110,9 +110,25 @@ class FetchAPI {
    *
    * @param {string} path remote_origin + /api/v1 + path
    * @param {{}} data
+   * @param {{}} options
    * @returns
    */
-  static async patch(path, data) {
+  static async patch(path, data, options) {
+    if (options) {
+      const response = await fetch(FetchAPI.#url + path, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          cookie: options.cookie,
+        },
+        body: JSON.stringify(data),
+      });
+      if (response?.ok) {
+        return response;
+      }
+      return await catchResponseError(response);
+    }
+
     const response = await fetch(FetchAPI.#url + path, {
       method: "PATCH",
       headers: {

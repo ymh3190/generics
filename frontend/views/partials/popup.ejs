@@ -80,17 +80,17 @@
         <div class="primary work-detail-popup hidden" id="workDetailPopup">
             <div class="popup-header">
                 <div class="left">
-                    <p>work info</p>
+                    <p id="paragraph">work info</p>
                 </div>
                 <div class="right">
-                    <button id="close">x</button>
+                    <button id="closeWorkDetailPopup">x</button>
                 </div>
             </div>
             <div class="popup-body">
                 <div class="info-container">
                     <div class="top">
                         <div id="completeInfo" class="complete-info"></div>
-                        <div id="client" class="client-info"></div>
+                        <div id="clientInfo" class="client-info"></div>
                         <div id="urgentInfo" class="urgent-info"></div>
                     </div>
                     <div id="workInfos" class="work-infos"></div>
@@ -238,6 +238,59 @@
                     </div>
                 </div>
                 <div id="items" class="item-containers"></div>
+            </div>
+        </div>
+        <div class="tertiary hidden" id="urgentPopup">
+            <div class="popup-header">
+                <div class="left">
+                    <p>update urgent</p>
+                </div>
+                <div class="right">
+                    <button id='closeUrgentPopup'>x</button>
+                </div>
+            </div>
+            <div class="popup-body">
+                <div class="input-container flex">
+                    <div class="title">
+                        <span>urgent</span>
+                    </div>
+                    <div class="urgent">
+                        <input type="checkbox" id="updatedUrgent">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tertiary hidden" id="updateWorkDetailPopup">
+            <div class="popup-header">
+                <div class="left">
+                    <p>update work-detail</p>
+                </div>
+                <div class="right">
+                    <button id='closeUpdateWorkDetailPopup'>x</button>
+                </div>
+            </div>
+            <div class="popup-body">
+                <div class="container-middle">
+                    <div class="title">
+                        <span>work-detail</span>
+                    </div>
+                    <div class="columns" id="columns">
+                        <div class="column" id="item"></div>
+                        <div class="column" id="depth"></div>
+                        <div class="column" id="width"></div>
+                        <div class="column" id="length"></div>
+                        <div class="column" id="quantity"></div>
+                        <div class="column" id="remnant"></div>
+                        <div class="column">
+                            <span>update</span>
+                            <div class="update-row">
+                                <button id="updateWorkDetail">
+                                    <i class="fa-solid fa-scissors"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <% } else if (url==='/remnant' ) { %>

@@ -71,7 +71,7 @@ create table work_order(
     is_complete boolean not null default false,
     is_urgent boolean not null,
     comment varchar(100) not null,
-    end_date datetime on update current_timestamp,
+    end_date datetime,
     created_at datetime not null default current_timestamp,
     foreign key (client_id) references client(id),
     foreign key (orderer_id) references user(id),

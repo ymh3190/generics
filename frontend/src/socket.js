@@ -4,12 +4,10 @@ import util from "./util";
 import orderer from "./alarm";
 
 class Socket {
-  constructor() {
-    this.wss;
-  }
+  #wss;
 
   connect(server) {
-    this.wss = new WebSocketServer({
+    this.#wss = new WebSocketServer({
       server,
       perMessageDeflate: {
         zlibDeflateOptions: {
@@ -28,7 +26,7 @@ class Socket {
       },
     });
 
-    this.wss.on("connection", (ws, req) => {
+    this.#wss.on("connection", (ws, req) => {
       orderer.addField(ws);
       // ws['str'] = ''
       // socket is object

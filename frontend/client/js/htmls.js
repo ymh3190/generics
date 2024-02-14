@@ -151,7 +151,7 @@ const workInfoList = (workInfo) => {
   return `
     <div id='workInfo' class='work-info'>
       <div class='top'>
-        <span>${workInfo.item.name}</span>
+        <span id='item'>${workInfo.item.name}</span>
       </div>
       <div class='bottom'>
         <div class='detail'>
@@ -173,16 +173,16 @@ const workInfoList = (workInfo) => {
         </div>
         <div class='values'>
           <div>
-            <span>${workInfo.workDetail.depth}</span>
+            <span id='depth'>${workInfo.workDetail.depth}</span>
           </div>
           <div>
-            <span>${workInfo.workDetail.width}</span>
+            <span id='width'>${workInfo.workDetail.width}</span>
           </div>
           <div>
-            <span>${workInfo.workDetail.length}</span>
+            <span id='length'>${workInfo.workDetail.length}</span>
           </div>
           <div>
-            <span>${workInfo.workDetail.quantity}</span>
+            <span id='quantity'>${workInfo.workDetail.quantity}</span>
           </div>
           <div>
             <span>${workInfo.workDetail.is_remnant}</span>
@@ -380,6 +380,17 @@ const creatorList = (creator) => {
   `;
 };
 
+const clientPreview = (client) => {
+  return `
+  <div class='left'>
+    <span>${client.association}</span>
+  </div>
+  <div class='right'>
+    <span>${client.name}</span>
+  </div>
+  `;
+};
+
 export {
   itemList,
   clientList,
@@ -393,4 +404,5 @@ export {
   clientContainer,
   clientWorkInfoList,
   detailInfoList,
+  clientPreview,
 };

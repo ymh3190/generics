@@ -3,23 +3,21 @@
   position: fixed;
   background-color: white;
 
-  .primary {
-    .embedded-list {
+  .embedded-list {
+    display: flex;
+
+    a {
       display: flex;
+      align-items: center;
       padding: 1rem;
 
-      a {
-        display: flex;
-        align-items: center;
-
-        span {
-          padding-left: 1rem;
-        }
+      span {
+        padding-left: 1rem;
       }
     }
+  }
 
-    .embedded-list:last-child {
-      border-top: 1px solid rgba(0, 0, 0, 0.2);
-    }
+  .embedded-list:last-child {
+    border-top: 1px solid rgba(0, 0, 0, 0.2);
   }
 }
