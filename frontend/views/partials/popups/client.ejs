@@ -1,0 +1,97 @@
+<div class="primary client-popup hidden" id="clientPopup">
+    <div class="popup-header">
+        <div class="left">
+            <p>register client</p>
+        </div>
+        <div class="right">
+            <button id='close'>x</button>
+        </div>
+    </div>
+    <div class="popup-body" id="popupBody">
+        <div class="search-create">
+            <div class="left">
+                <div id="createClientPopup" class="create">
+                    <div class="title">
+                        <p>create client</p>
+                    </div>
+                    <form id="createClientForm" class="client-create-form">
+                        <div class="left">
+                            <div class="top">
+                                <div class="input-container">
+                                    <div class="title">
+                                        <span>association</span>
+                                    </div>
+                                    <div class="association">
+                                        <input type="text" id="association" autocomplete="on">
+                                    </div>
+                                </div>
+                                <div class="input-container">
+                                    <div class="title">
+                                        <span>name</span>
+                                    </div>
+                                    <div class="name">
+                                        <input type="text" id="name" autocomplete="on">
+                                    </div>
+                                </div>
+                                <div class="input-container">
+                                    <div class="title">
+                                        <span>telephone</span>
+                                    </div>
+                                    <div class="telephone">
+                                        <input type="text" id="telephone" autocomplete="on">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bottom">
+                                <div class="input-container">
+                                    <div class="title">
+                                        <span>comment</span>
+                                    </div>
+                                    <div class="comment">
+                                        <input type="text" id="comment" autocomplete="on">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="button">
+                            <button id="createClient">create</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="right">
+                <div class="title"></div>
+                <div class="button"></div>
+            </div>
+        </div>
+        <div class="client-containers" id="clients"></div>
+    </div>
+</div>
+<div class="primary work-info-popup hidden" id="workInfoPopup">
+    <div class="popup-header">
+        <div class="left">
+            <p>work-order list</p>
+        </div>
+        <div class="right">
+            <button id="close">x</button>
+        </div>
+    </div>
+    <div class="popup-body">
+        <div class="info-containers" id="infoContainers"></div>
+    </div>
+</div>
+<div class="secondary work-detail-popup hidden" id="workDetailPopup">
+    <div class="popup-header">
+        <div class="left">
+            <p>work-detail list</p>
+        </div>
+        <div class="right">
+            <button id="closeWorkDetailPopup">x</button>
+        </div>
+    </div>
+    <div class="popup-body">
+        <div class="info-container">
+            <div id="workInfos" class="work-infos"></div>
+        </div>
+    </div>
+</div>

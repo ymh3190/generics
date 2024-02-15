@@ -1,0 +1,20 @@
+<div class="status-text" id="associationChip">
+    <select id="associationSelect">
+        <option value="">associations</option>
+        <% for (const association of associations) { %>
+            <option value="<%= association %>">
+                <%= association %>
+            </option>
+            <% } %>
+    </select>
+</div>
+<div class="status-text" id="nameChip">
+    <select id="nameSelect">
+        <option value="">names</option>
+        <% for (const name of names) { %>
+            <option value="<%= name %>">
+                <%= name %>
+            </option>
+            <% } %>
+    </select>
+</div>

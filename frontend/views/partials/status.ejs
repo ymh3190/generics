@@ -1,62 +1,13 @@
 <div class="status" id="status">
     <% if (url==='/work-order' ) { %>
-        <div class="status-text click" id="allChip">
-            <span>all</span>
-        </div>
-        <div class="status-text" id="resolvingChip">
-            <span>resolving</span>
-        </div>
-        <div class="status-text" id="completeChip">
-            <span>complete</span>
-        </div>
-        <div class="status-text" id="urgentChip">
-            <span>urgent</span>
-        </div>
-        <div class="status-text" id="dateChip">
-            <input type="date" max="9999-12-31" id="date">
-        </div>
-        <% } else if (url==='/remnant' ) { %>
-            <div class="status-text" id="itemChip">
-                <select id="itemSelect">
-                    <option value="">items</option>
-                    <% for (const item of items) { %>
-                        <option value="<%= item.id %>">
-                            <%= item.name %>
-                        </option>
-                        <% } %>
-                </select>
-            </div>
-            <div class="status-text" id="zoneChip">
-                <select id="zoneSelect">
-                    <option value="">zones</option>
-                    <% for (const remnantZone of remnantZones) { %>
-                        <option value="<%= remnantZone.id %>">
-                            <%= remnantZone.name %>
-                        </option>
-                        <% } %>
-                </select>
-            </div>
-            <% } else if (url==='/client' ) { %>
-                <div class="status-text" id="associationChip">
-                    <select id="associationSelect">
-                        <option value="">associations</option>
-                        <% for (const association of associations) { %>
-                            <option value="<%= association %>">
-                                <%= association %>
-                            </option>
+        <%- include('statuses/work-order') %>
+
+            <% } else if (url==='/remnant' ) { %>
+                <%- include('statuses/remnant') %>
+
+                    <% } else if (url==='/client' ) { %>
+                        <%- include('statuses/client') %>
+
                             <% } %>
-                    </select>
-                </div>
-                <div class="status-text" id="nameChip">
-                    <select id="nameSelect">
-                        <option value="">names</option>
-                        <% for (const name of names) { %>
-                            <option value="<%= name %>">
-                                <%= name %>
-                            </option>
-                            <% } %>
-                    </select>
-                </div>
-                <% } %>
 </div>
 <script src="/public/js/status.js"></script>
