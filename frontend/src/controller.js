@@ -114,44 +114,6 @@ class RootController {
     });
   }
 
-  // async getImage(req, res) {
-  //   const response = await FetchAPI.get("/images", {
-  //     cookie: req.headers.cookie,
-  //   });
-
-  //   const data = await response.json();
-  //   const images = data.images;
-
-  //   const cookies = response.headers.raw()["set-cookie"];
-  //   if (!cookies) {
-  //     return res.status(200).render("image", { pageTitle: "Generics", images });
-  //   }
-
-  //   const access_token = cookies.find((el) => el.startsWith("access_token"));
-  //   const refresh_token = cookies.find((el) => el.startsWith("refresh_token"));
-  //   res.cookie(access_token);
-  //   res.cookie(refresh_token);
-  //   res.status(200).render("image", { pageTitle: "Generics", images });
-  // }
-
-  // async getWatch(req, res) {
-  //   const { id } = req.params;
-
-  //   let response = await FetchAPI.get(`/videos/${id}`, {
-  //     cookie: req.headers.cookie,
-  //   });
-  //   let data = await response.json();
-  //   const video = data.video;
-
-  //   response = await FetchAPI.get(`/images/${id}`, {
-  //     cookie: req.headers.cookie,
-  //   });
-  //   data = await response.json();
-  //   const image = data.image;
-
-  //   res.status(200).render("watch", { pageTitle: id, image, video });
-  // }
-
   getSignup(req, res) {
     res.status(200).render("signup", { pageTitle: "Sign up" });
   }

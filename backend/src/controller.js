@@ -2,8 +2,6 @@ import bcrypt from "bcrypt";
 import {
   User,
   Token,
-  Image,
-  Video,
   WorkOrder,
   WorkDetail,
   WorkLog,
@@ -16,58 +14,6 @@ import * as CustomError from "./error";
 import memInfo from "./ssh";
 import util from "./util";
 import perf from "./perf";
-
-class ImageController {
-  async create(req, res) {
-    const { id, path } = req.body;
-
-    if (!id || !path) {
-      throw new CustomError.BadRequestError("Provide id and path");
-    }
-
-    await Image.createByManualId({ id, path });
-    res.status(201).end();
-  }
-
-  async select(req, res) {
-    const images = await Image.select({}, { created_at: "desc" });
-    res.status(200).json({ images });
-  }
-
-  async selectById(req, res) {
-    const { id } = req.params;
-
-    const image = await Image.selectById(id);
-    if (!image) {
-      throw new CustomError.NotFoundError("Image not found");
-    }
-    res.status(200).json({ image });
-  }
-}
-
-class VideoController {
-  async create(req, res) {
-    const { id, path } = req.body;
-
-    await Video.createByManualId({ id, path });
-    res.status(201).end();
-  }
-
-  async select(req, res) {
-    const videos = await Video.select({});
-    res.status(200).json({ videos });
-  }
-
-  async selectById(req, res) {
-    const { id } = req.params;
-
-    const video = await Video.selectById(id);
-    if (!video) {
-      throw new CustomError.NotFoundError("video not found");
-    }
-    res.status(200).json({ video });
-  }
-}
 
 class MonitorController {
   memory(req, res) {
@@ -441,8 +387,6 @@ class RemnantDetailController {
   }
 }
 
-export const imageController = new ImageController();
-export const videoController = new VideoController();
 export const monitorController = new MonitorController();
 export const authController = new AuthController();
 export const itemController = new ItemController();

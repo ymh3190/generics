@@ -37,12 +37,6 @@ class Server {
       console.log(`Server is listening port ${port}`);
     });
     socket.connect(http);
-
-    // const http = createServer(this.#app);
-    // socket.connect(http);
-    // http.listen(port, () => {
-    //   console.log(`Server is listening port ${port}`);
-    // });
   }
 
   #setConfig() {

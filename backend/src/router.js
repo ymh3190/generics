@@ -2,8 +2,6 @@ import express from "express";
 import {
   monitorController,
   authController,
-  imageController,
-  videoController,
   workOrderController,
   workDetailController,
   workLogController,
@@ -18,46 +16,6 @@ import middleware from "./middleware";
 class Router {
   constructor() {
     this.router = express.Router();
-  }
-}
-
-class ImageRouter extends Router {
-  constructor() {
-    super();
-
-    this.router
-      .route("/")
-      .post(imageController.create)
-      .get(
-        middleware.authenticateUser,
-        middleware.authorizePermissions("admin"),
-        imageController.select
-      );
-
-    this.router.route("/:id(\\d|\\w{32})").get(imageController.selectById);
-  }
-}
-
-class VideoRouter extends Router {
-  constructor() {
-    super();
-
-    this.router
-      .route("/")
-      .post(videoController.create)
-      .get(
-        middleware.authenticateUser,
-        middleware.authorizePermissions("admin"),
-        videoController.select
-      );
-
-    this.router
-      .route("/:id(\\d|\\w{32})")
-      .get(
-        middleware.authenticateUser,
-        middleware.authorizePermissions("admin"),
-        videoController.selectById
-      );
   }
 }
 
@@ -364,8 +322,6 @@ class RemnantDetailRouter extends Router {
 }
 
 export const { router: monitorRouter } = new MonitorRouter();
-export const { router: imageRouter } = new ImageRouter();
-export const { router: videoRouter } = new VideoRouter();
 export const { router: authRouter } = new AuthRouter();
 export const { router: clientRouter } = new ClientRouter();
 export const { router: itemRouter } = new ItemRouter();

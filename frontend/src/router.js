@@ -38,13 +38,6 @@ class RootRouter extends Router {
       rootController.getRemnant
     );
 
-    // this.router.get(
-    //   "/image",
-    //   middleware.authenticateUser,
-    //   middleware.authorizePermissions("admin"),
-    //   rootController.getImage
-    // );
-
     this.router.get(
       "/signin",
       middleware.unauthenticateUser,
@@ -56,13 +49,6 @@ class RootRouter extends Router {
       middleware.unauthenticateUser,
       rootController.getSignup
     );
-
-    // this.router.get(
-    //   "/watch/:id(\\d|\\w{32})",
-    //   middleware.authenticateUser,
-    //   middleware.authorizePermissions("admin"),
-    //   rootController.getWatch
-    // );
 
     this.router.get(
       "/client",
