@@ -46,14 +46,12 @@ const closeUrgentPopupDOM = document.getElementById("closeUrgentPopup");
 const updatedUrgentDOM = document.getElementById("updatedUrgent");
 const workDetailPopupDOM = document.getElementById("workDetailPopup");
 const closeWorkDetailPopupDOM = document.getElementById("closeWorkDetailPopup");
-const itemDOM = document.getElementById("item");
-const depthDOM = document.getElementById("depth");
-const widthDOM = document.getElementById("width");
-const lengthDOM = document.getElementById("length");
-const quantityDOM = document.getElementById("quantity");
-const remnantDOM = document.getElementById("remnant");
-const updateWorkDetailDOM = document.getElementById("updateWorkDetail");
-// const columnsDOM = document.getElementById("columns");
+const updatedItemDOM = document.getElementById("updatedItem");
+const updatedDepthDOM = document.getElementById("updatedDepth");
+const updatedWidthDOM = document.getElementById("updatedWidth");
+const updatedLengthDOM = document.getElementById("updatedLength");
+const updatedQuantityDOM = document.getElementById("updatedQuantity");
+const updatedRemnantDOM = document.getElementById("updatedRemnant");
 const commentPopupDOM = document.getElementById("commentPopup");
 const closeCommentPopupDOM = document.getElementById("closeCommentPopup");
 const updateCommentFormDOM = document.getElementById("updateCommentForm");
@@ -184,6 +182,7 @@ async function clientInfoUpdateHandler() {
           const telephoneDOM = clientInfoDOM.querySelector("#telephone");
           telephoneDOM.textContent = data.client.telephone;
           const updatedClientDOM = workInfoPopupDOM.querySelector("#client");
+          updatedClientDOM.dataset.is_updated = true;
           updatedClientDOM.dataset.id = data.client.id;
 
           workInfoPopupDOM.classList.remove("blur");
@@ -209,6 +208,7 @@ async function urgentInfoUpdateHandler() {
 
 function commentInfoHandler() {
   isUpdate = true;
+  commentInfoDOM.dataset.is_updated = true;
 
   commentPopupDOM.classList.remove("hidden");
 }
@@ -623,11 +623,10 @@ async function updateHandler(event) {
 
   const workOrderId = this.dataset.id;
 
-  let workOrder;
   let response = await FetchAPI.get(`/work-orders/${workOrderId}`);
   if (response) {
     const data = await response.json();
-    workOrder = data.workOrder;
+    const workOrder = data.workOrder;
 
     let html = `
     <div>
@@ -696,20 +695,22 @@ async function updateHandler(event) {
     }
     workInfosDOM.textContent = "";
     workInfosDOM.insertAdjacentHTML("beforeend", html);
+
     const workInfoDOMs = workInfosDOM.querySelectorAll("#workInfo");
     workInfoDOMs.forEach((workInfoDOM, i) => {
       workInfoDOM.classList.add("update");
 
       workInfoDOM.addEventListener("click", () => {
         isUpdate = true;
+        updateWorkDetailFormDOM.dataset.id = workInfoDOM.dataset.work_detail_id;
 
         workDetailPopupDOM.classList.remove("hidden");
         workInfoPopupDOM.classList.remove("clean");
         workInfoPopupDOM.classList.add("blur");
 
         const item = workInfoDOM.querySelector("#item").textContent;
-        itemDOM.value = item;
-        itemDOM.addEventListener("focus", async () => {
+        updatedItemDOM.value = item;
+        updatedItemDOM.addEventListener("focus", async () => {
           itemsPopupDOM.classList.remove("hidden");
           workDetailPopupDOM.classList.add("hidden");
 
@@ -731,7 +732,8 @@ async function updateHandler(event) {
                 itemsPopupDOM.classList.add("hidden");
 
                 const itemName = itemDOM.querySelector("#name").textContent;
-                console.log(itemName);
+                updatedItemDOM.value = itemName;
+                updatedItemDOM.dataset.id = itemDOM.dataset.id;
               });
             });
           }
@@ -744,8 +746,8 @@ async function updateHandler(event) {
           <input type="text" value='${depth}'>
         </div>
         `;
-        depthDOM.textContent = "";
-        depthDOM.insertAdjacentHTML("beforeend", html);
+        updatedDepthDOM.textContent = "";
+        updatedDepthDOM.insertAdjacentHTML("beforeend", html);
 
         const width = workInfoDOM.querySelector("#width").textContent;
         html = `
@@ -754,8 +756,8 @@ async function updateHandler(event) {
           <input type="text" value='${width}'>
         </div>
         `;
-        widthDOM.textContent = "";
-        widthDOM.insertAdjacentHTML("beforeend", html);
+        updatedWidthDOM.textContent = "";
+        updatedWidthDOM.insertAdjacentHTML("beforeend", html);
 
         const length = workInfoDOM.querySelector("#length").textContent;
         html = `
@@ -764,8 +766,8 @@ async function updateHandler(event) {
           <input type="text" value='${length}'>
         </div>
         `;
-        lengthDOM.textContent = "";
-        lengthDOM.insertAdjacentHTML("beforeend", html);
+        updatedLengthDOM.textContent = "";
+        updatedLengthDOM.insertAdjacentHTML("beforeend", html);
 
         const quantity = workInfoDOM.querySelector("#quantity").textContent;
         html = `
@@ -774,8 +776,8 @@ async function updateHandler(event) {
           <input type="text" value='${quantity}'>
         </div>
         `;
-        quantityDOM.textContent = "";
-        quantityDOM.insertAdjacentHTML("beforeend", html);
+        updatedQuantityDOM.textContent = "";
+        updatedQuantityDOM.insertAdjacentHTML("beforeend", html);
 
         html = `
         <span>remnant</span>
@@ -783,9 +785,8 @@ async function updateHandler(event) {
           <input type="text">
         </div>
         `;
-        remnantDOM.textContent = "";
-        remnantDOM.insertAdjacentHTML("beforeend", html);
-        // columnsDOM.dataset.index = i;
+        updatedRemnantDOM.textContent = "";
+        updatedRemnantDOM.insertAdjacentHTML("beforeend", html);
       });
     });
   }
@@ -803,18 +804,64 @@ async function updateHandler(event) {
   updateWorkInfoDOM.addEventListener("click", async (event) => {
     event.stopPropagation();
 
-    // TODO
-    // if (!isUpdate) {
-    //   alert("Updated not found");
-    //   return;
-    // }
+    if (!isUpdate) {
+      alert("Updated not found");
+      return;
+    }
+
     const updatedClientDOM = workInfoPopupDOM.querySelector("#client");
-    const comment = commentInfoDOM.querySelector("span").textContent;
-    const client_id = updatedClientDOM.dataset.id;
+    const updatedClient = updatedClientDOM.dataset.is_updated;
 
-    // await FetchAPI.patch(`/work-orders/${workOrderId}`);
+    const workOrder = { id: workOrderId, payload: {} };
+    if (updatedClient === "true") {
+      workOrder.payload.client_id = updatedClientDOM.dataset.id;
+    }
 
-    console.log(client_id, updatedUrgentDOM.checked, comment);
+    const updatedComment = commentInfoDOM.dataset.is_updated;
+    if (updatedComment === "true") {
+      workOrder.payload.comment =
+        commentInfoDOM.querySelector("span").textContent;
+    }
+
+    const updatedUrgent = urgentInfoDOM.dataset.is_updated;
+    if (updatedUrgent === "true") {
+      let isUrgent;
+
+      if (urgentInfoDOM.dataset.is_urgent === "true") {
+        isUrgent = true;
+      }
+      if (urgentInfoDOM.dataset.is_urgent === "false") {
+        isUrgent = false;
+      }
+      workOrder.payload.is_urgent = isUrgent;
+    }
+
+    const workDetails = [];
+    const workInfoDOMs = workInfosDOM.querySelectorAll("#workInfo");
+    for (const workInfoDOM of workInfoDOMs) {
+      if (workInfoDOM.dataset.is_updated === "true") {
+        const workDetail = { id: workInfoDOM.dataset.work_detail_id };
+        workDetail.item_id = workInfoDOM.querySelector("#item").dataset.id;
+        workDetail.depth = workInfoDOM.querySelector("#depth").textContent;
+        workDetail.length = workInfoDOM.querySelector("#length").textContent;
+        workDetail.quantity =
+          workInfoDOM.querySelector("#quantity").textContent;
+        // workDetail.remnant = workInfoDOM.querySelector("#remnant").textContent;
+        workDetails.push(workDetail);
+      }
+    }
+
+    const response = await FetchAPI.patch(
+      `/work-orders/${workOrder.id}`,
+      workOrder.payload
+    );
+    if (response) {
+      // TODO
+      // work-order
+    }
+
+    // TODO
+    // work-details
   });
 }
 
@@ -951,6 +998,8 @@ const closeUrgentPopupHandler = () => {
 const updatedUrgentHandler = () => {
   const spanDOM = urgentInfoDOM.querySelector("span");
   spanDOM.textContent = updatedUrgentDOM.checked ? "urgent" : "";
+  urgentInfoDOM.dataset.is_updated = true;
+  urgentInfoDOM.dataset.is_urgent = updatedUrgentDOM.checked;
 
   workInfoPopupDOM.classList.remove("blur");
 
@@ -983,66 +1032,80 @@ const updateWorkDetailFormHandler = (event) => {
 
   workInfoPopupDOM.classList.remove("blur");
 
-  const itemInput = itemDOM.querySelector("input");
-  const item = itemInput.value;
-  const depthInput = depthDOM.querySelector("input");
-  const depth = depthInput.value;
-  const widthInput = widthDOM.querySelector("input");
-  const width = widthInput.value;
-  const lengthInput = lengthDOM.querySelector("input");
-  const length = lengthInput.value;
-  const quantityInput = quantityDOM.querySelector("input");
-  const quantity = quantityInput.value;
-  const remnantInput = remnantDOM.querySelector("input");
-  const remnant = remnantInput.value;
+  const item = updatedItemDOM.value;
+  const depth = updatedDepthDOM.value;
+  const width = updatedWidthDOM.value;
+  const length = updatedLengthDOM.value;
+  const quantity = updatedQuantityDOM.value;
+  const remnant = updatedRemnantDOM.value;
 
   if (!item) {
     alert("Item not found");
-    itemInput.focus();
+    updatedItemDOM.focus();
     return;
   }
 
   if (!depth) {
     alert("Depth not found");
-    depthInput.focus();
+    updatedDepthDOM.focus();
     return;
   }
 
   if (!width) {
     alert("Width not found");
-    widthInput.focus();
+    updatedWidthDOM.focus();
     return;
   }
 
   if (!length) {
     alert("Length not found");
-    lengthInput.focus();
+    updatedLengthDOM.focus();
     return;
   }
 
   if (!quantity) {
     alert("quantity not found");
-    quantityInput.focus();
+    updatedQuantityDOM.focus();
     return;
   }
 
   // 잔재
   // if (!remnant) {
-  //   remnantInput.focus();
+  //   updatedRemnantDOM.focus();
   //   alert("Remnant not found");
   //   return;
   // }
-  // const index = columnsDOM.dataset.index;
   const workInfoDOMs = workInfosDOM.querySelectorAll("#workInfo");
-  // workInfoDOMs[index].querySelector("#item").textContent = item;
-  // workInfoDOMs[index].querySelector("#depth").textContent = depth;
-  // workInfoDOMs[index].querySelector("#width").textContent = width;
-  // workInfoDOMs[index].querySelector("#length").textContent = length;
-  // workInfoDOMs[index].querySelector("#quantity").textContent = quantity;
-  // workInfoDOMs[index].querySelector("#remnant").textContent = remnant;
+  workInfoDOMs.forEach((workInfoDOM) => {
+    // TODO
+    const workDetailId = updateWorkDetailFormDOM.dataset.id;
+    if (workInfoDOM.dataset.work_detail_id === workDetailId) {
+      const itemDOM = workInfoDOM.querySelector("#item");
+      itemDOM.textContent = updatedItemDOM.value;
+      itemDOM.dataset.id = updatedItemDOM.dataset.id;
+
+      const depthDOM = workInfoDOM.querySelector("#depth");
+      depthDOM.textContent = updatedDepthDOM.value;
+
+      const widthDOM = workInfoDOM.querySelector("#width");
+      widthDOM.textContent = updatedWidthDOM.value;
+
+      const lengthDOM = workInfoDOM.querySelector("#length");
+      lengthDOM.textContent = updatedLengthDOM.value;
+
+      const quantityDOM = workInfoDOM.querySelector("#quantity");
+      quantityDOM.textContent = updatedQuantityDOM.value;
+
+      // 잔재
+      // const remnantDOM = workInfoDOM.querySelector("#remnant");
+      // remnantDOM.textContent = updatedRemnantDOM.value;
+
+      workInfoDOM.classList.add("updated");
+      workInfoDOM.dataset.is_updated = true;
+    }
+  });
 
   workDetailPopupDOM.classList.add("hidden");
-  // workInfoDOMs[index].classList.add("updated");
 };
 
 updateWorkDetailFormDOM.addEventListener("submit", updateWorkDetailFormHandler);
