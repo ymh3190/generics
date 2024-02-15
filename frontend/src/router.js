@@ -38,23 +38,31 @@ class RootRouter extends Router {
       rootController.getRemnant
     );
 
-    this.router.get(
-      "/image",
-      middleware.authenticateUser,
-      middleware.authorizePermissions("admin"),
-      rootController.getImage
-    );
-
-    this.router.get("/signin", rootController.getSignin);
-
-    this.router.get("/signup", rootController.getSignup);
+    // this.router.get(
+    //   "/image",
+    //   middleware.authenticateUser,
+    //   middleware.authorizePermissions("admin"),
+    //   rootController.getImage
+    // );
 
     this.router.get(
-      "/watch/:id(\\d|\\w{32})",
-      middleware.authenticateUser,
-      middleware.authorizePermissions("admin"),
-      rootController.getWatch
+      "/signin",
+      middleware.unauthenticateUser,
+      rootController.getSignin
     );
+
+    this.router.get(
+      "/signup",
+      middleware.unauthenticateUser,
+      rootController.getSignup
+    );
+
+    // this.router.get(
+    //   "/watch/:id(\\d|\\w{32})",
+    //   middleware.authenticateUser,
+    //   middleware.authorizePermissions("admin"),
+    //   rootController.getWatch
+    // );
 
     this.router.get(
       "/client",
@@ -75,9 +83,17 @@ class AuthRouter extends Router {
   constructor() {
     super();
 
-    this.router.post("/signup", authController.signup);
+    this.router.post(
+      "/signup",
+      middleware.unauthenticateUser,
+      authController.signup
+    );
 
-    this.router.post("/signin", authController.signin);
+    this.router.post(
+      "/signin",
+      middleware.unauthenticateUser,
+      authController.signin
+    );
 
     this.router.delete(
       "/signout",

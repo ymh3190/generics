@@ -35,9 +35,27 @@ class Middleware {
     };
   }
 
+  unauthenticateUser(req, res, next) {
+    try {
+      const cookies = req.headers.cookie.split("; ");
+
+      const access_token = cookies.find((e) => e.startsWith("access_token"));
+      if (access_token) {
+        return res.redirect("/");
+      }
+
+      const refresh_token = cookies.find((e) => e.startsWith("refresh_token"));
+      if (refresh_token) {
+        return res.redirect("/");
+      }
+    } catch (error) {}
+    next();
+  }
+
   notFound(req, res) {
-    const message = "Route not found";
-    return res.status(404).render("error", { pageTitle: "404", message });
+    return res
+      .status(404)
+      .render("error", { pageTitle: "404", message: "Route not found" });
   }
 
   errorHandler(err, req, res, next) {

@@ -1,7 +1,5 @@
 import FetchAPI from "./fetch-api";
 import * as CustomError from "./error";
-import util from "./util";
-import perf from "./perf";
 import orderer from "./alarm";
 
 class RootController {
@@ -31,9 +29,10 @@ class RootController {
         httpOnly: true,
         expires: new Date(Date.now()),
       });
-      return res
-        .status(error.statusCode)
-        .render("error", { pageTitle: "404", message: error.message });
+      return res.status(error.statusCode).render("error", {
+        pageTitle: error.statusCode,
+        message: error.message,
+      });
     }
 
     // const response = await FetchAPI.get("/work-orders", {
@@ -61,23 +60,37 @@ class RootController {
   }
 
   async getRemnant(req, res) {
-    let response = await FetchAPI.get("/remnant-details", {
-      cookie: req.headers.cookie,
-    });
-    let data = await response.json();
-    const remnantDetails = data.remnantDetails;
+    let response;
+    let remnantDetails, items, remnantZones;
 
-    response = await FetchAPI.get("/items", {
-      cookie: req.headers.cookie,
-    });
-    data = await response.json();
-    const items = data.items;
+    try {
+      response = await FetchAPI.get("/remnant-details", {
+        cookie: req.headers.cookie,
+      });
+      let data = await response.json();
+      remnantDetails = data.remnantDetails;
 
-    response = await FetchAPI.get("/remnant-zones", {
-      cookie: req.headers.cookie,
-    });
-    data = await response.json();
-    const remnantZones = data.remnantZones;
+      response = await FetchAPI.get("/items", {
+        cookie: req.headers.cookie,
+      });
+      data = await response.json();
+      items = data.items;
+
+      response = await FetchAPI.get("/remnant-zones", {
+        cookie: req.headers.cookie,
+      });
+      data = await response.json();
+      remnantZones = data.remnantZones;
+    } catch (error) {
+      res.cookie("refresh_token", "signout", {
+        httpOnly: true,
+        expires: new Date(Date.now()),
+      });
+      return res.status(error.statusCode).render("error", {
+        pageTitle: error.statusCode,
+        message: error.message,
+      });
+    }
 
     const cookies = response.headers.raw()["set-cookie"];
     if (!cookies) {
@@ -101,62 +114,68 @@ class RootController {
     });
   }
 
-  async getImage(req, res) {
-    const response = await FetchAPI.get("/images", {
-      cookie: req.headers.cookie,
-    });
+  // async getImage(req, res) {
+  //   const response = await FetchAPI.get("/images", {
+  //     cookie: req.headers.cookie,
+  //   });
 
-    const data = await response.json();
-    const images = data.images;
+  //   const data = await response.json();
+  //   const images = data.images;
 
-    const cookies = response.headers.raw()["set-cookie"];
-    if (!cookies) {
-      return res.status(200).render("image", { pageTitle: "Generics", images });
-    }
+  //   const cookies = response.headers.raw()["set-cookie"];
+  //   if (!cookies) {
+  //     return res.status(200).render("image", { pageTitle: "Generics", images });
+  //   }
 
-    const access_token = cookies.find((el) => el.startsWith("access_token"));
-    const refresh_token = cookies.find((el) => el.startsWith("refresh_token"));
-    res.cookie(access_token);
-    res.cookie(refresh_token);
-    res.status(200).render("image", { pageTitle: "Generics", images });
-  }
+  //   const access_token = cookies.find((el) => el.startsWith("access_token"));
+  //   const refresh_token = cookies.find((el) => el.startsWith("refresh_token"));
+  //   res.cookie(access_token);
+  //   res.cookie(refresh_token);
+  //   res.status(200).render("image", { pageTitle: "Generics", images });
+  // }
 
-  async getWatch(req, res) {
-    const { id } = req.params;
+  // async getWatch(req, res) {
+  //   const { id } = req.params;
 
-    let response = await FetchAPI.get(`/videos/${id}`, {
-      cookie: req.headers.cookie,
-    });
-    let data = await response.json();
-    const video = data.video;
+  //   let response = await FetchAPI.get(`/videos/${id}`, {
+  //     cookie: req.headers.cookie,
+  //   });
+  //   let data = await response.json();
+  //   const video = data.video;
 
-    response = await FetchAPI.get(`/images/${id}`, {
-      cookie: req.headers.cookie,
-    });
-    data = await response.json();
-    const image = data.image;
+  //   response = await FetchAPI.get(`/images/${id}`, {
+  //     cookie: req.headers.cookie,
+  //   });
+  //   data = await response.json();
+  //   const image = data.image;
 
-    res.status(200).render("watch", { pageTitle: id, image, video });
-  }
+  //   res.status(200).render("watch", { pageTitle: id, image, video });
+  // }
 
   getSignup(req, res) {
-    if (req.headers.cookie) {
-      return res.redirect("/");
-    }
     res.status(200).render("signup", { pageTitle: "Sign up" });
   }
 
   getSignin(req, res) {
-    if (req.headers.cookie) {
-      return res.redirect("/");
-    }
     res.status(200).render("signin", { pageTitle: "Sign in" });
   }
 
   async getClient(req, res) {
-    const response = await FetchAPI.get("/clients", {
-      cookie: req.headers.cookie,
-    });
+    let response;
+    try {
+      response = await FetchAPI.get("/clients", {
+        cookie: req.headers.cookie,
+      });
+    } catch (error) {
+      res.cookie("refresh_token", "signout", {
+        httpOnly: true,
+        expires: new Date(Date.now()),
+      });
+      return res.status(error.statusCode).render("error", {
+        pageTitle: error.statusCode,
+        message: error.message,
+      });
+    }
 
     const data = await response.json();
     const clients = data.clients;

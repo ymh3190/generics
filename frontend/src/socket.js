@@ -1,36 +1,14 @@
 import { WebSocketServer } from "ws";
-import * as CustomError from "./error";
-import util from "./util";
 import orderer from "./alarm";
 
 class Socket {
   #wss;
 
   connect(server) {
-    this.#wss = new WebSocketServer({
-      server,
-      perMessageDeflate: {
-        zlibDeflateOptions: {
-          chunkSize: 1024,
-          memLevel: 7,
-          level: 3,
-        },
-        zlibInflateOptions: {
-          chunkSize: 10 * 1024,
-        },
-        clientNoContextTakeover: true,
-        serverNoContextTakeover: true,
-        serverMaxWindowBits: 10,
-        concurrencyLimit: 10,
-        threshold: 1024,
-      },
-    });
+    this.#wss = new WebSocketServer({ server });
 
     this.#wss.on("connection", (ws, req) => {
       orderer.addField(ws);
-      // ws['str'] = ''
-      // socket is object
-      console.log("connection success");
 
       ws.on("error", console.error);
 
@@ -40,34 +18,7 @@ class Socket {
 
       ws.on("close", () => {
         orderer.removeField(ws);
-        console.log("connection close");
       });
-
-      // setInterval(() => {
-      //   if (placeOrder.event) {
-      //     ws.send(placeOrder.event);
-      //     this.wss.emit("place", placeOrder.event);
-      //     placeOrder.event = "";
-      //   }
-      // }, 5000);
-
-      // TODO: authentication logic
-      // try {
-      //   const cookies = req.headers.cookie.split("; ");
-
-      //   const access_token = cookies.find((e) => e.startsWith("access_token"));
-      //   if (access_token) {
-      //     const payload = util.parseToken(access_token);
-      //     return;
-      //   }
-
-      //   const refresh_token = cookies.find((e) =>
-      //     e.startsWith("refresh_token")
-      //   );
-      //   const payload = util.parseToken(refresh_token);
-      // } catch (error) {
-      //   ws.close();
-      // }
     });
   }
 }

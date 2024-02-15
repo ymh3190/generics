@@ -125,10 +125,6 @@ function bodyHandler(event) {
   }
 
   bodyDOM.removeEventListener("click", bodyHandler);
-
-  popupDOM.classList.add("hidden");
-  workDetailPopupDOM.classList.add("hidden");
-
   popupDOM.classList.remove("blur");
   workDetailPopupDOM.classList.remove("blur");
   navDOM.classList.remove("blur");
@@ -141,6 +137,9 @@ function bodyHandler(event) {
   urgentInfoDOM.classList.remove("update");
   const commentInfoDOM = workDetailPopupDOM.querySelector("#commentInfo");
   commentInfoDOM.classList.remove("update");
+
+  popupDOM.classList.add("hidden");
+  workDetailPopupDOM.classList.add("hidden");
 }
 
 async function clientInfoUpdateHandler() {
@@ -609,7 +608,7 @@ async function updateHandler(event) {
   });
 
   const paragraphDOM = workDetailPopupDOM.querySelector("#paragraph");
-  paragraphDOM.textContent = "update work info";
+  paragraphDOM.textContent = "update work-info";
 
   const workOrderId = this.dataset.id;
 
@@ -829,16 +828,16 @@ const createClientFormHandler = async (event) => {
     comment: comment ? comment : "",
   });
   if (response) {
-    associationDOM.value = "";
-    nameDOM.value = "";
-    telephoneDOM.value = "";
-    clientCommentDOM.value = "";
-
     const data = await response.json();
     const html = htmls.clientList(data.client);
     clientsDOM.insertAdjacentHTML("afterbegin", html);
     const clientDOM = clientsDOM.querySelector("#client:first-child");
     clientDOM.addEventListener("click", clickClientHandler);
+
+    associationDOM.value = "";
+    nameDOM.value = "";
+    telephoneDOM.value = "";
+    clientCommentDOM.value = "";
   }
 };
 
@@ -881,9 +880,9 @@ const workDetailPopupHandler = (event) => {
 const docsHandler = (event) => {
   const isESC = event.key === "Escape";
   if (isESC) {
-    bodyDOM.removeEventListener("click", bodyHandler);
     isUpdate = false;
 
+    bodyDOM.removeEventListener("click", bodyHandler);
     popupDOM.classList.remove("blur");
     workDetailPopupDOM.classList.remove("blur");
     navDOM.classList.remove("blur");

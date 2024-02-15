@@ -11,11 +11,9 @@ class Util {
   }
 
   parseToken(token) {
-    return JSON.parse(
-      Buffer.from(token.match(/\.(\w+)\./g).join(""), "base64").toString(
-        "utf-8"
-      )
-    );
+    const decoded = Buffer.from(token.match(/\.(\w+)\./g).join(""), "base64");
+    const payload = JSON.parse(decoded.toString("utf-8"));
+    return payload;
   }
 }
 

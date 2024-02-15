@@ -1,3 +1,5 @@
+const OPEN = 1;
+
 class Orderer {
   #fields;
 
@@ -5,17 +7,31 @@ class Orderer {
     this.#fields = [];
   }
 
+  /**
+   *
+   * @param {WebSocket} field
+   */
   addField(field) {
     this.#fields.push(field);
   }
 
+  /**
+   *
+   * @param {WebSocket} field
+   */
   removeField(field) {
     return this.#fields.filter((ws) => ws !== field);
   }
 
+  /**
+   *
+   * @param {string} event
+   */
   notifyFields(event) {
     this.#fields.forEach((ws) => {
-      ws.send(event);
+      if (ws.readyState === OPEN) {
+        ws.send(event);
+      }
     });
   }
 }

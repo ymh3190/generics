@@ -1,12 +1,12 @@
-const webSocket = new WebSocket(`ws://${window.location.host}/field`);
-webSocket.onopen = () => {
+const ws = new WebSocket(`ws://${window.location.host}/field`);
+ws.onopen = () => {
   console.log("connection success");
 
-  webSocket.onmessage = (event) => {
+  ws.onmessage = (event) => {
     console.log(event.data);
   };
 
-  webSocket.onclose = () => {
+  ws.onclose = () => {
     console.log("connection close");
   };
 };
