@@ -75,13 +75,13 @@
         </div>
     </div>
 </div>
-<div class="primary work-detail-popup hidden" id="workDetailPopup">
+<div class="primary work-info-popup hidden" id="workInfoPopup">
     <div class="popup-header">
         <div class="left">
             <p id="paragraph">work info</p>
         </div>
         <div class="right">
-            <button id="closeWorkDetailPopup">x</button>
+            <button id="closeWorkInfoPopup">x</button>
         </div>
     </div>
     <div class="popup-body">
@@ -94,6 +94,7 @@
             <div id="workInfos" class="work-infos"></div>
             <div id="commentInfo" class="comment-info"></div>
         </div>
+        <div id="buttonOption" class="button-option"></div>
     </div>
 </div>
 <div class="secondary clients-popup hidden" id="clientsPopup">
@@ -241,7 +242,7 @@
 <div class="tertiary urgent-popup hidden" id="urgentPopup">
     <div class="popup-header">
         <div class="left">
-            <p>update urgent</p>
+            <p>update phase</p>
         </div>
         <div class="right">
             <button id='closeUrgentPopup'>x</button>
@@ -258,36 +259,109 @@
         </div>
     </div>
 </div>
-<div class="tertiary update-popup hidden" id="updateWorkDetailPopup">
+<div class="tertiary work-detail-popup hidden" id="workDetailPopup">
     <div class="popup-header">
         <div class="left">
-            <p>update work-detail</p>
+            <p>update phase</p>
         </div>
         <div class="right">
-            <button id='closeUpdateWorkDetailPopup'>x</button>
+            <button id='closeWorkDetailPopup'>x</button>
         </div>
     </div>
     <div class="popup-body">
-        <div class="container-middle">
-            <div class="title">
-                <span>work-detail</span>
+        <form id="updateWorkDetailForm" class="update-work-detail-form">
+            <div class="left">
+                <div class="input-containers">
+                    <div class="input-container">
+                        <div class="title">
+                            <span>item</span>
+                        </div>
+                        <div>
+                            <input type="text" id="item">
+                        </div>
+                    </div>
+                    <div class="input-container">
+                        <div class="title">
+                            <span>depth</span>
+                        </div>
+                        <div>
+                            <input type="text" id="depth">
+                        </div>
+                    </div>
+                    <div class="input-container">
+                        <div class="title">
+                            <span>width</span>
+                        </div>
+                        <div>
+                            <input type="text" id="width">
+                        </div>
+                    </div>
+                    <div class="input-container">
+                        <div class="title">
+                            <span>length</span>
+                        </div>
+                        <div>
+                            <input type="text" id="length">
+                        </div>
+                    </div>
+                    <div class="input-container">
+                        <div class="title">
+                            <span>quantity</span>
+                        </div>
+                        <div>
+                            <input type="text" id="quantity">
+                        </div>
+                    </div>
+                    <div class="input-container">
+                        <div class="title">
+                            <span>remnant</span>
+                        </div>
+                        <div>
+                            <input type="text" id="remnant">
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="columns" id="columns">
-                <div class="column" id="item"></div>
-                <div class="column" id="depth"></div>
-                <div class="column" id="width"></div>
-                <div class="column" id="length"></div>
-                <div class="column" id="quantity"></div>
-                <div class="column" id="remnant"></div>
-                <div class="column">
+            <div class="right">
+                <span>update</span>
+                <div class="update-row">
+                    <button id="updateWorkDetail">
+                        <i class="fa-solid fa-scissors"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="tertiary comment-popup hidden" id="commentPopup">
+    <div class="popup-header">
+        <div class="left">
+            <p>update phase</p>
+        </div>
+        <div class="right">
+            <button id='closeCommentPopup'>x</button>
+        </div>
+    </div>
+    <div class="popup-body">
+        <form id="updateCommentForm">
+            <div class="form-container">
+                <div class="left">
+                    <div class="input-container">
+                        <span>comment</span>
+                        <div class="comment">
+                            <input type="text" id="comment" autocomplete="on">
+                        </div>
+                    </div>
+                </div>
+                <div class="right">
                     <span>update</span>
                     <div class="update-row">
-                        <button id="updateWorkDetail">
+                        <button class="button">
                             <i class="fa-solid fa-scissors"></i>
                         </button>
                     </div>
                 </div>
             </div>
-        </div>
+        </form>
     </div>
 </div>

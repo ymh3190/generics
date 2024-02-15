@@ -94,14 +94,14 @@ const createItemFormHandler = async (event) => {
     const commentDOM = document.getElementById("comment");
     const clientsPopupDOM = document.getElementById("clientsPopup");
     const workOrderPopupDOM = document.getElementById("workOrderPopup");
-    const workDetailPopupDOM = document.getElementById("workDetailPopup");
+    const workInfoPopupDOM = document.getElementById("workInfoPopup");
 
     const createWorkOrderHandler = () => {
       if (popupDOM.classList.contains("hidden")) {
         popupDOM.classList.remove("hidden");
         popupDOM.classList.remove("blur");
         workOrderPopupDOM.classList.remove("hidden");
-        workDetailPopupDOM.classList.remove("blur");
+        workInfoPopupDOM.classList.remove("blur");
         urgentDOM.checked = false;
         clientInputDOM.value = "";
         commentDOM.value = "";
@@ -151,7 +151,7 @@ const createItemFormHandler = async (event) => {
   if (createClientDOM) {
     const clientPopupDOM = document.getElementById("clientPopup");
     const clientsDOM = document.getElementById("clients");
-    const workDetailPopupDOM = document.getElementById("workDetailPopup");
+    const workInfoPopupDOM = document.getElementById("workInfoPopup");
 
     const createClientHandler = () => {
       if (popupDOM.classList.contains("hidden")) {
@@ -167,7 +167,7 @@ const createItemFormHandler = async (event) => {
 
       popupDOM.classList.add("hidden");
       clientPopupDOM.classList.add("hidden");
-      workDetailPopupDOM.classList.add("hidden");
+      workInfoPopupDOM.classList.add("hidden");
     };
 
     createClientDOM.addEventListener("click", createClientHandler);

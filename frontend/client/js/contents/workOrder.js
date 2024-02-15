@@ -21,8 +21,8 @@ const popupDOM = document.getElementById("popup");
 
 const contentDOM = document.getElementById("content");
 
-const workDetailPopupDOM = document.getElementById("workDetailPopup");
-const closeWorkDetailPopupDOM = document.getElementById("closeWorkDetailPopup");
+const workInfoPopupDOM = document.getElementById("workInfoPopup");
+const closeWorkInfoPopupDOM = document.getElementById("closeWorkInfoPopup");
 const workInfosDOM = document.getElementById("workInfos");
 const bodyDOM = document.querySelector("body");
 const newItemDOM = document.getElementById("newItem");
@@ -44,12 +44,8 @@ const headerDOM = document.getElementById("header");
 const urgentPopupDOM = document.getElementById("urgentPopup");
 const closeUrgentPopupDOM = document.getElementById("closeUrgentPopup");
 const updatedUrgentDOM = document.getElementById("updatedUrgent");
-const updateWorkDetailPopupDOM = document.getElementById(
-  "updateWorkDetailPopup"
-);
-const closeUpdateWorkDetailPopupDOM = document.getElementById(
-  "closeUpdateWorkDetailPopup"
-);
+const workDetailPopupDOM = document.getElementById("workDetailPopup");
+const closeWorkDetailPopupDOM = document.getElementById("closeWorkDetailPopup");
 const itemDOM = document.getElementById("item");
 const depthDOM = document.getElementById("depth");
 const widthDOM = document.getElementById("width");
@@ -57,12 +53,21 @@ const lengthDOM = document.getElementById("length");
 const quantityDOM = document.getElementById("quantity");
 const remnantDOM = document.getElementById("remnant");
 const updateWorkDetailDOM = document.getElementById("updateWorkDetail");
-const columnsDOM = document.getElementById("columns");
-//#endregion
+// const columnsDOM = document.getElementById("columns");
+const commentPopupDOM = document.getElementById("commentPopup");
+const closeCommentPopupDOM = document.getElementById("closeCommentPopup");
+const updateCommentFormDOM = document.getElementById("updateCommentForm");
+const urgentInfoDOM = document.getElementById("urgentInfo");
+const commentInfoDOM = document.getElementById("commentInfo");
+const completeInfoDOM = document.getElementById("completeInfo");
+const buttonOptionDOM = document.getElementById("buttonOption");
+const clientInfoDOM = document.getElementById("clientInfo");
+const updateWorkDetailFormDOM = document.getElementById("updateWorkDetailForm");
+//#endregion update work-order
 
 //#region status variable
 let isUpdate;
-//#endregion
+//#endregion status variable
 
 //#region sub-handler
 async function clickClientHandler() {
@@ -101,23 +106,23 @@ function bodyHandler(event) {
     embeddedDOM.classList.add("hidden");
   });
 
-  if (event.target === workDetailPopupDOM) {
+  if (event.target === workInfoPopupDOM) {
     return;
   }
 
-  const paragraphDOM = workDetailPopupDOM.querySelector("#paragraph");
+  const paragraphDOM = workInfoPopupDOM.querySelector("#paragraph");
   if (event.target === paragraphDOM) {
     return;
   }
 
-  const spanDOMs = workDetailPopupDOM.querySelectorAll("span");
+  const spanDOMs = workInfoPopupDOM.querySelectorAll("span");
   for (const spanDOM of spanDOMs) {
     if (event.target === spanDOM) {
       return;
     }
   }
 
-  const divDOMs = workDetailPopupDOM.querySelectorAll("div");
+  const divDOMs = workInfoPopupDOM.querySelectorAll("div");
   for (const divDOM of divDOMs) {
     if (event.target === divDOM) {
       return;
@@ -126,20 +131,18 @@ function bodyHandler(event) {
 
   bodyDOM.removeEventListener("click", bodyHandler);
   popupDOM.classList.remove("blur");
-  workDetailPopupDOM.classList.remove("blur");
+  workInfoPopupDOM.classList.remove("blur");
   navDOM.classList.remove("blur");
   headerDOM.classList.remove("blur");
   const workInfoDOMs = workInfosDOM.querySelectorAll("#workInfo");
   workInfoDOMs.forEach((workInfoDOM) => {
     workInfoDOM.remove();
   });
-  const urgentInfoDOM = workDetailPopupDOM.querySelector("#urgentInfo");
   urgentInfoDOM.classList.remove("update");
-  const commentInfoDOM = workDetailPopupDOM.querySelector("#commentInfo");
   commentInfoDOM.classList.remove("update");
 
   popupDOM.classList.add("hidden");
-  workDetailPopupDOM.classList.add("hidden");
+  workInfoPopupDOM.classList.add("hidden");
 }
 
 async function clientInfoUpdateHandler() {
@@ -147,9 +150,9 @@ async function clientInfoUpdateHandler() {
 
   popupDOM.classList.remove("hidden");
   clientsPopupDOM.classList.remove("hidden");
-  workDetailPopupDOM.classList.remove("clean");
+  workInfoPopupDOM.classList.remove("clean");
 
-  workDetailPopupDOM.classList.add("blur");
+  workInfoPopupDOM.classList.add("blur");
   headerDOM.classList.add("blur");
   navDOM.classList.add("blur");
 
@@ -174,16 +177,18 @@ async function clientInfoUpdateHandler() {
         if (response) {
           const data = await response.json();
 
-          const associationDOM = this.querySelector("#association");
+          const associationDOM = clientInfoDOM.querySelector("#association");
           associationDOM.textContent = data.client.association;
-          const nameDOM = this.querySelector("#name");
+          const nameDOM = clientInfoDOM.querySelector("#name");
           nameDOM.textContent = data.client.name;
-          const telephoneDOM = this.querySelector("#telephone");
+          const telephoneDOM = clientInfoDOM.querySelector("#telephone");
           telephoneDOM.textContent = data.client.telephone;
+          const updatedClientDOM = workInfoPopupDOM.querySelector("#client");
+          updatedClientDOM.dataset.id = data.client.id;
 
+          workInfoPopupDOM.classList.remove("blur");
           clientsPopupDOM.classList.add("hidden");
-          workDetailPopupDOM.classList.remove("blur");
-          workDetailPopupDOM.querySelector("#client").classList.add("updated");
+          updatedClientDOM.classList.add("updated");
         }
       });
     });
@@ -195,13 +200,19 @@ async function urgentInfoUpdateHandler() {
 
   popupDOM.classList.remove("hidden");
   urgentPopupDOM.classList.remove("hidden");
-  workDetailPopupDOM.classList.remove("clean");
+  workInfoPopupDOM.classList.remove("clean");
 
-  workDetailPopupDOM.classList.add("blur");
+  workInfoPopupDOM.classList.add("blur");
   headerDOM.classList.add("blur");
   navDOM.classList.add("blur");
 }
-//#endregion
+
+function commentInfoHandler() {
+  isUpdate = true;
+
+  commentPopupDOM.classList.remove("hidden");
+}
+//#endregion sub-handler
 
 const clientInputFocusHandler = async () => {
   if (clientsPopupDOM.classList.contains("hidden")) {
@@ -237,7 +248,7 @@ const clientInputFocusHandler = async () => {
 const searchClientFormHandler = async (event) => {
   event.preventDefault();
 
-  const searchClient = searchClientDOM.value;
+  const searchClient = searchClientDOM.value.replaceAll("*", "\\*");
   const regExp = new RegExp(searchClient, "i");
 
   const clientDOMs = clientsDOM.querySelectorAll("#client");
@@ -267,7 +278,7 @@ const searchClientFormHandler = async (event) => {
 };
 
 const closeClientsPopupHandler = () => {
-  workDetailPopupDOM.classList.remove("blur");
+  workInfoPopupDOM.classList.remove("blur");
   headerDOM.classList.remove("blur");
   navDOM.classList.remove("blur");
 
@@ -281,16 +292,16 @@ const addHandler = async () => {
   const icon = newItemDOM.querySelector("i");
   icon.className = icon.className.replace("solid", "regular");
 
-  const workDetailDOM = orderPopupDetailsDOM.querySelector(
-    "#workDetail:last-child"
-  );
-  if (workDetailDOM) {
-    const itemDOM = workDetailDOM.querySelector("#item");
-    if (!itemDOM.value) {
-      alert("Item not found");
-      return;
-    }
-  }
+  // const workDetailDOM = orderPopupDetailsDOM.querySelector(
+  //   "#workDetail:last-child"
+  // );
+  // if (workDetailDOM) {
+  //   const itemDOM = workDetailDOM.querySelector("#item");
+  //   if (!itemDOM.value) {
+  //     alert("Item not found");
+  //     return;
+  //   }
+  // }
 
   const html = htmls.workDetailList();
   orderPopupDetailsDOM.insertAdjacentHTML("beforeend", html);
@@ -436,7 +447,7 @@ const placeHandler = async () => {
 
 const closeItemsPopupHandler = () => {
   if (isUpdate) {
-    updateWorkDetailPopupDOM.classList.remove("hidden");
+    workDetailPopupDOM.classList.remove("hidden");
     itemsPopupDOM.classList.add("hidden");
     return;
   }
@@ -450,7 +461,7 @@ const closeItemsPopupHandler = () => {
 async function workOrderContainerHandler(event) {
   event.stopPropagation();
 
-  const rightDOM = this.querySelector(".right");
+  const rightDOM = this.querySelector("#right");
   const anchorDOMs = rightDOM.querySelectorAll("a");
   const iconDOMs = rightDOM.querySelectorAll("i");
   const embeddedDOM = rightDOM.querySelector(".embedded");
@@ -482,15 +493,15 @@ async function workOrderContainerHandler(event) {
     }
   }
 
-  if (workDetailPopupDOM.classList.contains("hidden")) {
+  if (workInfoPopupDOM.classList.contains("hidden")) {
     bodyDOM.addEventListener("click", bodyHandler);
   }
   popupDOM.classList.remove("hidden", "blur");
-  workDetailPopupDOM.classList.remove("hidden", "blur");
+  workInfoPopupDOM.classList.remove("hidden", "blur");
   navDOM.classList.add("blur");
   headerDOM.classList.add("blur");
 
-  const paragraphDOM = workDetailPopupDOM.querySelector("#paragraph");
+  const paragraphDOM = workInfoPopupDOM.querySelector("#paragraph");
   paragraphDOM.textContent = "work info";
 
   const workOrderId = this.dataset.id;
@@ -500,6 +511,7 @@ async function workOrderContainerHandler(event) {
   if (response) {
     const data = await response.json();
     workOrder = data.workOrder;
+
     let html = `
     <div>
       <div class='top'>
@@ -512,7 +524,6 @@ async function workOrderContainerHandler(event) {
       }
     </div>
     `;
-    const completeInfoDOM = workDetailPopupDOM.querySelector("#completeInfo");
     completeInfoDOM.textContent = "";
     completeInfoDOM.insertAdjacentHTML("beforeend", html);
 
@@ -521,7 +532,6 @@ async function workOrderContainerHandler(event) {
       <span>${workOrder.is_urgent ? "urgent" : ""}</span>
     </div>
     `;
-    const urgentInfoDOM = workDetailPopupDOM.querySelector("#urgentInfo");
     urgentInfoDOM.textContent = "";
     urgentInfoDOM.insertAdjacentHTML("beforeend", html);
 
@@ -530,7 +540,6 @@ async function workOrderContainerHandler(event) {
       <span>${workOrder.comment}</span>
     </div>
     `;
-    const commentInfoDOM = workDetailPopupDOM.querySelector("#commentInfo");
     commentInfoDOM.textContent = "";
     commentInfoDOM.insertAdjacentHTML("beforeend", html);
   }
@@ -539,7 +548,7 @@ async function workOrderContainerHandler(event) {
   response = await FetchAPI.get(`/clients/${clientId}`);
   if (response) {
     const data = await response.json();
-    const clientInfoDOM = workDetailPopupDOM.querySelector("#clientInfo");
+
     const html = htmls.clientList(data.client);
     clientInfoDOM.textContent = "";
     clientInfoDOM.insertAdjacentHTML("beforeend", html);
@@ -600,14 +609,16 @@ async function updateHandler(event) {
   event.stopPropagation();
 
   popupDOM.classList.remove("hidden");
-  workDetailPopupDOM.classList.remove("hidden");
+  workInfoPopupDOM.classList.remove("hidden");
 
   const embeddedDOMs = contentDOM.querySelectorAll("#embedded");
   embeddedDOMs.forEach((embeddedDOM) => {
     embeddedDOM.classList.add("hidden");
   });
+  commentPopupDOM.classList.add("hidden");
+  workDetailPopupDOM.classList.add("hidden");
 
-  const paragraphDOM = workDetailPopupDOM.querySelector("#paragraph");
+  const paragraphDOM = workInfoPopupDOM.querySelector("#paragraph");
   paragraphDOM.textContent = "update work-info";
 
   const workOrderId = this.dataset.id;
@@ -617,6 +628,7 @@ async function updateHandler(event) {
   if (response) {
     const data = await response.json();
     workOrder = data.workOrder;
+
     let html = `
     <div>
       <div class='top'>
@@ -629,7 +641,6 @@ async function updateHandler(event) {
       }
     </div>
     `;
-    const completeInfoDOM = workDetailPopupDOM.querySelector("#completeInfo");
     completeInfoDOM.textContent = "";
     completeInfoDOM.insertAdjacentHTML("beforeend", html);
 
@@ -638,7 +649,6 @@ async function updateHandler(event) {
       <span>${workOrder.is_urgent ? "urgent" : ""}</span>
     </div>
     `;
-    const urgentInfoDOM = workDetailPopupDOM.querySelector("#urgentInfo");
     urgentInfoDOM.textContent = "";
     urgentInfoDOM.classList.add("update");
     urgentInfoDOM.insertAdjacentHTML("beforeend", html);
@@ -650,17 +660,17 @@ async function updateHandler(event) {
       <span>${workOrder.comment}</span>
     </div>
     `;
-    const commentInfoDOM = workDetailPopupDOM.querySelector("#commentInfo");
     commentInfoDOM.textContent = "";
     commentInfoDOM.classList.add("update");
     commentInfoDOM.insertAdjacentHTML("beforeend", html);
+    commentInfoDOM.addEventListener("click", commentInfoHandler);
   }
 
   const clientId = this.dataset.client_id;
   response = await FetchAPI.get(`/clients/${clientId}`);
   if (response) {
     const data = await response.json();
-    const clientInfoDOM = workDetailPopupDOM.querySelector("#clientInfo");
+
     const html = htmls.clientList(data.client);
     clientInfoDOM.textContent = "";
     clientInfoDOM.insertAdjacentHTML("beforeend", html);
@@ -672,7 +682,6 @@ async function updateHandler(event) {
   response = await FetchAPI.get(`/work-orders/${workOrderId}/details`);
   if (response) {
     const data = await response.json();
-    const workInfos = [];
 
     let html = "";
     for (const workDetail of data.workDetails) {
@@ -682,7 +691,6 @@ async function updateHandler(event) {
         const data = await response.json();
         const item = data.item;
         const workInfo = { workDetail, item };
-        workInfos.push(workInfo);
         html += htmls.workInfoList(workInfo);
       }
     }
@@ -695,22 +703,15 @@ async function updateHandler(event) {
       workInfoDOM.addEventListener("click", () => {
         isUpdate = true;
 
-        updateWorkDetailPopupDOM.classList.remove("hidden");
-        workDetailPopupDOM.classList.remove("clean");
-        workDetailPopupDOM.classList.add("blur");
+        workDetailPopupDOM.classList.remove("hidden");
+        workInfoPopupDOM.classList.remove("clean");
+        workInfoPopupDOM.classList.add("blur");
 
-        let html = `
-        <span>item</span>
-        <div>
-          <input type="text" value='${workInfos[i].item.name}'>
-        </div>
-        `;
-        itemDOM.textContent = "";
-        itemDOM.insertAdjacentHTML("beforeend", html);
-        const itemInput = itemDOM.querySelector("input");
-        itemInput.addEventListener("focus", async () => {
+        const item = workInfoDOM.querySelector("#item").textContent;
+        itemDOM.value = item;
+        itemDOM.addEventListener("focus", async () => {
           itemsPopupDOM.classList.remove("hidden");
-          updateWorkDetailPopupDOM.classList.add("hidden");
+          workDetailPopupDOM.classList.add("hidden");
 
           const response = await FetchAPI.get("/items");
           if (response) {
@@ -724,50 +725,53 @@ async function updateHandler(event) {
             itemsDOM.insertAdjacentHTML("beforeend", html);
 
             const itemDOMs = itemsDOM.querySelectorAll("#item");
-            for (const itemDOM of itemDOMs) {
+            itemDOMs.forEach((itemDOM) => {
               itemDOM.addEventListener("click", () => {
-                updateWorkDetailPopupDOM.classList.remove("hidden");
+                workDetailPopupDOM.classList.remove("hidden");
                 itemsPopupDOM.classList.add("hidden");
 
                 const itemName = itemDOM.querySelector("#name").textContent;
-                const itemInput = columnsDOM.querySelector("#item input");
-                itemInput.value = itemName;
+                console.log(itemName);
               });
-            }
+            });
           }
         });
 
-        html = `
+        const depth = workInfoDOM.querySelector("#depth").textContent;
+        let html = `
         <span>depth</span>
         <div>
-          <input type="text" value='${workInfos[i].workDetail.depth}'>
+          <input type="text" value='${depth}'>
         </div>
         `;
         depthDOM.textContent = "";
         depthDOM.insertAdjacentHTML("beforeend", html);
 
+        const width = workInfoDOM.querySelector("#width").textContent;
         html = `
         <span>width</span>
         <div>
-          <input type="text" value='${workInfos[i].workDetail.width}'>
+          <input type="text" value='${width}'>
         </div>
         `;
         widthDOM.textContent = "";
         widthDOM.insertAdjacentHTML("beforeend", html);
 
+        const length = workInfoDOM.querySelector("#length").textContent;
         html = `
         <span>length</span>
         <div>
-          <input type="text" value='${workInfos[i].workDetail.length}'>
+          <input type="text" value='${length}'>
         </div>
         `;
         lengthDOM.textContent = "";
         lengthDOM.insertAdjacentHTML("beforeend", html);
 
+        const quantity = workInfoDOM.querySelector("#quantity").textContent;
         html = `
         <span>quantity</span>
         <div>
-          <input type="text" value='${workInfos[i].workDetail.quantity}'>
+          <input type="text" value='${quantity}'>
         </div>
         `;
         quantityDOM.textContent = "";
@@ -776,23 +780,50 @@ async function updateHandler(event) {
         html = `
         <span>remnant</span>
         <div>
-          <input type="text" value='${workInfos[i].workDetail.remnant}'>
+          <input type="text">
         </div>
         `;
         remnantDOM.textContent = "";
         remnantDOM.insertAdjacentHTML("beforeend", html);
-
-        columnsDOM.dataset.index = i;
+        // columnsDOM.dataset.index = i;
       });
     });
   }
+
+  const html = `
+  <div class="update-button">
+      <div class="center">
+          <button id="updateWorkInfo">update</button>
+      </div>
+  </div>
+  `;
+  buttonOptionDOM.textContent = "";
+  buttonOptionDOM.insertAdjacentHTML("beforeend", html);
+  const updateWorkInfoDOM = buttonOptionDOM.querySelector("#updateWorkInfo");
+  updateWorkInfoDOM.addEventListener("click", async (event) => {
+    event.stopPropagation();
+
+    // TODO
+    // if (!isUpdate) {
+    //   alert("Updated not found");
+    //   return;
+    // }
+    const updatedClientDOM = workInfoPopupDOM.querySelector("#client");
+    const comment = commentInfoDOM.querySelector("span").textContent;
+    const client_id = updatedClientDOM.dataset.id;
+
+    // await FetchAPI.patch(`/work-orders/${workOrderId}`);
+
+    console.log(client_id, updatedUrgentDOM.checked, comment);
+  });
 }
 
-const closeWorkDetailPopupHandler = () => {
+const closeWorkInfoPopupHandler = () => {
   bodyDOM.removeEventListener("click", bodyHandler);
 
   popupDOM.classList.add("hidden");
-  workDetailPopupDOM.classList.add("hidden");
+  workInfoPopupDOM.classList.add("hidden");
+  commentInfoDOM.classList.remove("updated");
 };
 
 const createClientFormHandler = async (event) => {
@@ -856,23 +887,23 @@ const newClientHandler = () => {
   icon.className = icon.className.replace("solid", "regular");
 };
 
-const workDetailPopupHandler = (event) => {
+const workInfoPopupHandler = (event) => {
   if (isUpdate) {
     return;
   }
 
   const isMouseEnter = event.type === "mouseenter";
   if (isMouseEnter) {
-    workDetailPopupDOM.classList.remove("blur");
-    workDetailPopupDOM.classList.add("clean");
+    workInfoPopupDOM.classList.remove("blur");
+    workInfoPopupDOM.classList.add("clean");
     popupDOM.classList.remove("blur");
     popupDOM.classList.add("clean");
     return;
   }
 
   // mouse leave
-  workDetailPopupDOM.classList.remove("clean");
-  workDetailPopupDOM.classList.add("blur");
+  workInfoPopupDOM.classList.remove("clean");
+  workInfoPopupDOM.classList.add("blur");
   popupDOM.classList.remove("clean");
   popupDOM.classList.add("blur");
 };
@@ -884,15 +915,12 @@ const docsHandler = (event) => {
 
     bodyDOM.removeEventListener("click", bodyHandler);
     popupDOM.classList.remove("blur");
-    workDetailPopupDOM.classList.remove("blur");
+    workInfoPopupDOM.classList.remove("blur");
     navDOM.classList.remove("blur");
     headerDOM.classList.remove("blur");
     urgentPopupDOM.classList.remove("blur");
-
-    const urgentInfoDOM = workDetailPopupDOM.querySelector("#urgentInfo");
     urgentInfoDOM.classList.remove("update");
-    const commentInfoDOM = workDetailPopupDOM.querySelector("#commentInfo");
-    commentInfoDOM.classList.remove("update");
+    commentInfoDOM.classList.remove("updated");
 
     const workInfoDOMs = workInfosDOM.querySelectorAll("#workInfo");
     workInfoDOMs.forEach((workInfoDOM) => {
@@ -900,7 +928,7 @@ const docsHandler = (event) => {
     });
 
     popupDOM.classList.add("hidden");
-    workDetailPopupDOM.classList.add("hidden");
+    workInfoPopupDOM.classList.add("hidden");
     itemsPopupDOM.classList.add("hidden");
     clientsPopupDOM.classList.add("hidden");
     urgentPopupDOM.classList.add("hidden");
@@ -913,7 +941,7 @@ const docsHandler = (event) => {
 };
 
 const closeUrgentPopupHandler = () => {
-  workDetailPopupDOM.classList.remove("blur");
+  workInfoPopupDOM.classList.remove("blur");
   headerDOM.classList.remove("blur");
   navDOM.classList.remove("blur");
 
@@ -921,23 +949,39 @@ const closeUrgentPopupHandler = () => {
 };
 
 const updatedUrgentHandler = () => {
-  const urgentInfoDOM = workDetailPopupDOM.querySelector("#urgentInfo");
   const spanDOM = urgentInfoDOM.querySelector("span");
   spanDOM.textContent = updatedUrgentDOM.checked ? "urgent" : "";
 
-  workDetailPopupDOM.classList.remove("blur");
+  workInfoPopupDOM.classList.remove("blur");
 
   urgentPopupDOM.classList.add("hidden");
   urgentInfoDOM.classList.add("updated");
 };
 
-const closeUpdateWorkDetailPopupHandler = () => {
-  updateWorkDetailPopupDOM.classList.add("hidden");
-  workDetailPopupDOM.classList.remove("blur");
+const closeWorkDetailPopupHandler = () => {
+  workDetailPopupDOM.classList.add("hidden");
+  workInfoPopupDOM.classList.remove("blur");
 };
 
-const updateWorkDetailHandler = () => {
-  workDetailPopupDOM.classList.remove("blur");
+const closeCommentPopupHandler = () => {
+  commentPopupDOM.classList.add("hidden");
+};
+
+const updateCommentFormHandler = (event) => {
+  event.preventDefault();
+
+  const workCommentDOM = commentPopupDOM.querySelector("#comment");
+  const commentSpan = workInfoPopupDOM.querySelector("#commentInfo span");
+  commentSpan.textContent = workCommentDOM.value;
+  workCommentDOM.value = "";
+  commentPopupDOM.classList.add("hidden");
+  commentInfoDOM.classList.add("updated");
+};
+
+const updateWorkDetailFormHandler = (event) => {
+  event.preventDefault();
+
+  workInfoPopupDOM.classList.remove("blur");
 
   const itemInput = itemDOM.querySelector("input");
   const item = itemInput.value;
@@ -953,32 +997,32 @@ const updateWorkDetailHandler = () => {
   const remnant = remnantInput.value;
 
   if (!item) {
-    itemInput.focus();
     alert("Item not found");
+    itemInput.focus();
     return;
   }
 
   if (!depth) {
-    depthInput.focus();
     alert("Depth not found");
+    depthInput.focus();
     return;
   }
 
   if (!width) {
-    widthInput.focus();
     alert("Width not found");
+    widthInput.focus();
     return;
   }
 
   if (!length) {
-    lengthInput.focus();
     alert("Length not found");
+    lengthInput.focus();
     return;
   }
 
   if (!quantity) {
-    quantityInput.focus();
     alert("quantity not found");
+    quantityInput.focus();
     return;
   }
 
@@ -988,32 +1032,31 @@ const updateWorkDetailHandler = () => {
   //   alert("Remnant not found");
   //   return;
   // }
-  const index = columnsDOM.dataset.index;
+  // const index = columnsDOM.dataset.index;
   const workInfoDOMs = workInfosDOM.querySelectorAll("#workInfo");
-  workInfoDOMs[index].querySelector("#item").textContent = item;
-  workInfoDOMs[index].querySelector("#depth").textContent = depth;
-  workInfoDOMs[index].querySelector("#width").textContent = width;
-  workInfoDOMs[index].querySelector("#length").textContent = length;
-  workInfoDOMs[index].querySelector("#quantity").textContent = quantity;
+  // workInfoDOMs[index].querySelector("#item").textContent = item;
+  // workInfoDOMs[index].querySelector("#depth").textContent = depth;
+  // workInfoDOMs[index].querySelector("#width").textContent = width;
+  // workInfoDOMs[index].querySelector("#length").textContent = length;
+  // workInfoDOMs[index].querySelector("#quantity").textContent = quantity;
   // workInfoDOMs[index].querySelector("#remnant").textContent = remnant;
 
-  updateWorkDetailPopupDOM.classList.add("hidden");
-  workInfoDOMs[index].classList.add("updated");
+  workDetailPopupDOM.classList.add("hidden");
+  // workInfoDOMs[index].classList.add("updated");
 };
 
-updateWorkDetailDOM.addEventListener("click", updateWorkDetailHandler);
-closeUpdateWorkDetailPopupDOM.addEventListener(
-  "click",
-  closeUpdateWorkDetailPopupHandler
-);
+updateWorkDetailFormDOM.addEventListener("submit", updateWorkDetailFormHandler);
+updateCommentFormDOM.addEventListener("submit", updateCommentFormHandler);
+closeCommentPopupDOM.addEventListener("click", closeCommentPopupHandler);
+closeWorkDetailPopupDOM.addEventListener("click", closeWorkDetailPopupHandler);
 updatedUrgentDOM.addEventListener("change", updatedUrgentHandler);
 closeUrgentPopupDOM.addEventListener("click", closeUrgentPopupHandler);
 document.addEventListener("keydown", docsHandler);
-workDetailPopupDOM.addEventListener("mouseenter", workDetailPopupHandler);
-workDetailPopupDOM.addEventListener("mouseleave", workDetailPopupHandler);
+workInfoPopupDOM.addEventListener("mouseenter", workInfoPopupHandler);
+workInfoPopupDOM.addEventListener("mouseleave", workInfoPopupHandler);
 newClientDOM.addEventListener("click", newClientHandler);
 createClientFormDOM.addEventListener("submit", createClientFormHandler);
-closeWorkDetailPopupDOM.addEventListener("click", closeWorkDetailPopupHandler);
+closeWorkInfoPopupDOM.addEventListener("click", closeWorkInfoPopupHandler);
 closeItemsPopupDOM.addEventListener("click", closeItemsPopupHandler);
 placeDOM.addEventListener("click", placeHandler);
 addDOM.addEventListener("click", addHandler);
@@ -1028,7 +1071,7 @@ clientInputDOM.addEventListener("focus", clientInputFocusHandler);
   workOrderContainerDOMs.forEach(async (workOrderContainerDOM) => {
     workOrderContainerDOM.addEventListener("click", workOrderContainerHandler);
 
-    const rightDOM = workOrderContainerDOM.querySelector(".right");
+    const rightDOM = workOrderContainerDOM.querySelector("#right");
     rightDOM.addEventListener("click", rightHandler);
     const deleteDOM = workOrderContainerDOM.querySelector("#delete");
     deleteDOM.addEventListener("click", deleteHandler);

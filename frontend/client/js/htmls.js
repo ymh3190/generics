@@ -149,7 +149,7 @@ const detailInfoList = (workInfo) => {
  */
 const workInfoList = (workInfo) => {
   return `
-    <div id='workInfo' class='work-info'>
+    <div id='workInfo' class='work-info' data-work_detail_id='${workInfo.workDetail.id}'>
       <div class='top'>
         <span id='item'>${workInfo.item.name}</span>
       </div>
@@ -185,7 +185,7 @@ const workInfoList = (workInfo) => {
             <span id='quantity'>${workInfo.workDetail.quantity}</span>
           </div>
           <div>
-            <span>${workInfo.workDetail.is_remnant}</span>
+            <span>${workInfo.workDetail.remnant}</span>
           </div>
         </div>
       </div>

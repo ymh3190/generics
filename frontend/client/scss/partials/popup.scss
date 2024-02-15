@@ -352,8 +352,47 @@
   top: $tertiaryPopupTop;
 }
 
-.update-popup {
+.work-detail-popup,
+.comment-popup {
   left: $secondaryPopupLeft;
   width: $secondaryPopupWidth;
   top: $tertiaryPopupTop;
+
+  .update-row {
+    display: flex;
+    justify-content: center;
+
+    button {
+      background-color: transparent;
+      border: 0 !important;
+      line-height: 1.2rem;
+    }
+  }
+}
+
+.comment-popup .form-container {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  column-gap: 1rem;
+  align-items: center;
+}
+
+.button-option {
+  display: flex;
+  justify-content: center;
+}
+
+.update-work-detail-form {
+  display: flex;
+  align-items: center;
+
+  .input-containers {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr) auto;
+    column-gap: 1rem;
+
+    input {
+      width: 100%;
+    }
+  }
 }
