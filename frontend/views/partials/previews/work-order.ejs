@@ -1,0 +1,34 @@
+<div class="preview-top">
+    <div class="left">
+        <div>
+            <% if (!workOrder.is_complete) { %>
+                <span id="complete">resolving</span>
+                <% } else { %>
+                    <span>complete</span>
+                    <div>
+                        <span>
+                            <%= workOrder.end_date %>
+                        </span>
+                    </div>
+                    <% } %>
+        </div>
+        <div>
+            <% if (workOrder.is_urgent) { %>
+                <span id="urgent">urgent</span>
+                <% } else { %>
+                    <span id="urgent"></span>
+                    <% } %>
+        </div>
+    </div>
+    <div class="right" id="right">
+        <a id="ellipsis">
+            <i class="fa-solid fa-ellipsis-vertical"></i>
+        </a>
+        <%- include('../embedded', {workOrder}); %>
+    </div>
+</div>
+<div class="preview-bottom">
+    <span id="comment">
+        <%= workOrder.comment %>
+    </span>
+</div>

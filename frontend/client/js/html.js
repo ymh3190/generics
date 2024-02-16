@@ -1,3 +1,15 @@
+// TODO: html tag generics
+// class ItemHTML {
+//   renderItem(item) {
+//     return `
+//     <div data-id=${item.id} id='item' class='item-container'>
+//       <span id='name'>${item.name}</span>
+//     </div>
+//     `;
+//   }
+// }
+
+//#region item
 /**
  * @param {{}} item
  * @returns text/html
@@ -9,7 +21,9 @@ const itemList = (item) => {
     </div>
     `;
 };
+//#endregion item
 
+//#region client
 /**
  *
  * @param {{}} client
@@ -96,6 +110,19 @@ const clientWorkInfoList = (workOrder) => {
   `;
 };
 
+const clientPreview = (client) => {
+  return `
+  <div class='left'>
+    <span id='association'>${client.association}</span>
+  </div>
+  <div class='right'>
+    <span id='name'>${client.name}</span>
+  </div>
+  `;
+};
+//#endregion client
+
+// TODO: rename function
 const detailInfoList = (workInfo) => {
   return `
     <div id='workInfo' class='work-info'>
@@ -149,7 +176,7 @@ const detailInfoList = (workInfo) => {
  */
 const workInfoList = (workInfo) => {
   return `
-    <div id='workInfo' class='work-info' data-work_detail_id='${workInfo.workDetail.id}'>
+    <div id='workInfo' class='work-info' data-work_detail_id='${workInfo.workDetail.id}' data-item_id='${workInfo.item.id}'>
       <div class='top'>
         <span id='item'>${workInfo.item.name}</span>
       </div>
@@ -273,6 +300,7 @@ const workDetailList = () => {
     `;
 };
 
+//#region remnant
 const remnantZoneList = (zone) => {
   return `
   <div data-id=${zone.id} id='zone' class='zone-container'>
@@ -373,23 +401,15 @@ const remnantDetailList = () => {
   </div>
   `;
 };
+//#endregion remnant
 
+//#region creator
 const creatorList = (creator) => {
   return `
   <span>${creator}</span>
   `;
 };
-
-const clientPreview = (client) => {
-  return `
-  <div class='left'>
-    <span>${client.association}</span>
-  </div>
-  <div class='right'>
-    <span>${client.name}</span>
-  </div>
-  `;
-};
+//#endregion creator
 
 export {
   itemList,

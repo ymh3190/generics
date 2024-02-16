@@ -1,5 +1,5 @@
 import FetchAPI from "../fetch-api";
-import * as htmls from "../htmls";
+import * as htmls from "../html";
 
 const bodyDOM = document.querySelector("body");
 const popupDOM = document.getElementById("popup");

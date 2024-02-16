@@ -31,6 +31,8 @@ class Orderer {
     this.#fields.forEach((ws) => {
       if (ws.readyState === OPEN) {
         ws.send(event);
+        // TODO: error handling
+        // throw new Error("test");
       }
     });
   }

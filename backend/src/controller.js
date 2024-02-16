@@ -96,7 +96,6 @@ class AuthController {
 
     const refresh_token = util.createToken();
     const ip = req.headers["x-forwared-for"];
-    // const ip = req.ip;
     const user_agent = req.headers["user-agent"];
     const user_id = user.id;
 
@@ -202,7 +201,9 @@ class WorkOrderController {
   async update(req, res) {
     const { id } = req.params;
 
-    req.body.worker_id = req.user.user_id;
+    if (req.user.role === "user") {
+      req.body.worker_id = req.user.user_id;
+    }
     const workOrder = await WorkOrder.selectByIdAndUpdate(id, req.body, {
       new: true,
     });

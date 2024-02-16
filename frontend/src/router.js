@@ -182,10 +182,18 @@ class WorkDetailRouter extends Router {
         workDetailController.create
       );
 
-    // this.router
-    //   .route("/:id(\\d|\\w{32})")
-    //   .patch(workDetailController.update)
-    //   .delete(workDetailController.delete);
+    this.router
+      .route("/:id(\\d|\\w{32})")
+      .patch(
+        middleware.authenticateUser,
+        middleware.authorizePermissions("admin"),
+        workDetailController.update
+      );
+    // .delete(
+    //   middleware.authenticateUser,
+    //   middleware.authorizePermissions("admin"),
+    //   workDetailController.delete
+    // );
   }
 }
 

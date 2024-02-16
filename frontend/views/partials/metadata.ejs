@@ -1,0 +1,16 @@
+<div class="metadata">
+    <% if (url==='/work-order' ) { %>
+        <div id="client" class="client"></div>
+        <div class="datetime">
+            <span>
+                <%= workOrder.created_at %>
+            </span>
+        </div>
+        <% } else if (url==='/client' ) { %>
+            <div class="datetime">
+                <span>
+                    <%= client.created_at %>
+                </span>
+            </div>
+            <% } %>
+</div>

@@ -14,7 +14,6 @@ module.exports = {
     status: path.join(__dirname, partialsPath, "status"),
     signin: path.join(__dirname, contentsPath, "signin"),
     signup: path.join(__dirname, contentsPath, "signup"),
-    watch: path.join(__dirname, contentsPath, "watch"),
     workOrder: path.join(__dirname, contentsPath, "workOrder"),
     remnant: path.join(__dirname, contentsPath, "remnant"),
     client: path.join(__dirname, contentsPath, "client"),

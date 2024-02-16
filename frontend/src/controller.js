@@ -294,6 +294,7 @@ class WorkOrderController {
       cookie: req.headers.cookie,
     });
     const data = await response.json();
+    orderer.notifyFields("update");
     res.status(200).json({ workOrder: data.workOrder });
   }
 
@@ -325,6 +326,17 @@ class WorkDetailController {
     });
     const data = await response.json();
     res.status(200).json({ workDetails: data.workDetails });
+  }
+
+  async update(req, res) {
+    const { id } = req.params;
+
+    const response = await FetchAPI.patch(`/work-details/${id}`, req.body, {
+      cookie: req.headers.cookie,
+    });
+    const data = await response.json();
+    orderer.notifyFields("update");
+    res.status(200).json({ workDetail: data.workDetail });
   }
 }
 

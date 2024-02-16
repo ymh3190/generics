@@ -1,5 +1,5 @@
 import FetchAPI from "../fetch-api";
-import * as htmls from "../htmls";
+import * as htmls from "../html";
 
 (() => {
   let workOrderContainerDOMs = document.querySelectorAll("#workOrderContainer");

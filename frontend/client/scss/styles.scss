@@ -15,11 +15,8 @@
 @import "./partials/entry.scss";
 @import "./partials/embedded.scss";
 
-@import "./contents/watch.scss";
-@import "./contents/video.scss";
 @import "./contents/signin.scss";
 @import "./contents/signup.scss";
-@import "./contents/image.scss";
 
 @import "./screen.scss";
 
@@ -32,8 +29,15 @@ body {
   padding-right: $rootRightMargin;
 }
 
-main {
+.main {
   height: 100vh;
+}
+
+.auth {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 a {

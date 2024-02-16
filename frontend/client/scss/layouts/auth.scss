@@ -1,37 +1,29 @@
-.auth {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+.signin,
+.signup {
+  padding: initial;
+  gap: initial;
+  grid-template-columns: none;
+  border: 1px solid rgba(0, 0, 0, 1);
+  height: $heightSign;
+  padding: 0 1rem 0 1rem;
+  border-radius: 1rem;
 
-  .signin,
-  .signup {
-    padding: initial;
-    gap: initial;
-    grid-template-columns: none;
-    border: 1px solid rgba(0, 0, 0, 1);
-    height: $heightSign;
-    padding: 0 1rem 0 1rem;
+  .top {
+    justify-self: center;
+    margin-top: 1rem;
+
+    span {
+      text-transform: capitalize;
+    }
+  }
+
+  input {
+    padding: 2px 5px 2px 5px;
+  }
+
+  button {
+    border: 1px solid rgba(0, 0, 0, 0.5);
     border-radius: 1rem;
-
-    .top {
-      justify-self: center;
-      margin-top: 1rem;
-
-      span {
-        text-transform: capitalize;
-      }
-    }
-
-    input {
-      padding: 2px 5px 2px 5px;
-    }
-
-    button {
-      border: 1px solid rgba(0, 0, 0, 0.5);
-      border-radius: 1rem;
-      background-color: transparent;
-    }
+    background-color: transparent;
   }
 }

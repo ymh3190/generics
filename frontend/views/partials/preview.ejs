@@ -1,0 +1,8 @@
+<div class="preview">
+    <% if (url==='/work-order' ) { %>
+        <%- include('previews/work-order', {workOrder}); %>
+
+            <% } else if (url==='/client' ) { %>
+                <%- include('previews/client', {client}); %>
+                    <% } %>
+</div>
