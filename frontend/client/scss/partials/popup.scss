@@ -340,6 +340,19 @@
         grid-template-columns: repeat(5, 1fr);
       }
     }
+
+    .add-row {
+      justify-self: center;
+      // margin-top: 0.5rem;
+
+      button {
+        background-color: transparent;
+        border: 1px solid rgba(0, 0, 0, 0.5);
+        border-radius: 1rem;
+        padding: 5px 10px 5px 10px;
+        line-height: 1.2rem;
+      }
+    }
   }
 
   .client-container:hover {

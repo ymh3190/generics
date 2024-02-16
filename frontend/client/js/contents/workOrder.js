@@ -1,5 +1,9 @@
 import FetchAPI from "../fetch-api";
 import * as htmls from "../html";
+import test from "../test";
+(async () => {
+  await test.select();
+})();
 
 const clientsDOM = document.getElementById("clients");
 const clientInputDOM = document.getElementById("clientInput");
@@ -78,7 +82,9 @@ async function clickClientHandler() {
     clientsPopupDOM.classList.add("hidden");
   }
 }
+//#endregion sub-handler
 
+//#region sub-handler
 async function clickItemHandler() {
   const id = this.dataset.id;
   const response = await FetchAPI.get(`/items/${id}`);
@@ -93,7 +99,9 @@ async function clickItemHandler() {
     itemsPopupDOM.classList.add("hidden");
   }
 }
+//#endregion sub-handler
 
+//#region sub-handler
 function bodyHandler(event) {
   if (isUpdated) {
     return;
@@ -142,7 +150,9 @@ function bodyHandler(event) {
   popupDOM.classList.add("hidden");
   workInfoPopupDOM.classList.add("hidden");
 }
+//#endregion sub-handler
 
+//#region sub-handler
 async function clientInfoUpdateHandler() {
   isUpdated = true;
 
@@ -196,7 +206,9 @@ async function clientInfoUpdateHandler() {
     });
   }
 }
+//#endregion sub-handler
 
+//#region sub-handler
 async function urgentInfoUpdateHandler() {
   isUpdated = true;
 
@@ -208,7 +220,9 @@ async function urgentInfoUpdateHandler() {
   headerDOM.classList.add("blur");
   navDOM.classList.add("blur");
 }
+//#endregion sub-handler
 
+//#region sub-handler
 function commentInfoHandler() {
   isUpdated = true;
 
@@ -705,6 +719,12 @@ async function updateHandler(event) {
         html += htmls.workInfoList(workInfo);
       }
     }
+
+    html += `
+    <div class='add-row'>
+      <button id='add'>add</button>
+    </div>
+    `;
     workInfosDOM.textContent = "";
     workInfosDOM.insertAdjacentHTML("beforeend", html);
 

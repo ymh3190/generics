@@ -1,12 +1,11 @@
 .signin,
 .signup {
-  padding: initial;
-  gap: initial;
+  padding: initial !important;
+  gap: initial !important;
   grid-template-columns: none;
   border: 1px solid rgba(0, 0, 0, 1);
   height: $heightSign;
-  padding: 0 1rem 0 1rem;
-  border-radius: 1rem;
+  padding: 0 1rem 0 1rem !important;
 
   .top {
     justify-self: center;

@@ -8,6 +8,16 @@
 //     `;
 //   }
 // }
+/**
+ * 1. item - items, item
+ * 2. workOrder - workOrders, workOrder
+ * 3. workDetail - workDetails, workDetail
+ * 4. workInfo - workInfos, workInfo
+ * 5. client - clients, client
+ * 6. remnantDetail - remnantDetails, remnantDetail
+ * 7. remnantZone - remnantZones, remnantZone
+ * 8. data && html
+ */
 
 //#region item
 /**
@@ -174,50 +184,52 @@ const detailInfoList = (workInfo) => {
  * @param {{}} workInfo { item, workDetail }
  * @returns text/html
  */
-const workInfoList = (workInfo) => {
-  return `
-    <div id='workInfo' class='work-info' data-work_detail_id='${workInfo.workDetail.id}' data-item_id='${workInfo.item.id}'>
-      <div class='top'>
-        <span id='item'>${workInfo.item.name}</span>
-      </div>
-      <div class='bottom'>
-        <div class='detail'>
-          <div>
-            <span>depth</span>
+const workInfoList = (workInfo = null) => {
+  if (workInfo) {
+    return `
+      <div id='workInfo' class='work-info' data-work_detail_id='${workInfo.workDetail.id}' data-item_id='${workInfo.item.id}'>
+        <div class='top'>
+          <span id='item'>${workInfo.item.name}</span>
+        </div>
+        <div class='bottom'>
+          <div class='detail'>
+            <div>
+              <span>depth</span>
+            </div>
+            <div>
+              <span>width</span>
+            </div>
+            <div>
+              <span>length</span>
+            </div>
+            <div>
+              <span>quantity</span>
+            </div>
+            <div>
+              <span>remnant</span>
+            </div>
           </div>
-          <div>
-            <span>width</span>
-          </div>
-          <div>
-            <span>length</span>
-          </div>
-          <div>
-            <span>quantity</span>
-          </div>
-          <div>
-            <span>remnant</span>
+          <div class='values'>
+            <div>
+              <span id='depth'>${workInfo.workDetail.depth}</span>
+            </div>
+            <div>
+              <span id='width'>${workInfo.workDetail.width}</span>
+            </div>
+            <div>
+              <span id='length'>${workInfo.workDetail.length}</span>
+            </div>
+            <div>
+              <span id='quantity'>${workInfo.workDetail.quantity}</span>
+            </div>
+            <div>
+              <span>${workInfo.workDetail.remnant}</span>
+            </div>
           </div>
         </div>
-        <div class='values'>
-          <div>
-            <span id='depth'>${workInfo.workDetail.depth}</span>
-          </div>
-          <div>
-            <span id='width'>${workInfo.workDetail.width}</span>
-          </div>
-          <div>
-            <span id='length'>${workInfo.workDetail.length}</span>
-          </div>
-          <div>
-            <span id='quantity'>${workInfo.workDetail.quantity}</span>
-          </div>
-          <div>
-            <span>${workInfo.workDetail.remnant}</span>
-          </div>
-        </div>
       </div>
-    </div>
-    `;
+      `;
+  }
 };
 
 /**
