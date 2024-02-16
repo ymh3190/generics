@@ -201,6 +201,7 @@ class AuthController {
       { username, password },
       { ip, userAgent }
     );
+    const data = await response.json();
 
     const cookies = response.headers.raw()["set-cookie"];
     const access_token = cookies.find((el) => el.startsWith("access_token"));
@@ -208,19 +209,20 @@ class AuthController {
 
     res.cookie(access_token);
     res.cookie(refresh_token);
-    res.status(200).end();
+    res.status(200).json({ message: data.message });
   }
 
   async signout(req, res) {
     const response = await FetchAPI.delete("/auth/signout", {
       cookie: req.headers.cookie,
     });
+    const data = await response.json();
     const cookies = response.headers.raw()["set-cookie"];
     const access_token = cookies.find((el) => el.startsWith("access_token"));
     const refresh_token = cookies.find((el) => el.startsWith("refresh_token"));
     res.cookie(access_token);
     res.cookie(refresh_token);
-    res.status(200).end();
+    res.status(200).json({ message: data.message });
   }
 }
 

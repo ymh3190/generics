@@ -914,6 +914,7 @@ async function updateHandler(event) {
       }
     }
 
+    isUpdated = false;
     popupDOM.classList.remove("clean");
     popupDOM.classList.add("hidden");
     workInfoPopupDOM.classList.add("hidden");
