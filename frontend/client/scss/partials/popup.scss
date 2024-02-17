@@ -343,6 +343,7 @@
 
     .add-row {
       justify-self: center;
+      align-self: center;
       // margin-top: 0.5rem;
 
       button {
@@ -366,7 +367,8 @@
 }
 
 .work-detail-popup,
-.comment-popup {
+.comment-popup,
+.add-work-info-popup {
   left: $secondaryPopupLeft;
   width: $secondaryPopupWidth;
   top: $tertiaryPopupTop;
@@ -395,7 +397,8 @@
   justify-content: center;
 }
 
-.update-work-detail-form {
+.update-work-detail-form,
+.add-work-info-form {
   display: flex;
   align-items: center;
 

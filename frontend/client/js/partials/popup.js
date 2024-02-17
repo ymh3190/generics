@@ -172,6 +172,5 @@ const createItemFormHandler = async (event) => {
 
     createClientDOM.addEventListener("click", createClientHandler);
     closeDOM.addEventListener("click", createClientHandler);
-    return;
   }
 })();

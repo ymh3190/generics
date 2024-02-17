@@ -1,9 +1,5 @@
 import FetchAPI from "../fetch-api";
 import * as htmls from "../html";
-import test from "../test";
-(async () => {
-  await test.select();
-})();
 
 const clientsDOM = document.getElementById("clients");
 const clientInputDOM = document.getElementById("clientInput");
@@ -65,11 +61,25 @@ const completeInfoDOM = document.getElementById("completeInfo");
 const buttonOptionDOM = document.getElementById("buttonOption");
 const clientInfoDOM = document.getElementById("clientInfo");
 const updateWorkDetailFormDOM = document.getElementById("updateWorkDetailForm");
+const addWorkInfoPopupDOM = document.getElementById("addWorkInfoPopup");
+const addWorkInfoFormDOM = document.getElementById("addWorkInfoForm");
+const closeAddWorkInfoPopupDOM = document.getElementById(
+  "closeAddWorkInfoPopup"
+);
+const addedItemDOM = document.getElementById("addedItem");
+const addedDepthDOM = document.getElementById("addedDepth");
+const addedWidthDOM = document.getElementById("addedWidth");
+const addedLengthDOM = document.getElementById("addedLength");
+const addedQuantityDOM = document.getElementById("addedQuantity");
+// 잔재
+// const addedRemnantDOM = document.getElementById("addedRemnant");
 //#endregion update work-order
 
-//#region status variable
-let isUpdated;
-//#endregion status variable
+//#region update status variable
+let isUpdate;
+let isUpdating;
+let isAdd;
+//#endregion update status variable
 
 //#region sub-handler
 async function clickClientHandler() {
@@ -103,7 +113,7 @@ async function clickItemHandler() {
 
 //#region sub-handler
 function bodyHandler(event) {
-  if (isUpdated) {
+  if (isUpdate) {
     return;
   }
 
@@ -154,7 +164,12 @@ function bodyHandler(event) {
 
 //#region sub-handler
 async function clientInfoUpdateHandler() {
-  isUpdated = true;
+  if (isUpdating) {
+    return;
+  }
+
+  isUpdate = true;
+  isUpdating = true;
 
   popupDOM.classList.remove("hidden");
   clientsPopupDOM.classList.remove("hidden");
@@ -183,6 +198,8 @@ async function clientInfoUpdateHandler() {
 
         const response = await FetchAPI.get(`/clients/${client_id}`);
         if (response) {
+          isUpdating = false;
+
           const data = await response.json();
 
           const associationDOM = clientInfoDOM.querySelector("#association");
@@ -210,7 +227,11 @@ async function clientInfoUpdateHandler() {
 
 //#region sub-handler
 async function urgentInfoUpdateHandler() {
-  isUpdated = true;
+  if (isUpdating) {
+    return;
+  }
+  isUpdate = true;
+  isUpdating = true;
 
   popupDOM.classList.remove("hidden");
   urgentPopupDOM.classList.remove("hidden");
@@ -223,8 +244,12 @@ async function urgentInfoUpdateHandler() {
 //#endregion sub-handler
 
 //#region sub-handler
-function commentInfoHandler() {
-  isUpdated = true;
+function commentInfoUpdateHandler() {
+  if (isUpdating) {
+    return;
+  }
+  isUpdate = true;
+  isUpdating = true;
 
   commentPopupDOM.classList.remove("hidden");
 }
@@ -294,6 +319,8 @@ const searchClientFormHandler = async (event) => {
 };
 
 const closeClientsPopupHandler = () => {
+  isUpdating = false;
+
   workInfoPopupDOM.classList.remove("blur");
   headerDOM.classList.remove("blur");
   navDOM.classList.remove("blur");
@@ -470,11 +497,21 @@ const placeHandler = async () => {
 };
 
 const closeItemsPopupHandler = () => {
-  if (isUpdated) {
+  if (isAdd) {
+    isAdd = false;
+    isUpdating = false;
+
+    workInfoPopupDOM.classList.remove("blur");
+    itemsPopupDOM.classList.add("hidden");
+    return;
+  }
+
+  if (isUpdate) {
     workDetailPopupDOM.classList.remove("hidden");
     itemsPopupDOM.classList.add("hidden");
     return;
   }
+
   itemsPopupDOM.classList.add("hidden");
   const workDetailDOM = orderPopupDetailsDOM.querySelector(
     "#workDetail:last-child"
@@ -686,9 +723,9 @@ async function updateHandler(event) {
     </div>
     `;
     commentInfoDOM.textContent = "";
-    commentInfoDOM.classList.add("update");
     commentInfoDOM.insertAdjacentHTML("beforeend", html);
-    commentInfoDOM.addEventListener("click", commentInfoHandler);
+    commentInfoDOM.addEventListener("click", commentInfoUpdateHandler);
+    commentInfoDOM.classList.add("update");
   }
 
   const clientId = this.dataset.client_id;
@@ -722,18 +759,68 @@ async function updateHandler(event) {
 
     html += `
     <div class='add-row'>
-      <button id='add'>add</button>
+      <button id='addWorkInfo'>add</button>
     </div>
     `;
     workInfosDOM.textContent = "";
     workInfosDOM.insertAdjacentHTML("beforeend", html);
+    const addWorkInfoDOM = workInfosDOM.querySelector("#addWorkInfo");
+    addWorkInfoDOM.addEventListener("click", async (event) => {
+      event.stopPropagation();
+
+      if (isUpdating) {
+        return;
+      }
+      isUpdate = true;
+      isUpdating = true;
+      isAdd = true;
+
+      addedDepthDOM.value = "";
+      addedWidthDOM.value = "";
+      addedLengthDOM.value = "";
+      addedQuantityDOM.value = "";
+
+      workInfoPopupDOM.classList.remove("clean");
+      itemsPopupDOM.classList.remove("hidden");
+      workInfoPopupDOM.classList.add("blur");
+
+      const response = await FetchAPI.get("/items");
+      if (response) {
+        const data = await response.json();
+        let html = "";
+
+        for (const item of data.items) {
+          html += htmls.itemList(item);
+        }
+        itemsDOM.textContent = "";
+        itemsDOM.insertAdjacentHTML("beforeend", html);
+
+        const itemDOMs = itemsDOM.querySelectorAll("#item");
+        itemDOMs.forEach((itemDOM) => {
+          itemDOM.addEventListener("click", () => {
+            addWorkInfoPopupDOM.classList.remove("hidden");
+            itemsPopupDOM.classList.add("hidden");
+
+            const itemName = itemDOM.querySelector("#name").textContent;
+            addedItemDOM.value = itemName;
+            addedItemDOM.dataset.id = itemDOM.dataset.id;
+          });
+        });
+      }
+    });
 
     const workInfoDOMs = workInfosDOM.querySelectorAll("#workInfo");
     workInfoDOMs.forEach((workInfoDOM) => {
       workInfoDOM.classList.add("update");
 
+      // primary derived handler
       workInfoDOM.addEventListener("click", () => {
-        isUpdated = true;
+        if (isUpdating) {
+          return;
+        }
+        isUpdate = true;
+        isUpdating = true;
+
         updateWorkDetailFormDOM.dataset.id = workInfoDOM.dataset.work_detail_id;
 
         workDetailPopupDOM.classList.remove("hidden");
@@ -743,7 +830,9 @@ async function updateHandler(event) {
         const item = workInfoDOM.querySelector("#item").textContent;
         updatedItemDOM.value = item;
         updatedItemDOM.dataset.id = workInfoDOM.dataset.item_id;
-        updatedItemDOM.addEventListener("focus", async () => {
+
+        // secondary derived handler
+        const updatedItemHandler = async () => {
           itemsPopupDOM.classList.remove("hidden");
           workDetailPopupDOM.classList.add("hidden");
 
@@ -760,7 +849,10 @@ async function updateHandler(event) {
 
             const itemDOMs = itemsDOM.querySelectorAll("#item");
             itemDOMs.forEach((itemDOM) => {
+              // tertiary derived handler
               itemDOM.addEventListener("click", () => {
+                updatedItemDOM.removeEventListener("focus", updatedItemHandler);
+
                 workDetailPopupDOM.classList.remove("hidden");
                 itemsPopupDOM.classList.add("hidden");
 
@@ -770,7 +862,8 @@ async function updateHandler(event) {
               });
             });
           }
-        });
+        };
+        updatedItemDOM.addEventListener("focus", updatedItemHandler);
 
         const depth = workInfoDOM.querySelector("#depth").textContent;
         const width = workInfoDOM.querySelector("#width").textContent;
@@ -801,7 +894,7 @@ async function updateHandler(event) {
   updateWorkInfoDOM.addEventListener("click", async (event) => {
     event.stopPropagation();
 
-    if (!isUpdated) {
+    if (!isUpdate) {
       alert("Updated not found");
       return;
     }
@@ -934,7 +1027,7 @@ async function updateHandler(event) {
       }
     }
 
-    isUpdated = false;
+    isUpdate = false;
     popupDOM.classList.remove("clean");
     popupDOM.classList.add("hidden");
     workInfoPopupDOM.classList.add("hidden");
@@ -1011,7 +1104,7 @@ const newClientHandler = () => {
 };
 
 const workInfoPopupHandler = (event) => {
-  if (isUpdated) {
+  if (isUpdate) {
     return;
   }
 
@@ -1034,7 +1127,7 @@ const workInfoPopupHandler = (event) => {
 const docsHandler = (event) => {
   const isESC = event.key === "Escape";
   if (isESC) {
-    isUpdated = false;
+    isUpdate = false;
 
     bodyDOM.removeEventListener("click", bodyHandler);
     popupDOM.classList.remove("blur");
@@ -1064,6 +1157,8 @@ const docsHandler = (event) => {
 };
 
 const closeUrgentPopupHandler = () => {
+  isUpdating = false;
+
   workInfoPopupDOM.classList.remove("blur");
   headerDOM.classList.remove("blur");
   navDOM.classList.remove("blur");
@@ -1072,6 +1167,8 @@ const closeUrgentPopupHandler = () => {
 };
 
 const updatedUrgentHandler = () => {
+  isUpdating = false;
+
   const spanDOM = urgentInfoDOM.querySelector("span");
   spanDOM.textContent = updatedUrgentDOM.checked ? "urgent" : "";
   urgentInfoDOM.dataset.is_updated = true;
@@ -1084,11 +1181,15 @@ const updatedUrgentHandler = () => {
 };
 
 const closeWorkDetailPopupHandler = () => {
+  isUpdating = false;
+
   workDetailPopupDOM.classList.add("hidden");
   workInfoPopupDOM.classList.remove("blur");
 };
 
 const closeCommentPopupHandler = () => {
+  isUpdating = false;
+
   commentPopupDOM.classList.add("hidden");
 };
 
@@ -1185,6 +1286,30 @@ const updateWorkDetailFormHandler = (event) => {
   workDetailPopupDOM.classList.add("hidden");
 };
 
+const addWorkInfoFormHandler = (event) => {
+  event.preventDefault();
+
+  isAdd = false;
+  isUpdating = false;
+
+  workInfoPopupDOM.classList.remove("blur");
+  addWorkInfoPopupDOM.classList.add("hidden");
+
+  // TODO: render added work-info
+};
+
+const closeAddWorkInfoPopupHandler = () => {
+  isUpdating = false;
+
+  addWorkInfoPopupDOM.classList.add("hidden");
+  workInfoPopupDOM.classList.remove("blur");
+};
+
+closeAddWorkInfoPopupDOM.addEventListener(
+  "click",
+  closeAddWorkInfoPopupHandler
+);
+addWorkInfoFormDOM.addEventListener("submit", addWorkInfoFormHandler);
 updateWorkDetailFormDOM.addEventListener("submit", updateWorkDetailFormHandler);
 updateCommentFormDOM.addEventListener("submit", updateCommentFormHandler);
 closeCommentPopupDOM.addEventListener("click", closeCommentPopupHandler);

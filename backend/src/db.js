@@ -394,8 +394,6 @@ export class Token extends MySQLAPI {}
 export class WorkOrder extends MySQLAPI {}
 export class WorkDetail extends MySQLAPI {}
 export class WorkLog extends MySQLAPI {}
-export class Video extends MySQLAPI {}
-export class Image extends MySQLAPI {}
 export class Item extends MySQLAPI {}
 export class Client extends MySQLAPI {}
 export class RemnantDetail extends MySQLAPI {}
