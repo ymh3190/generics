@@ -76,9 +76,8 @@ const addedQuantityDOM = document.getElementById("addedQuantity");
 //#endregion update work-order
 
 //#region update status variable
-let isUpdate;
-let isUpdating;
-let isAdd;
+let isUpdate, isUpdating;
+let isAdd, isAdded;
 //#endregion update status variable
 
 //#region sub-handler
@@ -252,6 +251,73 @@ function commentInfoUpdateHandler() {
   isUpdating = true;
 
   commentPopupDOM.classList.remove("hidden");
+}
+//#endregion sub-handler
+
+//#region sub-handler
+function workInfoUpdateHandler() {
+  if (isUpdating) {
+    return;
+  }
+  isUpdate = true;
+  isUpdating = true;
+
+  updateWorkDetailFormDOM.dataset.id = this.dataset.work_detail_id;
+
+  workDetailPopupDOM.classList.remove("hidden");
+  workInfoPopupDOM.classList.remove("clean");
+  workInfoPopupDOM.classList.add("blur");
+
+  const item = this.querySelector("#item").textContent;
+  updatedItemDOM.value = item;
+  updatedItemDOM.dataset.id = this.dataset.item_id;
+
+  // secondary derived handler
+  const updatedItemHandler = async () => {
+    itemsPopupDOM.classList.remove("hidden");
+    workDetailPopupDOM.classList.add("hidden");
+
+    const response = await FetchAPI.get("/items");
+    if (response) {
+      const data = await response.json();
+      let html = "";
+
+      for (const item of data.items) {
+        html += htmls.itemList(item);
+      }
+      itemsDOM.textContent = "";
+      itemsDOM.insertAdjacentHTML("beforeend", html);
+
+      const itemDOMs = itemsDOM.querySelectorAll("#item");
+      itemDOMs.forEach((itemDOM) => {
+        // tertiary derived handler
+        itemDOM.addEventListener("click", () => {
+          updatedItemDOM.removeEventListener("focus", updatedItemHandler);
+
+          workDetailPopupDOM.classList.remove("hidden");
+          itemsPopupDOM.classList.add("hidden");
+
+          const itemName = itemDOM.querySelector("#name").textContent;
+          updatedItemDOM.value = itemName;
+          updatedItemDOM.dataset.id = itemDOM.dataset.id;
+        });
+      });
+    }
+  };
+  updatedItemDOM.addEventListener("focus", updatedItemHandler);
+
+  const depth = this.querySelector("#depth").textContent;
+  const width = this.querySelector("#width").textContent;
+  const length = this.querySelector("#length").textContent;
+  const quantity = this.querySelector("#quantity").textContent;
+  updatedDepthDOM.value = depth;
+  updatedWidthDOM.value = width;
+  updatedLengthDOM.value = length;
+  updatedQuantityDOM.value = quantity;
+
+  // 잔재
+  // const remnant = this.querySelector("#remnant").textContent;
+  // updatedRemnantDOM.value = remnant;
 }
 //#endregion sub-handler
 
@@ -814,70 +880,7 @@ async function updateHandler(event) {
       workInfoDOM.classList.add("update");
 
       // primary derived handler
-      workInfoDOM.addEventListener("click", () => {
-        if (isUpdating) {
-          return;
-        }
-        isUpdate = true;
-        isUpdating = true;
-
-        updateWorkDetailFormDOM.dataset.id = workInfoDOM.dataset.work_detail_id;
-
-        workDetailPopupDOM.classList.remove("hidden");
-        workInfoPopupDOM.classList.remove("clean");
-        workInfoPopupDOM.classList.add("blur");
-
-        const item = workInfoDOM.querySelector("#item").textContent;
-        updatedItemDOM.value = item;
-        updatedItemDOM.dataset.id = workInfoDOM.dataset.item_id;
-
-        // secondary derived handler
-        const updatedItemHandler = async () => {
-          itemsPopupDOM.classList.remove("hidden");
-          workDetailPopupDOM.classList.add("hidden");
-
-          const response = await FetchAPI.get("/items");
-          if (response) {
-            const data = await response.json();
-            let html = "";
-
-            for (const item of data.items) {
-              html += htmls.itemList(item);
-            }
-            itemsDOM.textContent = "";
-            itemsDOM.insertAdjacentHTML("beforeend", html);
-
-            const itemDOMs = itemsDOM.querySelectorAll("#item");
-            itemDOMs.forEach((itemDOM) => {
-              // tertiary derived handler
-              itemDOM.addEventListener("click", () => {
-                updatedItemDOM.removeEventListener("focus", updatedItemHandler);
-
-                workDetailPopupDOM.classList.remove("hidden");
-                itemsPopupDOM.classList.add("hidden");
-
-                const itemName = itemDOM.querySelector("#name").textContent;
-                updatedItemDOM.value = itemName;
-                updatedItemDOM.dataset.id = itemDOM.dataset.id;
-              });
-            });
-          }
-        };
-        updatedItemDOM.addEventListener("focus", updatedItemHandler);
-
-        const depth = workInfoDOM.querySelector("#depth").textContent;
-        const width = workInfoDOM.querySelector("#width").textContent;
-        const length = workInfoDOM.querySelector("#length").textContent;
-        const quantity = workInfoDOM.querySelector("#quantity").textContent;
-        updatedDepthDOM.value = depth;
-        updatedWidthDOM.value = width;
-        updatedLengthDOM.value = length;
-        updatedQuantityDOM.value = quantity;
-
-        // 잔재
-        // const remnant = workInfoDOM.querySelector("#remnant").textContent;
-        // updatedRemnantDOM.value = remnant;
-      });
+      workInfoDOM.addEventListener("click", workInfoUpdateHandler);
     });
   }
 
@@ -893,6 +896,36 @@ async function updateHandler(event) {
   const updateWorkInfoDOM = buttonOptionDOM.querySelector("#updateWorkInfo");
   updateWorkInfoDOM.addEventListener("click", async (event) => {
     event.stopPropagation();
+
+    if (isAdded) {
+      const workInfoDOMs = workInfosDOM.querySelectorAll("#workInfo");
+      for (const workInfoDOM of workInfoDOMs) {
+        if (!workInfoDOM.dataset.work_detail_id) {
+          const work_order_id = workInfoDOM.dataset.work_order_id;
+          const item_id = workInfoDOM.dataset.item_id;
+          const depth = workInfoDOM.querySelector("#depth").textContent;
+          const width = workInfoDOM.querySelector("#width").textContent;
+          const length = workInfoDOM.querySelector("#length").textContent;
+          const quantity = workInfoDOM.querySelector("#quantity").textContent;
+          // 잔재
+          // const remnant = workInfoDOM.querySelector("#remnant");
+
+          const workDetail = {
+            work_order_id,
+            item_id,
+            depth,
+            width,
+            length,
+            quantity,
+          };
+          const response = await FetchAPI.post(`/work-details`, workDetail);
+          if (!response) {
+            return;
+          }
+        }
+      }
+      isAdded = false;
+    }
 
     if (!isUpdate) {
       alert("Updated not found");
@@ -1279,9 +1312,13 @@ const updateWorkDetailFormHandler = (event) => {
       // remnantDOM.textContent = updatedRemnantDOM.value;
 
       workInfoDOM.classList.add("updated");
-      workInfoDOM.dataset.is_updated = true;
+      if (workInfoDOM.dataset.work_detail_id) {
+        workInfoDOM.dataset.is_updated = true;
+      }
     }
   });
+
+  isUpdating = false;
 
   workDetailPopupDOM.classList.add("hidden");
 };
@@ -1292,14 +1329,75 @@ const addWorkInfoFormHandler = (event) => {
   isAdd = false;
   isUpdating = false;
 
+  let workInfoDOMs = workInfosDOM.querySelectorAll("#workInfo");
+  const lastWorkInfoDOM = workInfoDOMs[workInfoDOMs.length - 1];
+  const work_order_id = workInfoDOMs[0].dataset.work_order_id;
+  const addedItem = addedItemDOM.value;
+  const addedDepth = addedDepthDOM.value;
+  const addedWidth = addedWidthDOM.value;
+  const addedLength = addedLengthDOM.value;
+  const addedQuantity = addedQuantityDOM.value;
+  // 잔재
+  // const addedRemnant = addedRemnantDOM.value;
+  if (!addedItem) {
+    alert("Provide item");
+    addedItemDOM.focus();
+    return;
+  }
+
+  if (!addedDepth) {
+    alert("Provide depth");
+    addedDepthDOM.focus();
+    return;
+  }
+
+  if (!addedWidth) {
+    alert("Provide depth");
+    addedWidthDOM.focus();
+    return;
+  }
+
+  if (!addedLength) {
+    alert("Provide depth");
+    addedLengthDOM.focus();
+    return;
+  }
+
+  if (!addedQuantity) {
+    alert("Provide depth");
+    addedQuantityDOM.focus();
+    return;
+  }
+
+  const item = { id: addedItemDOM.dataset.id, name: addedItem };
+  const workDetail = {
+    id: "",
+    work_order_id,
+    depth: addedDepth,
+    width: addedWidth,
+    length: addedLength,
+    quantity: addedQuantity,
+    /* remnant */
+  };
+
+  const workInfo = { item, workDetail };
+  const html = htmls.workInfoList(workInfo);
+  lastWorkInfoDOM.insertAdjacentHTML("afterend", html);
+
+  workInfoDOMs = workInfosDOM.querySelectorAll("#workInfo");
+  const addedWorkInfoDOM = workInfoDOMs[workInfoDOMs.length - 1];
+  addedWorkInfoDOM.addEventListener("click", workInfoUpdateHandler);
+  addedWorkInfoDOM.classList.add("update", "updated");
+
+  isAdded = true;
+
   workInfoPopupDOM.classList.remove("blur");
   addWorkInfoPopupDOM.classList.add("hidden");
-
-  // TODO: render added work-info
 };
 
 const closeAddWorkInfoPopupHandler = () => {
   isUpdating = false;
+  isAdd = false;
 
   addWorkInfoPopupDOM.classList.add("hidden");
   workInfoPopupDOM.classList.remove("blur");

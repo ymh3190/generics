@@ -228,7 +228,10 @@ class WorkDetailController {
   async selectByWorkOrderId(req, res) {
     const { id: work_order_id } = req.params;
 
-    const workDetails = await WorkDetail.select({ work_order_id });
+    const workDetails = await WorkDetail.select(
+      { work_order_id },
+      { created_at: "asc" }
+    );
     res.status(200).json({ workDetails });
   }
 

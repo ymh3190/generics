@@ -8,18 +8,8 @@ class RootController {
   }
 
   async getWorkOrder(req, res) {
-    // const { years, months, dates } = util.getDateTime();
-    // const date = `${years}-${months}-${dates}`;
-
-    // const response = await FetchAPI.post(
-    //   "/work-orders/date",
-    //   { created_at: `${years}-${months}-${dates}` },
-    //   {
-    //     cookie: req.headers.cookie,
-    //   }
-    // );
-
     let response;
+
     try {
       response = await FetchAPI.get("/work-orders", {
         cookie: req.headers.cookie,
@@ -35,10 +25,6 @@ class RootController {
       });
     }
 
-    // const response = await FetchAPI.get("/work-orders", {
-    //   cookie: req.headers.cookie,
-    // });
-
     const data = await response.json();
     const workOrders = data.workOrders;
 
@@ -46,7 +32,7 @@ class RootController {
     if (!cookies) {
       return res.status(200).render("work-order", {
         pageTitle: "Work Order",
-        workOrders /* date */,
+        workOrders,
       });
     }
 
@@ -56,7 +42,7 @@ class RootController {
     res.cookie(refresh_token);
     res
       .status(200)
-      .render("work-order", { pageTitle: "Work Order", workOrders /* date */ });
+      .render("work-order", { pageTitle: "Work Order", workOrders });
   }
 
   async getRemnant(req, res) {
