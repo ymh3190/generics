@@ -1,12 +1,12 @@
-import FetchAPI from "../fetch-api";
-import * as htmls from "../html";
+// import FetchAPI from "../fetch-api";
+// import * as htmls from "../html";
 
 (() => {
   let workOrderContainerDOMs = document.querySelectorAll("#workOrderContainer");
   if (workOrderContainerDOMs.length) {
-    let workDetailPopupDOM;
-    let popupDOM;
-    let workInfosDOM;
+    // let workInfoPopupDOM;
+    // let popupDOM;
+    // let workInfosDOM;
 
     const allChipDOM = document.getElementById("allChip");
     const resolvingChipDOM = document.getElementById("resolvingChip");
@@ -14,115 +14,114 @@ import * as htmls from "../html";
     const urgentChipDOM = document.getElementById("urgentChip");
     const dateChipDOM = document.getElementById("dateChip");
     const dateDOM = dateChipDOM.querySelector("#date");
-    const contentDOM = document.getElementById("content");
-    const bodyDOM = document.querySelector("body");
+    // const contentDOM = document.getElementById("content");
+    // const bodyDOM = document.querySelector("body");
 
-    async function workOrderContainerHandler(event) {
-      event.stopPropagation();
+    // async function workOrderContainerHandler(event) {
+    //   event.stopPropagation();
 
-      if (workDetailPopupDOM.classList.contains("hidden")) {
-        bodyDOM.addEventListener("click", bodyHandler);
-      }
-      popupDOM.classList.remove("hidden");
-      workDetailPopupDOM.classList.remove("hidden");
+    //   if (workInfoPopupDOM.classList.contains("hidden")) {
+    //     bodyDOM.addEventListener("click", bodyHandler);
+    //   }
+    //   popupDOM.classList.remove("hidden");
+    //   workInfoPopupDOM.classList.remove("hidden");
 
-      const workOrderId = this.dataset.id;
+    //   const workOrderId = this.dataset.id;
 
-      let workOrder;
-      let response = await FetchAPI.get(`/work-orders/${workOrderId}`);
-      if (response) {
-        const data = await response.json();
-        workOrder = data.workOrder;
-        let html = `
-        <div>
-          <div class='top'>
-            <span>${workOrder.is_complete ? "complete" : "resolving"}</span>
-          </div>
-          ${
-            workOrder.is_complete
-              ? `<div><span>${workOrder.end_date}</span></div>`
-              : ""
-          }
-        </div>
-        `;
-        const completeInfoDOM =
-          workDetailPopupDOM.querySelector("#completeInfo");
-        completeInfoDOM.textContent = "";
-        completeInfoDOM.insertAdjacentHTML("beforeend", html);
+    //   let workOrder;
+    //   let response = await FetchAPI.get(`/work-orders/${workOrderId}`);
+    //   if (response) {
+    //     const data = await response.json();
+    //     workOrder = data.workOrder;
+    //     let html = `
+    //     <div>
+    //       <div class='top'>
+    //         <span>${workOrder.is_complete ? "complete" : "resolving"}</span>
+    //       </div>
+    //       ${
+    //         workOrder.is_complete
+    //           ? `<div><span>${workOrder.end_date}</span></div>`
+    //           : ""
+    //       }
+    //     </div>
+    //     `;
+    //     const completeInfoDOM = workInfoPopupDOM.querySelector("#completeInfo");
+    //     completeInfoDOM.textContent = "";
+    //     completeInfoDOM.insertAdjacentHTML("beforeend", html);
 
-        html = `
-        <div>
-          <span>${workOrder.is_urgent ? "urgent" : ""}</span>
-        </div>
-        `;
-        const urgentInfoDOM = workDetailPopupDOM.querySelector("#urgentInfo");
-        urgentInfoDOM.textContent = "";
-        urgentInfoDOM.insertAdjacentHTML("beforeend", html);
+    //     html = `
+    //     <div>
+    //       <span>${workOrder.is_urgent ? "urgent" : ""}</span>
+    //     </div>
+    //     `;
+    //     const urgentInfoDOM = workInfoPopupDOM.querySelector("#urgentInfo");
+    //     urgentInfoDOM.textContent = "";
+    //     urgentInfoDOM.insertAdjacentHTML("beforeend", html);
 
-        html = `
-        <div>
-          <span>${workOrder.comment}</span>
-        </div>
-        `;
-        const commentInfoDOM = workDetailPopupDOM.querySelector("#commentInfo");
-        commentInfoDOM.textContent = "";
-        commentInfoDOM.insertAdjacentHTML("beforeend", html);
-      }
+    //     html = `
+    //     <div>
+    //       <span>${workOrder.comment}</span>
+    //     </div>
+    //     `;
+    //     const commentInfoDOM = workInfoPopupDOM.querySelector("#commentInfo");
+    //     commentInfoDOM.textContent = "";
+    //     commentInfoDOM.insertAdjacentHTML("beforeend", html);
+    //   }
 
-      const clientId = this.dataset.client_id;
-      response = await FetchAPI.get(`/clients/${clientId}`);
-      if (response) {
-        const data = await response.json();
-        const clientDOM = workDetailPopupDOM.querySelector("#client");
-        const html = htmls.clientList(data.client);
-        clientDOM.textContent = "";
-        clientDOM.insertAdjacentHTML("beforeend", html);
-      }
+    //   const clientId = this.dataset.client_id;
+    //   response = await FetchAPI.get(`/clients/${clientId}`);
+    //   if (response) {
+    //     const data = await response.json();
+    //     const clientDOM = workInfoPopupDOM.querySelector("#client");
+    //     const html = htmls.clientList(data.client);
+    //     clientDOM.textContent = "";
+    //     clientDOM.insertAdjacentHTML("beforeend", html);
+    //   }
 
-      response = await FetchAPI.get(`/work-orders/${workOrderId}/details`);
-      if (response) {
-        const data = await response.json();
-        const workDetails = data.workDetails;
-        let html = "";
+    //   response = await FetchAPI.get(`/work-orders/${workOrderId}/details`);
+    //   if (response) {
+    //     const data = await response.json();
+    //     const workDetails = data.workDetails;
+    //     let html = "";
 
-        for (const workDetail of workDetails) {
-          const itemId = workDetail.item_id;
-          const response = await FetchAPI.get(`/items/${itemId}`);
-          if (response) {
-            const data = await response.json();
-            const item = data.item;
-            const workInfo = { workDetail, item };
-            html += htmls.workInfoList(workInfo);
-          }
-        }
-        workInfosDOM.textContent = "";
-        workInfosDOM.insertAdjacentHTML("beforeend", html);
-      }
-    }
+    //     for (const workDetail of workDetails) {
+    //       const itemId = workDetail.item_id;
+    //       const response = await FetchAPI.get(`/items/${itemId}`);
+    //       if (response) {
+    //         const data = await response.json();
+    //         const item = data.item;
+    //         const workInfo = { workDetail, item };
+    //         html += htmls.workInfoList(workInfo);
+    //       }
+    //     }
+    //     workInfosDOM.textContent = "";
+    //     workInfosDOM.insertAdjacentHTML("beforeend", html);
+    //   }
+    // }
 
-    function bodyHandler(event) {
-      if (event.target === workDetailPopupDOM) {
-        return;
-      }
+    // function bodyHandler(event) {
+    //   if (event.target === workInfoPopupDOM) {
+    //     return;
+    //   }
 
-      const spanDOMs = workDetailPopupDOM.querySelectorAll("span");
-      for (const spanDOM of spanDOMs) {
-        if (event.target === spanDOM) {
-          return;
-        }
-      }
+    //   const spanDOMs = workInfoPopupDOM.querySelectorAll("span");
+    //   for (const spanDOM of spanDOMs) {
+    //     if (event.target === spanDOM) {
+    //       return;
+    //     }
+    //   }
 
-      const divDOMs = workDetailPopupDOM.querySelectorAll("div");
-      for (const divDOM of divDOMs) {
-        if (event.target === divDOM) {
-          return;
-        }
-      }
+    //   const divDOMs = workInfoPopupDOM.querySelectorAll("div");
+    //   for (const divDOM of divDOMs) {
+    //     if (event.target === divDOM) {
+    //       return;
+    //     }
+    //   }
 
-      bodyDOM.removeEventListener("click", bodyHandler);
-      popupDOM.classList.add("hidden");
-      workDetailPopupDOM.classList.add("hidden");
-    }
+    //   bodyDOM.removeEventListener("click", bodyHandler);
+    //   popupDOM.classList.add("hidden");
+    //   workInfoPopupDOM.classList.add("hidden");
+    // }
 
     function spotlightChip(dom) {
       const chips = [
@@ -196,47 +195,15 @@ import * as htmls from "../html";
 
     const dateHandler = async () => {
       spotlightChip(dateChipDOM);
-      workOrderContainerDOMs = document.querySelectorAll("#workOrderContainer");
-      workOrderContainerDOMs.forEach((workOrderContainerDOM) => {
-        workOrderContainerDOM.remove();
-      });
-
-      const date = dateDOM.value;
-      const response = await FetchAPI.post("/work-orders/date", {
-        created_at: date,
-      });
-      if (response) {
-        const data = await response.json();
-
-        data.workOrders.forEach(async (workOrder) => {
-          const response = await FetchAPI.get(
-            `/clients/${workOrder.client_id}`
-          );
-          if (response) {
-            const data = await response.json();
-            const html = htmls.workOrderList(workOrder, data.client);
-            contentDOM.insertAdjacentHTML("beforeend", html);
-            workOrderContainerDOMs = document.querySelectorAll(
-              "#workOrderContainer"
-            );
-            workOrderContainerDOMs.forEach((workOrderContainerDOM) => {
-              workOrderContainerDOM.addEventListener(
-                "click",
-                workOrderContainerHandler
-              );
-            });
-          }
-        });
-      }
     };
 
-    const documentHandler = () => {
-      workDetailPopupDOM = document.getElementById("workDetailPopup");
+    const docsHandler = () => {
+      workInfoPopupDOM = document.getElementById("workInfoPopup");
       popupDOM = document.getElementById("popup");
       workInfosDOM = document.getElementById("workInfos");
     };
 
-    document.addEventListener("DOMContentLoaded", documentHandler);
+    document.addEventListener("DOMContentLoaded", docsHandler);
     dateDOM.addEventListener("change", dateHandler);
     urgentChipDOM.addEventListener("click", urgentChipHandler);
     completeChipDOM.addEventListener("click", completeChipHandler);

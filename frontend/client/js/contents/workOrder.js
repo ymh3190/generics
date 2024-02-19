@@ -75,6 +75,9 @@ const addedQuantityDOM = document.getElementById("addedQuantity");
 // const addedRemnantDOM = document.getElementById("addedRemnant");
 //#endregion update work-order
 
+const dateChipDOM = document.getElementById("dateChip");
+const dateDOM = dateChipDOM.querySelector("#date");
+
 //#region update status variable
 let isUpdate, isUpdating;
 let isAdd, isAdded;
@@ -1413,6 +1416,48 @@ closeAddWorkInfoPopupDOM.addEventListener(
   "click",
   closeAddWorkInfoPopupHandler
 );
+
+const dateHandler = async () => {
+  let workOrderContainerDOMs = document.querySelectorAll("#workOrderContainer");
+  workOrderContainerDOMs = document.querySelectorAll("#workOrderContainer");
+  workOrderContainerDOMs.forEach((workOrderContainerDOM) => {
+    workOrderContainerDOM.remove();
+  });
+
+  const date = dateDOM.value;
+  const response = await FetchAPI.post("/work-orders/date", {
+    created_at: date,
+  });
+  if (response) {
+    const data = await response.json();
+
+    data.workOrders.forEach(async (workOrder) => {
+      const response = await FetchAPI.get(`/clients/${workOrder.client_id}`);
+      if (response) {
+        const data = await response.json();
+        const html = htmls.workOrderList(workOrder, data.client);
+        contentDOM.insertAdjacentHTML("beforeend", html);
+        workOrderContainerDOMs = document.querySelectorAll(
+          "#workOrderContainer"
+        );
+        workOrderContainerDOMs.forEach((workOrderContainerDOM) => {
+          workOrderContainerDOM.addEventListener(
+            "click",
+            workOrderContainerHandler
+          );
+          const rightDOM = workOrderContainerDOM.querySelector("#right");
+          rightDOM.addEventListener("click", rightHandler);
+          const deleteDOM = workOrderContainerDOM.querySelector("#delete");
+          deleteDOM.addEventListener("click", deleteHandler);
+          const updateDOM = workOrderContainerDOM.querySelector("#update");
+          updateDOM.addEventListener("click", updateHandler);
+        });
+      }
+    });
+  }
+};
+
+dateDOM.addEventListener("change", dateHandler);
 addWorkInfoFormDOM.addEventListener("submit", addWorkInfoFormHandler);
 updateWorkDetailFormDOM.addEventListener("submit", updateWorkDetailFormHandler);
 updateCommentFormDOM.addEventListener("submit", updateCommentFormHandler);

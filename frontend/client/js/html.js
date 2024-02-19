@@ -1,24 +1,3 @@
-// TODO: html tag generics
-// class ItemHTML {
-//   renderItem(item) {
-//     return `
-//     <div data-id=${item.id} id='item' class='item-container'>
-//       <span id='name'>${item.name}</span>
-//     </div>
-//     `;
-//   }
-// }
-/**
- * 1. item - items, item
- * 2. workOrder - workOrders, workOrder
- * 3. workDetail - workDetails, workDetail
- * 4. workInfo - workInfos, workInfo
- * 5. client - clients, client
- * 6. remnantDetail - remnantDetails, remnantDetail
- * 7. remnantZone - remnantZones, remnantZone
- * 8. data && html
- */
-
 //#region item
 /**
  * @param {{}} item
@@ -247,14 +226,48 @@ const workOrderList = (workOrder, client) => {
     data-is_urgent="${workOrder.is_urgent}">
         <div class="preview">
             <div class="preview-top">
+                <div class="left">
                 <div>
-                  <span>${
-                    workOrder.is_complete ? "complete" : "resolving"
-                  }</span>
+                    ${
+                      !workOrder.is_complet
+                        ? '<span id="complete">resolving</span>'
+                        : `<span>complete</span><div><span>${workOrder.end_date}</span></div>`
+                    }
                 </div>
                 <div>
-                  <span>${workOrder.is_urgent ? "urgent" : ""}</span>
+                    ${
+                      workOrder.is_urgent
+                        ? '<span id="urgent">urgent</span>'
+                        : '<span id="urgent"></span>'
+                    }
                 </div>
+            </div>
+            <div class="right" id="right">
+                <a id="ellipsis">
+                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                </a>
+                <div class="embedded hidden" id="embedded">
+                    <div class="primary">
+                        <div class="embedded-list">
+                            <a class="endpoint__update" id="update" data-id="${
+                              workOrder.id
+                            }"
+                                data-client_id="${workOrder.client_id}">
+                                <i class="fa-solid fa-scissors"></i>
+                                <span>update</span>
+                            </a>
+                        </div>
+                        <div class="embedded-list">
+                            <a class="endpoint__delete" id="delete" data-id="${
+                              workOrder.id
+                            }">
+                                <i class="fa-regular fa-trash-can"></i>
+                                <span>delete</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
             </div>
             <div class="preview-bottom">
                 <span>
@@ -264,7 +277,7 @@ const workOrderList = (workOrder, client) => {
         </div>
         <div class="metadata">
             <div id="client" class="client">
-                <div>
+                <div class='left'>
                   <span>${client.association}</span>
                 </div>
                 <div>
