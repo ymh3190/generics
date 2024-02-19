@@ -250,6 +250,9 @@ function commentInfoUpdateHandler() {
   isUpdate = true;
   isUpdating = true;
 
+  const commentDOM = updateCommentFormDOM.querySelector("#comment");
+  commentDOM.value = commentInfoDOM.querySelector("span").textContent;
+
   commentPopupDOM.classList.remove("hidden");
 }
 //#endregion sub-handler
@@ -1229,12 +1232,15 @@ const closeCommentPopupHandler = () => {
 const updateCommentFormHandler = (event) => {
   event.preventDefault();
 
-  commentInfoDOM.dataset.is_updated = true;
+  isUpdating = false;
 
   const workCommentDOM = commentPopupDOM.querySelector("#comment");
   const commentSpan = workInfoPopupDOM.querySelector("#commentInfo span");
   commentSpan.textContent = workCommentDOM.value;
   workCommentDOM.value = "";
+
+  commentInfoDOM.dataset.is_updated = true;
+
   commentPopupDOM.classList.add("hidden");
   commentInfoDOM.classList.add("updated");
 };
