@@ -17,111 +17,111 @@
     // const contentDOM = document.getElementById("content");
     // const bodyDOM = document.querySelector("body");
 
-    // async function workOrderContainerHandler(event) {
-    //   event.stopPropagation();
+    /* async function workOrderContainerHandler(event) {
+      event.stopPropagation();
 
-    //   if (workInfoPopupDOM.classList.contains("hidden")) {
-    //     bodyDOM.addEventListener("click", bodyHandler);
-    //   }
-    //   popupDOM.classList.remove("hidden");
-    //   workInfoPopupDOM.classList.remove("hidden");
+      if (workInfoPopupDOM.classList.contains("hidden")) {
+        bodyDOM.addEventListener("click", bodyHandler);
+      }
+      popupDOM.classList.remove("hidden");
+      workInfoPopupDOM.classList.remove("hidden");
 
-    //   const workOrderId = this.dataset.id;
+      const workOrderId = this.dataset.id;
 
-    //   let workOrder;
-    //   let response = await FetchAPI.get(`/work-orders/${workOrderId}`);
-    //   if (response) {
-    //     const data = await response.json();
-    //     workOrder = data.workOrder;
-    //     let html = `
-    //     <div>
-    //       <div class='top'>
-    //         <span>${workOrder.is_complete ? "complete" : "resolving"}</span>
-    //       </div>
-    //       ${
-    //         workOrder.is_complete
-    //           ? `<div><span>${workOrder.end_date}</span></div>`
-    //           : ""
-    //       }
-    //     </div>
-    //     `;
-    //     const completeInfoDOM = workInfoPopupDOM.querySelector("#completeInfo");
-    //     completeInfoDOM.textContent = "";
-    //     completeInfoDOM.insertAdjacentHTML("beforeend", html);
+      let workOrder;
+      let response = await FetchAPI.get(`/work-orders/${workOrderId}`);
+      if (response) {
+        const data = await response.json();
+        workOrder = data.workOrder;
+        let html = `
+        <div>
+          <div class='top'>
+            <span>${workOrder.is_complete ? "complete" : "resolving"}</span>
+          </div>
+          ${
+            workOrder.is_complete
+              ? `<div><span>${workOrder.end_date}</span></div>`
+              : ""
+          }
+        </div>
+        `;
+        const completeInfoDOM = workInfoPopupDOM.querySelector("#completeInfo");
+        completeInfoDOM.textContent = "";
+        completeInfoDOM.insertAdjacentHTML("beforeend", html);
 
-    //     html = `
-    //     <div>
-    //       <span>${workOrder.is_urgent ? "urgent" : ""}</span>
-    //     </div>
-    //     `;
-    //     const urgentInfoDOM = workInfoPopupDOM.querySelector("#urgentInfo");
-    //     urgentInfoDOM.textContent = "";
-    //     urgentInfoDOM.insertAdjacentHTML("beforeend", html);
+        html = `
+        <div>
+          <span>${workOrder.is_urgent ? "urgent" : ""}</span>
+        </div>
+        `;
+        const urgentInfoDOM = workInfoPopupDOM.querySelector("#urgentInfo");
+        urgentInfoDOM.textContent = "";
+        urgentInfoDOM.insertAdjacentHTML("beforeend", html);
 
-    //     html = `
-    //     <div>
-    //       <span>${workOrder.comment}</span>
-    //     </div>
-    //     `;
-    //     const commentInfoDOM = workInfoPopupDOM.querySelector("#commentInfo");
-    //     commentInfoDOM.textContent = "";
-    //     commentInfoDOM.insertAdjacentHTML("beforeend", html);
-    //   }
+        html = `
+        <div>
+          <span>${workOrder.comment}</span>
+        </div>
+        `;
+        const commentInfoDOM = workInfoPopupDOM.querySelector("#commentInfo");
+        commentInfoDOM.textContent = "";
+        commentInfoDOM.insertAdjacentHTML("beforeend", html);
+      }
 
-    //   const clientId = this.dataset.client_id;
-    //   response = await FetchAPI.get(`/clients/${clientId}`);
-    //   if (response) {
-    //     const data = await response.json();
-    //     const clientDOM = workInfoPopupDOM.querySelector("#client");
-    //     const html = htmls.clientList(data.client);
-    //     clientDOM.textContent = "";
-    //     clientDOM.insertAdjacentHTML("beforeend", html);
-    //   }
+      const clientId = this.dataset.client_id;
+      response = await FetchAPI.get(`/clients/${clientId}`);
+      if (response) {
+        const data = await response.json();
+        const clientDOM = workInfoPopupDOM.querySelector("#client");
+        const html = htmls.clientList(data.client);
+        clientDOM.textContent = "";
+        clientDOM.insertAdjacentHTML("beforeend", html);
+      }
 
-    //   response = await FetchAPI.get(`/work-orders/${workOrderId}/details`);
-    //   if (response) {
-    //     const data = await response.json();
-    //     const workDetails = data.workDetails;
-    //     let html = "";
+      response = await FetchAPI.get(`/work-orders/${workOrderId}/details`);
+      if (response) {
+        const data = await response.json();
+        const workDetails = data.workDetails;
+        let html = "";
 
-    //     for (const workDetail of workDetails) {
-    //       const itemId = workDetail.item_id;
-    //       const response = await FetchAPI.get(`/items/${itemId}`);
-    //       if (response) {
-    //         const data = await response.json();
-    //         const item = data.item;
-    //         const workInfo = { workDetail, item };
-    //         html += htmls.workInfoList(workInfo);
-    //       }
-    //     }
-    //     workInfosDOM.textContent = "";
-    //     workInfosDOM.insertAdjacentHTML("beforeend", html);
-    //   }
-    // }
+        for (const workDetail of workDetails) {
+          const itemId = workDetail.item_id;
+          const response = await FetchAPI.get(`/items/${itemId}`);
+          if (response) {
+            const data = await response.json();
+            const item = data.item;
+            const workInfo = { workDetail, item };
+            html += htmls.workInfoList(workInfo);
+          }
+        }
+        workInfosDOM.textContent = "";
+        workInfosDOM.insertAdjacentHTML("beforeend", html);
+      }
+    }
 
-    // function bodyHandler(event) {
-    //   if (event.target === workInfoPopupDOM) {
-    //     return;
-    //   }
+    function bodyHandler(event) {
+      if (event.target === workInfoPopupDOM) {
+        return;
+      }
 
-    //   const spanDOMs = workInfoPopupDOM.querySelectorAll("span");
-    //   for (const spanDOM of spanDOMs) {
-    //     if (event.target === spanDOM) {
-    //       return;
-    //     }
-    //   }
+      const spanDOMs = workInfoPopupDOM.querySelectorAll("span");
+      for (const spanDOM of spanDOMs) {
+        if (event.target === spanDOM) {
+          return;
+        }
+      }
 
-    //   const divDOMs = workInfoPopupDOM.querySelectorAll("div");
-    //   for (const divDOM of divDOMs) {
-    //     if (event.target === divDOM) {
-    //       return;
-    //     }
-    //   }
+      const divDOMs = workInfoPopupDOM.querySelectorAll("div");
+      for (const divDOM of divDOMs) {
+        if (event.target === divDOM) {
+          return;
+        }
+      }
 
-    //   bodyDOM.removeEventListener("click", bodyHandler);
-    //   popupDOM.classList.add("hidden");
-    //   workInfoPopupDOM.classList.add("hidden");
-    // }
+      bodyDOM.removeEventListener("click", bodyHandler);
+      popupDOM.classList.add("hidden");
+      workInfoPopupDOM.classList.add("hidden");
+    } */
 
     function spotlightChip(dom) {
       const chips = [
