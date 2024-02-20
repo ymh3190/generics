@@ -71,6 +71,7 @@ const addedDepthDOM = document.getElementById("addedDepth");
 const addedWidthDOM = document.getElementById("addedWidth");
 const addedLengthDOM = document.getElementById("addedLength");
 const addedQuantityDOM = document.getElementById("addedQuantity");
+const workOrderPopupDOM = document.getElementById("workOrderPopup");
 // 잔재
 // const addedRemnantDOM = document.getElementById("addedRemnant");
 //#endregion update work-order
@@ -557,6 +558,7 @@ const placeHandler = async () => {
       depth,
       quantity,
     });
+    workOrderPopupDOM.classList.add("hidden");
   }
 
   const html = htmls.workOrderList(workOrder, client);
@@ -565,6 +567,12 @@ const placeHandler = async () => {
     "#workOrderContainer:first-child"
   );
   newWorkOrderContainerDOM.addEventListener("click", workOrderContainerHandler);
+  const rightDOM = newWorkOrderContainerDOM.querySelector("#right");
+  rightDOM.addEventListener("click", rightHandler);
+  const deleteDOM = newWorkOrderContainerDOM.querySelector("#delete");
+  deleteDOM.addEventListener("click", deleteHandler);
+  const updateDOM = newWorkOrderContainerDOM.querySelector("#update");
+  updateDOM.addEventListener("click", updateHandler);
   popupDOM.classList.add("hidden");
 };
 
