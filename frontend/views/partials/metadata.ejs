@@ -6,11 +6,20 @@
                 <%= workOrder.created_at %>
             </span>
         </div>
-        <% } else if (url==='/client' ) { %>
-            <div class="datetime">
+
+        <% } else if (url==='/remnant' ) { %>
+            <div id="creator"></div>
+            <div>
                 <span>
-                    <%= client.created_at %>
+                    <%= remnantDetail.created_at %>
                 </span>
             </div>
-            <% } %>
+
+            <% } else if (url==='/client' ) { %>
+                <div class="datetime">
+                    <span>
+                        <%= client.created_at %>
+                    </span>
+                </div>
+                <% } %>
 </div>

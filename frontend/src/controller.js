@@ -46,26 +46,23 @@ class RootController {
   }
 
   async getRemnant(req, res) {
-    let response;
+    let detailRes, itemRes, zoneRes;
     let remnantDetails, items, remnantZones;
 
     try {
-      response = await FetchAPI.get("/remnant-details", {
-        cookie: req.headers.cookie,
-      });
-      let data = await response.json();
+      const cookie = { cookie: req.headers.cookie };
+      [detailRes, itemRes, zoneRes] = await Promise.all([
+        FetchAPI.get("/remnant-details", cookie),
+        FetchAPI.get("/items", cookie),
+        FetchAPI.get("/remnant-zones", cookie),
+      ]);
+      let data = await detailRes.json();
       remnantDetails = data.remnantDetails;
 
-      response = await FetchAPI.get("/items", {
-        cookie: req.headers.cookie,
-      });
-      data = await response.json();
+      data = await itemRes.json();
       items = data.items;
 
-      response = await FetchAPI.get("/remnant-zones", {
-        cookie: req.headers.cookie,
-      });
-      data = await response.json();
+      data = await zoneRes.json();
       remnantZones = data.remnantZones;
     } catch (error) {
       res.cookie("refresh_token", "signout", {
@@ -78,7 +75,7 @@ class RootController {
       });
     }
 
-    const cookies = response.headers.raw()["set-cookie"];
+    const cookies = zoneRes.headers.raw()["set-cookie"];
     if (!cookies) {
       return res.status(200).render("remnant", {
         pageTitle: "Remnant",
@@ -437,16 +434,15 @@ class RemnantDetailController {
     res.status(200).json({ remnantDetail: data.remnantDetail });
   }
 
-  // async update(req, res) {
-  //   const { id } = req.params;
+  async update(req, res) {
+    const { id } = req.params;
 
-  //   const remnantDetail = await RemnantDetail.selectByIdAndUpdate(
-  //     id,
-  //     req.body,
-  //     { new: true }
-  //   );
-  //   res.status(200).json({ remnantDetail });
-  // }
+    const response = await FetchAPI.patch(`/remnant-details/${id}`, req.body, {
+      cookie: req.headers.cookie,
+    });
+    const data = await response.json();
+    res.status(200).json({ remnantDetail: data.remnantDetail });
+  }
 
   // async delete(req, res) {
   //   const { id } = req.params;

@@ -8,26 +8,27 @@ const tables = readFileSync(process.cwd() + "/src/db.js")
 let statement = "import {";
 for (let i = 0; i < tables.length; i++) {
   if (i !== tables.length - 1) {
-    statement = statement.concat(" ", tables[i], ",");
+    statement += ` ${tables[i]},`;
     continue;
   }
-  statement = statement.concat(" ", tables[i], ' } from "./db.js";\n');
+  statement += ` ${tables[i]} } from "./db.js";
+  (async () => {
+  `;
 }
 
-statement += "(async () => {";
 for (let i = 0; i < tables.length; i++) {
   if (i !== tables.length - 1) {
-    statement = statement.concat("\n", `${tables[i]}.table =`);
-    statement = statement.concat(" ", `${tables[i]}.getTable();`);
-    statement = statement.concat("\n", `${tables[i]}.dateFormat =`);
-    statement = statement.concat(" await ", `${tables[i]}.formatDate();`);
+    statement += `
+    ${tables[i]}.table = ${tables[i]}.getTable();
+    ${tables[i]}.dateFormat = await ${tables[i]}.formatDate();
+    `;
     continue;
   }
-  statement = statement.concat("\n", `${tables[i]}.table =`);
-  statement = statement.concat(" ", `${tables[i]}.getTable();`);
-  statement = statement.concat("\n", `${tables[i]}.dateFormat =`);
-  statement = statement.concat(" await ", `${tables[i]}.formatDate();`);
-  statement = statement.concat("\n", "})();");
+  statement += `
+  ${tables[i]}.table = ${tables[i]}.getTable();
+  ${tables[i]}.dateFormat = await ${tables[i]}.formatDate();
+  })();
+  `;
 }
 
 writeFileSync(process.cwd() + "/src/db-sub.js", statement);

@@ -27,6 +27,20 @@ const searchZonesDOM = document.getElementById("searchZones");
 const navDOM = document.getElementById("nav");
 const headerDOM = document.getElementById("header");
 
+//#region update remnant-detail
+const updateRemnantInfoFormDOM = document.getElementById(
+  "updateRemnantInfoForm"
+);
+const updateRemnantInfoPopupDOM = document.getElementById(
+  "updateRemnantInfoPopup"
+);
+const updatedDepthDOM = document.getElementById("updatedDepth");
+const updatedWidthDOM = document.getElementById("updatedWidth");
+const updatedLengthDOM = document.getElementById("updatedLength");
+const updatedQuantityDOM = document.getElementById("updatedQuantity");
+
+//#endregion remnant-detail
+
 async function clickItemHandler() {
   const id = this.dataset.id;
 
@@ -60,9 +74,43 @@ async function clickZoneHandler() {
   }
 }
 
+function rightHandler() {
+  const embeddedDOMs = contentDOM.querySelectorAll("#embedded");
+  const embeddedDOM = this.querySelector("#embedded");
+  embeddedDOMs.forEach((dom) => {
+    if (dom !== embeddedDOM) {
+      dom.classList.add("hidden");
+      return;
+    }
+
+    embeddedDOM.classList.remove("hidden");
+  });
+}
+
+async function updateHandler(event) {
+  event.stopPropagation();
+
+  const embeddedDOMs = contentDOM.querySelectorAll("#embedded");
+  embeddedDOMs.forEach((embeddedDOM) => {
+    embeddedDOM.classList.add("hidden");
+  });
+
+  popupDOM.classList.remove("hidden");
+  updateRemnantInfoPopupDOM.classList.remove("hidden");
+  popupDOM.classList.add("transparent");
+
+  updatedDepthDOM.value = this.dataset.depth;
+  updatedWidthDOM.value = this.dataset.width;
+  updatedLengthDOM.value = this.dataset.length;
+  updatedQuantityDOM.value = this.dataset.quantity;
+  updateRemnantInfoFormDOM.dataset.id = this.dataset.id;
+}
+
 const addHandler = async () => {
   itemsPopupDOM.classList.remove("hidden");
   searchZonePopupDOM.classList.remove("hidden");
+  searchZonesDOM.value = "";
+
   const icon = newZoneDOM.querySelector("i");
   icon.className = icon.className.replace("solid", "regular");
   createZonePopupDOM.classList.add("hidden");
@@ -207,9 +255,6 @@ const saveHandler = async () => {
     contentDOM.insertAdjacentHTML("afterbegin", html);
 
     popupDOM.classList.add("hidden");
-    const createRemnantDOM = document.getElementById("createRemnant");
-    const icon = createRemnantDOM.querySelector("i");
-    icon.className = icon.className.replace("solid", "regular");
   }
 };
 
@@ -256,10 +301,18 @@ const createZoneFormHandler = async (event) => {
 
 const closeItemsPopupHandler = () => {
   itemsPopupDOM.classList.add("hidden");
+  const lastRemnantDetailDOM = remnantDetailsDOM.querySelector(
+    "#remnantDetail:last-child"
+  );
+  lastRemnantDetailDOM.remove();
 };
 
 const closeZonesPopupHandler = () => {
   zonesPopupDOM.classList.add("hidden");
+  const lastRemnantDetailDOM = remnantDetailsDOM.querySelector(
+    "#remnantDetail:last-child"
+  );
+  lastRemnantDetailDOM.remove();
 };
 
 const searchZonesFormHandler = (event) => {
@@ -296,6 +349,54 @@ const docsHandler = (event) => {
   }
 };
 
+const updateRemnantInfoFormHandler = async (event) => {
+  event.preventDefault();
+
+  const depth = updatedDepthDOM.value;
+  if (!depth) {
+    alert("Depth not found");
+    updatedDepthDOM.focus();
+    return;
+  }
+
+  const width = updatedWidthDOM.value;
+  if (!width) {
+    alert("Width not found");
+    updatedWidthDOM.focus();
+    return;
+  }
+
+  const length = updatedLengthDOM.value;
+  if (!length) {
+    alert("Length not found");
+    updatedLengthDOM.focus();
+    return;
+  }
+
+  const quantity = updatedQuantityDOM.value;
+  if (!quantity) {
+    alert("Quantity not found");
+    updatedQuantityDOM.focus();
+    return;
+  }
+
+  const remnantDetailId = updateRemnantInfoFormDOM.dataset.id;
+  const response = await FetchAPI.patch(`/remnant-details/${remnantDetailId}`, {
+    depth,
+    width,
+    length,
+    quantity,
+  });
+  if (response) {
+    const data = await response.json();
+    console.log(data);
+  }
+};
+
+updateRemnantInfoFormDOM.addEventListener(
+  "submit",
+  updateRemnantInfoFormHandler
+);
 document.addEventListener("keydown", docsHandler);
 searchZonesFormDOM.addEventListener("submit", searchZonesFormHandler);
 closeZonesPopupDOM.addEventListener("click", closeZonesPopupHandler);
@@ -305,37 +406,35 @@ newZoneDOM.addEventListener("click", newZoneHandler);
 saveDOM.addEventListener("click", saveHandler);
 addDOM.addEventListener("click", addHandler);
 
-(() => {
+(async () => {
   remnantContainerDOMs.forEach(async (remnantContainerDOM) => {
-    let id = remnantContainerDOM.dataset.item_id;
+    const item_id = remnantContainerDOM.dataset.item_id;
+    const remnant_zone_id = remnantContainerDOM.dataset.zone_id;
+    const creator_id = remnantContainerDOM.dataset.creator_id;
 
-    let itemHtml;
-    let response = await FetchAPI.get(`/items/${id}`);
-    if (response) {
-      const data = await response.json();
-      itemHtml = htmls.itemList(data.item);
-    }
+    const rightDOM = remnantContainerDOM.querySelector("#right");
+    rightDOM.addEventListener("click", rightHandler);
+    const updateDOM = remnantContainerDOM.querySelector("#update");
+    updateDOM.addEventListener("click", updateHandler);
 
-    id = remnantContainerDOM.dataset.zone_id;
-    let zoneHtml;
-    response = await FetchAPI.get(`/remnant-zones/${id}`);
-    if (response) {
-      const data = await response.json();
-      zoneHtml = htmls.remnantZoneList(data.remnantZone);
-    }
+    const [itemRes, ZoneRes, userRes] = await Promise.all([
+      FetchAPI.get(`/items/${item_id}`),
+      FetchAPI.get(`/remnant-zones/${remnant_zone_id}`),
+      FetchAPI.get(`/users/${creator_id}`),
+    ]);
 
-    let creatorHtml;
-    id = remnantContainerDOM.dataset.creator_id;
-    response = await FetchAPI.get(`/users/${id}`);
-    if (response) {
-      const data = await response.json();
-      creatorHtml = htmls.creatorList(data.user.username);
-    }
-
+    let data = await itemRes.json();
+    const itemHtml = htmls.itemList(data.item);
     const itemDOM = remnantContainerDOM.querySelector("#item");
     itemDOM.insertAdjacentHTML("beforeend", itemHtml);
+
+    data = await ZoneRes.json();
+    const zoneHtml = htmls.remnantPreview(data.remnantZone);
     const zoneDOM = remnantContainerDOM.querySelector("#zone");
     zoneDOM.insertAdjacentHTML("beforeend", zoneHtml);
+
+    data = await userRes.json();
+    const creatorHtml = htmls.creatorList(data.user.username);
     const creatorDOM = remnantContainerDOM.querySelector("#creator");
     creatorDOM.insertAdjacentHTML("beforeend", creatorHtml);
   });

@@ -1,0 +1,46 @@
+<div class="preview-top">
+    <div class="left">
+        <div id="item"></div>
+        <div id="zone"></div>
+    </div>
+    <div class="right" id="right">
+        <a id="ellipsis">
+            <i class="fa-solid fa-ellipsis-vertical"></i>
+        </a>
+        <%- include('../embedded', {remnantDetail}); %>
+    </div>
+</div>
+<div class="preview-bottom">
+    <div>
+        <span>depth</span>
+        <div>
+            <span id="depth">
+                <%= remnantDetail.depth %>
+            </span>
+        </div>
+    </div>
+    <div>
+        <span>width</span>
+        <div>
+            <span id="width">
+                <%= remnantDetail.width %>
+            </span>
+        </div>
+    </div>
+    <div>
+        <span>length</span>
+        <div>
+            <span id="length">
+                <%= remnantDetail.length %>
+            </span>
+        </div>
+    </div>
+    <div>
+        <span>quantity</span>
+        <div>
+            <span id="quantity">
+                <%= remnantDetail.quantity %>
+            </span>
+        </div>
+    </div>
+</div>

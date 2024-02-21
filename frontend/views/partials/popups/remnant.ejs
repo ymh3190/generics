@@ -138,7 +138,8 @@
                         </button>
                     </form>
                 </div>
-                <div id="createItemPopup" class="create hidden">
+                <div></div>
+                <!-- <div id="createItemPopup" class="create hidden">
                     <div class="title">
                         <p>create item</p>
                     </div>
@@ -155,19 +156,77 @@
                             <button id="createItem">create</button>
                         </div>
                     </form>
-                </div>
+                </div> -->
             </div>
             <div class="right">
-                <div class="title">
+                <!-- <div class="title">
                     <span>new</span>
                 </div>
                 <div class="button">
                     <button id="newItem">
                         <i class="fa-regular fa-square-plus"></i>
                     </button>
-                </div>
+                </div> -->
             </div>
         </div>
         <div id="items" class="item-containers"></div>
+    </div>
+</div>
+<div class="tertiary update-remnant-info-popup hidden" id="updateRemnantInfoPopup">
+    <div class="popup-header">
+        <div class="left">
+            <p>update phase</p>
+        </div>
+        <div class="right">
+            <button id='closeUpdateRemnantInfoPopup'>x</button>
+        </div>
+    </div>
+    <div class="popup-body">
+        <form id="updateRemnantInfoForm" class="update-remnant-info-form">
+            <div class="left">
+                <div class="input-containers">
+                    <div class="input-container">
+                        <div class="title">
+                            <span>depth</span>
+                        </div>
+                        <div>
+                            <input type="text" id="updatedDepth">
+                        </div>
+                    </div>
+                    <div class="input-container">
+                        <div class="title">
+                            <span>width</span>
+                        </div>
+                        <div>
+                            <input type="text" id="updatedWidth">
+                        </div>
+                    </div>
+                    <div class="input-container">
+                        <div class="title">
+                            <span>length</span>
+                        </div>
+                        <div>
+                            <input type="text" id="updatedLength">
+                        </div>
+                    </div>
+                    <div class="input-container">
+                        <div class="title">
+                            <span>quantity</span>
+                        </div>
+                        <div>
+                            <input type="text" id="updatedQuantity">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="right">
+                <span>update</span>
+                <div class="update-row">
+                    <button>
+                        <i class="fa-solid fa-scissors"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
     </div>
 </div>

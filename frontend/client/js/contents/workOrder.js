@@ -1495,10 +1495,10 @@ clientInputDOM.addEventListener("focus", clientInputFocusHandler);
 
     const rightDOM = workOrderContainerDOM.querySelector("#right");
     rightDOM.addEventListener("click", rightHandler);
-    const deleteDOM = workOrderContainerDOM.querySelector("#delete");
-    deleteDOM.addEventListener("click", deleteHandler);
     const updateDOM = workOrderContainerDOM.querySelector("#update");
     updateDOM.addEventListener("click", updateHandler);
+    const deleteDOM = workOrderContainerDOM.querySelector("#delete");
+    deleteDOM.addEventListener("click", deleteHandler);
 
     const id = workOrderContainerDOM.dataset.client_id;
     const response = await FetchAPI.get(`/clients/${id}`);

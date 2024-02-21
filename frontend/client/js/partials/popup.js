@@ -13,7 +13,7 @@ const searchItemDOM = document.getElementById("searchItem");
 const itemsDOM = document.getElementById("items");
 const newItemDOM = document.getElementById("newItem");
 const createItemPopupDOM = document.getElementById("createItemPopup");
-const createItemFormDOM = document.getElementById("createItemForm");
+// const createItemFormDOM = document.getElementById("createItemForm");
 const nameDOM = document.querySelector("#itemsPopup #name");
 const searchItemPopupDOM = document.getElementById("searchItemPopup");
 
@@ -82,8 +82,8 @@ const createItemFormHandler = async (event) => {
 
 (() => {
   if (createWorkOrderDOM || createRemnantDOM) {
-    createItemFormDOM.addEventListener("submit", createItemFormHandler);
-    newItemDOM.addEventListener("click", newItemHandler);
+    // createItemFormDOM.addEventListener("submit", createItemFormHandler);
+    // newItemDOM.addEventListener("click", newItemHandler);
     searchItemFormDOM.addEventListener("submit", searchItemFormHandler);
   }
 

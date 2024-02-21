@@ -368,7 +368,8 @@
 
 .work-detail-popup,
 .comment-popup,
-.add-work-info-popup {
+.add-work-info-popup,
+.update-remnant-info-popup {
   left: $secondaryPopupLeft;
   width: $secondaryPopupWidth;
   top: $tertiaryPopupTop;
@@ -398,13 +399,29 @@
 }
 
 .update-work-detail-form,
-.add-work-info-form {
+.add-work-info-form,
+.update-remnant-info-form {
   display: flex;
   align-items: center;
+}
 
+.update-work-detail-form,
+.add-work-info-form {
   .input-containers {
     display: grid;
     grid-template-columns: repeat(6, 1fr) auto;
+    column-gap: 1rem;
+
+    input {
+      width: 100%;
+    }
+  }
+}
+
+.update-remnant-info-form {
+  .input-containers {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr) auto;
     column-gap: 1rem;
 
     input {

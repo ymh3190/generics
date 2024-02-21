@@ -5,10 +5,10 @@
  */
 const itemList = (item) => {
   return `
-    <div data-id=${item.id} id='item' class='item-container'>
-      <span id='name'>${item.name}</span>
-    </div>
-    `;
+  <div data-id=${item.id} id='item' class='item-container'>
+    <span id='name'>${item.name}</span>
+  </div>
+  `;
 };
 //#endregion item
 
@@ -20,20 +20,20 @@ const itemList = (item) => {
  */
 const clientList = (client) => {
   return `
-    <div data-id=${client.id} id='client' class='client-container'>
-      <div class='top'>
-        <div class='left'>
-          <span id='association'>${client.association}</span>
-        </div>
-        <div>
-          <span id='name'>${client.name}</span>
-        </div>
+  <div data-id=${client.id} id='client' class='client-container'>
+    <div class='top'>
+      <div class='left'>
+        <span id='association'>${client.association}</span>
       </div>
-      <div class='bottom'>
-          <span id='telephone'>${client.telephone}</span>
+      <div>
+        <span id='name'>${client.name}</span>
       </div>
     </div>
-    `;
+    <div class='bottom'>
+        <span id='telephone'>${client.telephone}</span>
+    </div>
+  </div>
+  `;
 };
 
 const clientContainer = (client) => {
@@ -150,7 +150,7 @@ const detailInfoList = (workInfo) => {
             <span>${workInfo.workDetail.quantity}</span>
           </div>
           <div>
-            <span>${workInfo.workDetail.is_remnant}</span>
+            <span>${workInfo.workDetail.remnant}</span>
           </div>
         </div>
       </div>
@@ -339,6 +339,19 @@ const remnantZoneList = (zone) => {
   </div>
   `;
 };
+//#endregion remnant
+
+//#region remnant preview
+const remnantPreview = (zone) => {
+  return `
+  <div data-id=${zone.id} id='zone' class='zone-container'>
+    <div>
+      <span id='name'>${zone.name}</span>
+    </div>
+  </div>
+  `;
+};
+//#endregion remnant preview
 
 /**
  *
@@ -356,15 +369,45 @@ const remnantList = (remnantDetail, item, remnantZone, creator) => {
       data-creator_id="${remnantDetail.creator_id}">
       <div class="preview">
           <div class="preview-top">
-              <div id="item">${itemList(item)}</div>
-              <div id="zone">${remnantZoneList(remnantZone)}</div>
+              <div class="left">
+                <div id="item">${itemList(item)}</div>
+                <div id="zone">${remnantPreview(remnantZone)}</div>
+              </div>
+              <div class="right" id="right">
+                <a id="ellipsis">
+                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                </a>
+                <div class="embedded hidden" id="embedded">
+                  <div class="primary">
+                    <div class="embedded-list">
+                        <a class="endpoint__update" id="update" data-id="${
+                          remnantDetail.id
+                        }"
+                            data-client_id="${remnantDetail.client_id}">
+                            <i class="fa-solid fa-scissors"></i>
+                            <span>update</span>
+                        </a>
+                    </div>
+                    <div class="embedded-list">
+                        <a class="endpoint__delete" id="delete" data-id="${
+                          remnantDetail.id
+                        }">
+                            <i class="fa-regular fa-trash-can"></i>
+                            <span>delete</span>
+                        </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
           </div>
           <div class="preview-bottom">
               <div>
                   <span>depth</span>
-                  <span>
-                      ${remnantDetail.depth}
-                  </span>
+                  <div>
+                      <span>
+                          ${remnantDetail.depth}
+                      </span>
+                  </div>
               </div>
               <div>
                   <span>width</span>
@@ -376,24 +419,26 @@ const remnantList = (remnantDetail, item, remnantZone, creator) => {
               </div>
               <div>
                   <span>length</span>
-                  <span>
-                      ${remnantDetail.length}
-                  </span>
+                  <div>
+                      <span>
+                          ${remnantDetail.length}
+                      </span>
+                  </div>
               </div>
               <div>
                   <span>quantity</span>
-                  <span>
-                      ${remnantDetail.quantity}
-                  </span>
+                  <div>
+                      <span>
+                          ${remnantDetail.quantity}
+                      </span>
+                  </div>
               </div>
           </div>
       </div>
       <div class="metadata">
-          <div id="creator">${creatorList(creator)}</div>
+          <div id="creator">${creator}</div>
           <div>
-              <span>
-                  ${remnantDetail.created_at}
-              </span>
+            <span>${remnantDetail.created_at}</span>
           </div>
       </div>
   </div>
@@ -437,6 +482,8 @@ const creatorList = (creator) => {
 };
 //#endregion creator
 
+const embeddedList = () => {};
+
 export {
   itemList,
   clientList,
@@ -451,4 +498,5 @@ export {
   clientWorkInfoList,
   detailInfoList,
   clientPreview,
+  remnantPreview,
 };
