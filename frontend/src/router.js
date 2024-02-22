@@ -281,8 +281,8 @@ class RemnantDetailRouter extends Router {
         middleware.authenticateUser,
         middleware.authorizePermissions("admin"),
         remnantDetailController.update
-      );
-    // .delete(remnantDetailController.delete);
+      )
+      .delete(remnantDetailController.delete);
   }
 }
 

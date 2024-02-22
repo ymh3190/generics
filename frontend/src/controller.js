@@ -444,12 +444,15 @@ class RemnantDetailController {
     res.status(200).json({ remnantDetail: data.remnantDetail });
   }
 
-  // async delete(req, res) {
-  //   const { id } = req.params;
+  async delete(req, res) {
+    const { id } = req.params;
 
-  //   await RemnantDetail.selectByIdAndDelete(id);
-  //   res.status(200).json({ message: "Delete success" });
-  // }
+    const response = await FetchAPI.delete(`/remnant-details/${id}`, {
+      cookie: req.headers.cookie,
+    });
+    const data = await response.json();
+    res.status(200).json({ message: data.message });
+  }
 }
 
 class UserController {

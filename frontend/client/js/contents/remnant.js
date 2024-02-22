@@ -135,6 +135,19 @@ async function updateHandler(event) {
   }
 }
 
+async function deleteHandler() {
+  if (!confirm("Delete Forever?")) {
+    return;
+  }
+
+  const remnantDetailId = this.dataset.id;
+  const response = await FetchAPI.delete(`/remnant-details/${remnantDetailId}`);
+  if (response) {
+    const data = await response.json();
+    alert(data.message);
+  }
+}
+
 const addHandler = async () => {
   itemsPopupDOM.classList.remove("hidden");
   searchZonePopupDOM.classList.remove("hidden");
@@ -473,6 +486,8 @@ addDOM.addEventListener("click", addHandler);
     rightDOM.addEventListener("click", rightHandler);
     const updateDOM = remnantContainerDOM.querySelector("#update");
     updateDOM.addEventListener("click", updateHandler);
+    const deleteDOM = remnantContainerDOM.querySelector("#delete");
+    deleteDOM.addEventListener("click", deleteHandler);
 
     const [itemRes, ZoneRes, userRes] = await Promise.all([
       FetchAPI.get(`/items/${item_id}`),
