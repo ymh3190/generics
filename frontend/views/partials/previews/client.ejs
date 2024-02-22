@@ -1,22 +1,32 @@
 <div class="preview-top">
-    <div class='left'>
-        <span id='association'>
-            <%= client.association %>
-        </span>
+    <div class="left">
+        <div>
+            <div>
+                <span id='association'>
+                    <%= client.association %>
+                </span>
+            </div>
+            <div>
+                <span id='name'>
+                    <%= client.name %>
+                </span>
+            </div>
+        </div>
         <div>
             <span id='telephone'>
                 <%= client.telephone %>
             </span>
         </div>
     </div>
-    <div>
-        <span id='name'>
-            <%= client.name %>
-        </span>
+    <div class="right" id="right">
+        <a id="ellipsis">
+            <i class="fa-solid fa-ellipsis-vertical"></i>
+        </a>
+        <%- include('../embedded', {client}); %>
     </div>
 </div>
 <div class="preview-bottom">
-    <span id='comment'>
+    <span id="comment">
         <%= client.comment %>
     </span>
 </div>

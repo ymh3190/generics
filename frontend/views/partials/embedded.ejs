@@ -33,5 +33,21 @@
                     </a>
                 </div>
             </div>
-            <% } %>
+
+            <% } else if (url==='/client' ) { %>
+                <div class="primary">
+                    <div class="embedded-list">
+                        <a class="endpoint__update" id="update">
+                            <i class="fa-solid fa-scissors"></i>
+                            <span>update</span>
+                        </a>
+                    </div>
+                    <div class="embedded-list">
+                        <a class="endpoint__delete" id="delete">
+                            <i class="fa-regular fa-trash-can"></i>
+                            <span>delete</span>
+                        </a>
+                    </div>
+                </div>
+                <% } %>
 </div>

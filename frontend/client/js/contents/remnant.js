@@ -143,8 +143,12 @@ async function deleteHandler() {
   const remnantDetailId = this.dataset.id;
   const response = await FetchAPI.delete(`/remnant-details/${remnantDetailId}`);
   if (response) {
-    const data = await response.json();
-    alert(data.message);
+    remnantContainerDOMs.forEach((remnantContainerDOM) => {
+      const id = remnantContainerDOM.dataset.id;
+      if (remnantDetailId === id) {
+        remnantContainerDOM.remove();
+      }
+    });
   }
 }
 
