@@ -34,11 +34,11 @@ const updateRemnantInfoFormDOM = document.getElementById(
 const updateRemnantInfoPopupDOM = document.getElementById(
   "updateRemnantInfoPopup"
 );
-const updatedDepthDOM = document.getElementById("updatedDepth");
-const updatedWidthDOM = document.getElementById("updatedWidth");
-const updatedLengthDOM = document.getElementById("updatedLength");
+const closeUpdateRemnantInfoPopupDOM = document.getElementById(
+  "closeUpdateRemnantInfoPopup"
+);
 const updatedQuantityDOM = document.getElementById("updatedQuantity");
-
+const updatedZoneDOM = document.getElementById("updatedZone");
 //#endregion remnant-detail
 
 async function clickItemHandler() {
@@ -67,9 +67,16 @@ async function clickZoneHandler() {
     const remnantDetailDOM = remnantDetailsDOM.querySelector(
       "#remnantDetail:last-child"
     );
-    const zoneDOM = remnantDetailDOM.querySelector("#zone");
-    zoneDOM.value = data.remnantZone.name;
-    zoneDOM.dataset.id = data.remnantZone.id;
+    if (remnantDetailDOM) {
+      const zoneDOM = remnantDetailDOM.querySelector("#zone");
+      zoneDOM.value = data.remnantZone.name;
+      zoneDOM.dataset.id = data.remnantZone.id;
+      zonesPopupDOM.classList.add("hidden");
+      return;
+    }
+    updatedZoneDOM.value = data.remnantZone.name;
+    updatedZoneDOM.dataset.id = data.remnantZone.id;
+    updateRemnantInfoPopupDOM.classList.remove("hidden");
     zonesPopupDOM.classList.add("hidden");
   }
 }
@@ -82,7 +89,6 @@ function rightHandler() {
       dom.classList.add("hidden");
       return;
     }
-
     embeddedDOM.classList.remove("hidden");
   });
 }
@@ -99,11 +105,34 @@ async function updateHandler(event) {
   updateRemnantInfoPopupDOM.classList.remove("hidden");
   popupDOM.classList.add("transparent");
 
-  updatedDepthDOM.value = this.dataset.depth;
-  updatedWidthDOM.value = this.dataset.width;
-  updatedLengthDOM.value = this.dataset.length;
   updatedQuantityDOM.value = this.dataset.quantity;
-  updateRemnantInfoFormDOM.dataset.id = this.dataset.id;
+  const remnant_zone_id = this.dataset.zone_id;
+  const [zoneRes, zonesRes] = await Promise.all([
+    FetchAPI.get(`/remnant-zones/${remnant_zone_id}`),
+    FetchAPI.get("/remnant-zones"),
+  ]);
+  if (zoneRes) {
+    const data = await zoneRes.json();
+    const remnantZone = data.remnantZone;
+    updatedZoneDOM.value = remnantZone.name;
+    updateRemnantInfoFormDOM.dataset.id = this.dataset.id;
+  }
+
+  if (zonesRes) {
+    const data = await zonesRes.json();
+    let html = "";
+    const remnantZones = data.remnantZones;
+    for (const zone of remnantZones) {
+      html += htmls.remnantZoneList(zone);
+    }
+    zonesDOM.textContent = "";
+    zonesDOM.insertAdjacentHTML("beforeend", html);
+
+    const zoneDOMs = zonesDOM.querySelectorAll("#zone");
+    for (const zoneDOM of zoneDOMs) {
+      zoneDOM.addEventListener("click", clickZoneHandler);
+    }
+  }
 }
 
 const addHandler = async () => {
@@ -352,24 +381,10 @@ const docsHandler = (event) => {
 const updateRemnantInfoFormHandler = async (event) => {
   event.preventDefault();
 
-  const depth = updatedDepthDOM.value;
-  if (!depth) {
-    alert("Depth not found");
-    updatedDepthDOM.focus();
-    return;
-  }
-
-  const width = updatedWidthDOM.value;
-  if (!width) {
-    alert("Width not found");
-    updatedWidthDOM.focus();
-    return;
-  }
-
-  const length = updatedLengthDOM.value;
-  if (!length) {
-    alert("Length not found");
-    updatedLengthDOM.focus();
+  const zone = updatedZoneDOM.value;
+  if (!zone) {
+    alert("Zone not found");
+    updatedZoneDOM.focus();
     return;
   }
 
@@ -380,19 +395,61 @@ const updateRemnantInfoFormHandler = async (event) => {
     return;
   }
 
+  const data = { quantity };
+  const remnant_zone_id = updatedZoneDOM.dataset.id;
+  let remnantZone;
+  if (remnant_zone_id) {
+    data.remnant_zone_id = remnant_zone_id;
+    const response = await FetchAPI.get(`/remnant-zones/${remnant_zone_id}`);
+    if (response) {
+      const data = await response.json();
+      remnantZone = data.remnantZone;
+    }
+  }
   const remnantDetailId = updateRemnantInfoFormDOM.dataset.id;
-  const response = await FetchAPI.patch(`/remnant-details/${remnantDetailId}`, {
-    depth,
-    width,
-    length,
-    quantity,
-  });
+  const response = await FetchAPI.patch(
+    `/remnant-details/${remnantDetailId}`,
+    data
+  );
   if (response) {
     const data = await response.json();
-    console.log(data);
+    const remnantDetail = data.remnantDetail;
+
+    const remnantDetailId = updateRemnantInfoFormDOM.dataset.id;
+    remnantContainerDOMs.forEach(async (remnantContainerDOM) => {
+      const id = remnantContainerDOM.dataset.id;
+      if (remnantDetailId === id) {
+        const quantityDOM = remnantContainerDOM.querySelector("#quantity");
+        quantityDOM.textContent = remnantDetail.quantity;
+        const updateDOM = remnantContainerDOM.querySelector("#update");
+        updateDOM.dataset.quantity = remnantDetail.quantity;
+        const nameDOM = remnantContainerDOM.querySelector("#zone #name");
+        nameDOM.textContent = remnantZone.name;
+      }
+    });
+
+    popupDOM.classList.remove("transparent");
+    popupDOM.classList.add("hidden");
+    updateRemnantInfoPopupDOM.classList.add("hidden");
   }
 };
 
+const closeUpdateRemnantInfoPopupHandler = () => {
+  popupDOM.classList.remove("transparent");
+  updateRemnantInfoPopupDOM.classList.add("hidden");
+  popupDOM.classList.add("hidden");
+};
+
+const updatedZoneHandler = () => {
+  zonesPopupDOM.classList.remove("hidden");
+  updateRemnantInfoPopupDOM.classList.add("hidden");
+};
+
+updatedZoneDOM.addEventListener("focus", updatedZoneHandler);
+closeUpdateRemnantInfoPopupDOM.addEventListener(
+  "click",
+  closeUpdateRemnantInfoPopupHandler
+);
 updateRemnantInfoFormDOM.addEventListener(
   "submit",
   updateRemnantInfoFormHandler

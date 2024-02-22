@@ -368,8 +368,7 @@
 
 .work-detail-popup,
 .comment-popup,
-.add-work-info-popup,
-.update-remnant-info-popup {
+.add-work-info-popup {
   left: $secondaryPopupLeft;
   width: $secondaryPopupWidth;
   top: $tertiaryPopupTop;
@@ -418,14 +417,30 @@
   }
 }
 
-.update-remnant-info-form {
-  .input-containers {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr) auto;
-    column-gap: 1rem;
+.update-remnant-info-popup {
+  left: $tertiaryPopupLeft;
+  top: $tertiaryPopupTop;
 
-    input {
-      width: 100%;
+  .update-row {
+    display: flex;
+    justify-content: center;
+
+    button {
+      background-color: transparent;
+      border: 0 !important;
+      line-height: 1.2rem;
+    }
+  }
+
+  .update-remnant-info-form {
+    .input-containers {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr) auto;
+      column-gap: 1rem;
+
+      input {
+        width: 100%;
+      }
     }
   }
 }

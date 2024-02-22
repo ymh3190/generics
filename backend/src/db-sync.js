@@ -11,24 +11,17 @@ for (let i = 0; i < tables.length; i++) {
     statement += ` ${tables[i]},`;
     continue;
   }
-  statement += ` ${tables[i]} } from "./db.js";
-  (async () => {
-  `;
+  statement += ` ${tables[i]} } from "./db.js";\n(async () => {`;
 }
 
 for (let i = 0; i < tables.length; i++) {
   if (i !== tables.length - 1) {
-    statement += `
-    ${tables[i]}.table = ${tables[i]}.getTable();
-    ${tables[i]}.dateFormat = await ${tables[i]}.formatDate();
-    `;
+    statement += `\n${tables[i]}.table = ${tables[i]}.getTable();`;
+    statement += `\n${tables[i]}.dateFormat = await ${tables[i]}.formatDate();`;
     continue;
   }
-  statement += `
-  ${tables[i]}.table = ${tables[i]}.getTable();
-  ${tables[i]}.dateFormat = await ${tables[i]}.formatDate();
-  })();
-  `;
+  statement += `\n${tables[i]}.table = ${tables[i]}.getTable();`;
+  statement += `\n${tables[i]}.dateFormat = await ${tables[i]}.formatDate();`;
+  statement += "\n})();";
 }
-
 writeFileSync(process.cwd() + "/src/db-sub.js", statement);

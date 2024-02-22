@@ -272,12 +272,16 @@ class RemnantDetailRouter extends Router {
 
     this.router
       .route("/:id(\\d|\\w{32})")
-      .all(
+      .get(
         middleware.authenticateUser,
-        middleware.authorizePermissions("admin")
+        middleware.authorizePermissions("admin"),
+        remnantDetailController.selectById
       )
-      .get(remnantDetailController.selectById)
-      .patch(remnantDetailController.update);
+      .patch(
+        middleware.authenticateUser,
+        middleware.authorizePermissions("admin"),
+        remnantDetailController.update
+      );
     // .delete(remnantDetailController.delete);
   }
 }
