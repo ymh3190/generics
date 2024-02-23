@@ -11,5 +11,11 @@
     <%- include('../partials/entry') %>
         <%- include('../partials/status') %>
             <%- include('../partials/popup') %>
+                <script type="application/json" data-content-length="<%= clients.length %>" data-js="clients">
+                    <%- include('../data/clients', {clients}) %>
+                </script>
+                <script type="application/json" data-content-length="<%= user.length %>" data-js="user">
+                    {"user": {"user_id": "<%= user.user_id %>", "username": "<%= user.username %>", "role": "<%= user.role %>"}}
+                </script>
                 <script src="/public/js/client.js"></script>
                 <%- include('../partials/footer') %>

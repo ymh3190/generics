@@ -1,0 +1,21 @@
+{"clients":[
+<% clients.forEach((client,i)=> { %>
+    <% if (i!==clients.length-1) { %>
+        {
+        "id": "<%= clients[i].id %>",
+            "association": "<%= clients[i].association %>",
+                "name": "<%= clients[i].name %>",
+                    "comment": "<%= clients[i].comment %>",
+                        "created_at": "<%= clients[i].created_at %>"
+                            },
+                            <% return; %>
+                                <% } %>
+                                    {
+                                    "id": "<%= clients[i].id %>",
+                                        "association": "<%= clients[i].association %>",
+                                            "name": "<%= clients[i].name %>",
+                                                "comment": "<%= clients[i].comment %>",
+                                                    "created_at": "<%= clients[i].created_at %>"
+                                                        }
+                                                        <% }) %>
+                                                            ]}

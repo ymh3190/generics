@@ -78,9 +78,6 @@ class FetchAPI {
         headers["X-Forwared-For"] = options.ip;
         headers["User-Agent"] = options.userAgent;
       }
-      // if (options.cookie) {
-      //   headers.cookie = options.cookie;
-      // }
       const response = await fetch(FetchAPI.#url + path, {
         method: "POST",
         headers,

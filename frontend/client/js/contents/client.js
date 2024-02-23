@@ -254,3 +254,22 @@ const clientContainerDOMs = document.querySelectorAll("#clientContainer");
 clientContainerDOMs.forEach((clientContainerDOM) => {
   clientContainerDOM.addEventListener("click", clientContainerHandler);
 });
+
+const scripts = document.querySelectorAll("script");
+
+let clients;
+scripts.forEach((script) => {
+  const { js } = script.dataset;
+
+  if (js === "clients") {
+    const data = JSON.parse(script.textContent);
+    clients = data.clients;
+    script.dataset.js = "";
+    console.log(clients);
+    return;
+  }
+
+  if (js === "user") {
+    return;
+  }
+});
