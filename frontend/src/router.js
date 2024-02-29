@@ -112,6 +112,11 @@ class ClientRouter extends Router {
         middleware.authenticateUser,
         middleware.authorizePermissions("admin"),
         clientController.selectById
+      )
+      .delete(
+        middleware.authenticateUser,
+        middleware.authorizePermissions("admin"),
+        clientController.delete
       );
   }
 }

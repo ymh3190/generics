@@ -235,6 +235,16 @@ class ClientController {
     const data = await response.json();
     res.status(200).json({ client: data.client });
   }
+
+  async delete(req, res) {
+    const { id } = req.params;
+
+    const response = await FetchAPI.delete(`/clients/${id}`, {
+      cookie: req.headers.cookie,
+    });
+    const data = await response.json();
+    res.status(200).json({ message: data.message });
+  }
 }
 
 class WorkOrderController {

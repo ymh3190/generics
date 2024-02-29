@@ -26,6 +26,8 @@ const headerDOM = document.getElementById("header");
 
 const clientPopupDOM = document.getElementById("clientPopup");
 
+let isUpdate, isUpdating;
+
 async function clientWorkInfoContainerHandler() {
   workInfoPopupDOM.removeEventListener("mouseleave", workInfoPopupHandler);
   const work_order_id = this.dataset.id;
@@ -67,6 +69,38 @@ async function clientWorkInfoContainerHandler() {
 async function clientContainerHandler(event) {
   event.stopPropagation();
 
+  const rightDOM = this.querySelector("#right");
+  const anchorDOMs = rightDOM.querySelectorAll("a");
+  const iconDOMs = rightDOM.querySelectorAll("i");
+  const embeddedDOM = rightDOM.querySelector(".embedded");
+  const spanDOMs = rightDOM.querySelectorAll("span");
+
+  if (event.target === embeddedDOM) {
+    return;
+  }
+
+  if (event.target === rightDOM) {
+    return;
+  }
+
+  for (const spanDOM of spanDOMs) {
+    if (event.target === spanDOM) {
+      return;
+    }
+  }
+
+  for (const anchorDOM of anchorDOMs) {
+    if (event.target === anchorDOM) {
+      return;
+    }
+  }
+
+  for (const iconDOM of iconDOMs) {
+    if (event.target === iconDOM) {
+      return;
+    }
+  }
+
   if (workInfoPopupDOM.classList.contains("hidden")) {
     bodyDOM.addEventListener("click", bodyHandler);
   }
@@ -105,7 +139,53 @@ async function clientContainerHandler(event) {
   }
 }
 
+function rightHandler() {
+  bodyDOM.addEventListener("click", bodyHandler);
+
+  const embeddedDOMs = contentDOM.querySelectorAll("#embedded");
+  const embeddedDOM = this.querySelector("#embedded");
+  embeddedDOMs.forEach((dom) => {
+    if (dom !== embeddedDOM) {
+      dom.classList.add("hidden");
+      return;
+    }
+
+    embeddedDOM.classList.remove("hidden");
+  });
+}
+
+function updateHandler(event) {
+  event.stopPropagation();
+
+  popupDOM.classList.remove("hidden");
+  clientPopupDOM.classList.remove("hidden");
+
+  const embeddedDOMs = contentDOM.querySelectorAll("#embedded");
+  embeddedDOMs.forEach((embeddedDOM) => {
+    embeddedDOM.classList.add("hidden");
+  });
+}
+
+async function deleteHandler(event) {
+  event.stopPropagation();
+
+  if (!confirm("Delete forever?")) {
+    return;
+  }
+
+  const id = this.dataset.id;
+  const response = await FetchAPI.delete(`/clients/${id}`);
+  if (response) {
+    const data = await response.json();
+    alert(data.message);
+  }
+}
+
 function bodyHandler(event) {
+  if (isUpdate) {
+    return;
+  }
+
   if (event.target === workInfoPopupDOM) {
     return;
   }
@@ -205,6 +285,9 @@ const closeWorkInfoPopupHandler = () => {
   workInfoPopupDOM.classList.add("hidden");
   popupDOM.classList.add("hidden");
   workDetailPopupDOM.classList.add("hidden");
+
+  navDOM.classList.remove("blur");
+  headerDOM.classList.remove("blur");
 };
 
 const closeWorkDetailPopupHandler = () => {
@@ -253,23 +336,10 @@ createClientFormDOM.addEventListener("submit", createClientFormHandler);
 const clientContainerDOMs = document.querySelectorAll("#clientContainer");
 clientContainerDOMs.forEach((clientContainerDOM) => {
   clientContainerDOM.addEventListener("click", clientContainerHandler);
-});
-
-const scripts = document.querySelectorAll("script");
-
-let clients;
-scripts.forEach((script) => {
-  const { js } = script.dataset;
-
-  if (js === "clients") {
-    const data = JSON.parse(script.textContent);
-    clients = data.clients;
-    script.dataset.js = "";
-    console.log(clients);
-    return;
-  }
-
-  if (js === "user") {
-    return;
-  }
+  const rightDOM = clientContainerDOM.querySelector("#right");
+  rightDOM.addEventListener("click", rightHandler);
+  const updateDOM = clientContainerDOM.querySelector("#update");
+  updateDOM.addEventListener("click", updateHandler);
+  const deleteDOM = clientContainerDOM.querySelector("#delete");
+  deleteDOM.addEventListener("click", deleteHandler);
 });

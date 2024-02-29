@@ -37,13 +37,13 @@
             <% } else if (url==='/client' ) { %>
                 <div class="primary">
                     <div class="embedded-list">
-                        <a class="endpoint__update" id="update">
+                        <a class="endpoint__update" id="update" data-id="<%= client.id %>">
                             <i class="fa-solid fa-scissors"></i>
                             <span>update</span>
                         </a>
                     </div>
                     <div class="embedded-list">
-                        <a class="endpoint__delete" id="delete">
+                        <a class="endpoint__delete" id="delete" data-id="<%= client.id %>">
                             <i class="fa-regular fa-trash-can"></i>
                             <span>delete</span>
                         </a>
