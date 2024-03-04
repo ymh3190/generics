@@ -113,6 +113,11 @@ class ClientRouter extends Router {
         middleware.authorizePermissions("admin"),
         clientController.selectById
       )
+      .patch(
+        middleware.authenticateUser,
+        middleware.authorizePermissions("admin"),
+        clientController.update
+      )
       .delete(
         middleware.authenticateUser,
         middleware.authorizePermissions("admin"),

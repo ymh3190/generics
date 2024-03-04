@@ -37,7 +37,9 @@
             <% } else if (url==='/client' ) { %>
                 <div class="primary">
                     <div class="embedded-list">
-                        <a class="endpoint__update" id="update" data-id="<%= client.id %>">
+                        <a class="endpoint__update" id="update" data-id="<%= client.id %>"
+                            data-association="<%= client.association %>" data-name="<%= client.name %>"
+                            data-telephone="<%= client.telephone %>" data-comment="<%= client.comment %>">
                             <i class="fa-solid fa-scissors"></i>
                             <span>update</span>
                         </a>

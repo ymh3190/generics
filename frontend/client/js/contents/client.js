@@ -26,7 +26,19 @@ const headerDOM = document.getElementById("header");
 
 const clientPopupDOM = document.getElementById("clientPopup");
 
-let isUpdate, isUpdating;
+//#region update client
+const updateClientPopupDOM = document.getElementById("updateClientPopup");
+const closeUpdateClientPopupDOM = document.getElementById(
+  "closeUpdateClientPopup"
+);
+const updateClientFormDOM = document.getElementById("updateClientForm");
+const updatedAssociationDOM = document.getElementById("updatedAssociation");
+const updatedNameDOM = document.getElementById("updatedName");
+const updatedTelephoneDOM = document.getElementById("updatedTelephone");
+const updatedCommentDOM = document.getElementById("updatedComment");
+//#endregion update client
+
+let isUpdate;
 
 async function clientWorkInfoContainerHandler() {
   workInfoPopupDOM.removeEventListener("mouseleave", workInfoPopupHandler);
@@ -107,6 +119,7 @@ async function clientContainerHandler(event) {
 
   popupDOM.classList.remove("hidden");
   workInfoPopupDOM.classList.remove("hidden");
+  updateClientPopupDOM.classList.add("hidden");
   navDOM.classList.add("blur");
   headerDOM.classList.add("blur");
 
@@ -140,8 +153,6 @@ async function clientContainerHandler(event) {
 }
 
 function rightHandler() {
-  bodyDOM.addEventListener("click", bodyHandler);
-
   const embeddedDOMs = contentDOM.querySelectorAll("#embedded");
   const embeddedDOM = this.querySelector("#embedded");
   embeddedDOMs.forEach((dom) => {
@@ -158,12 +169,29 @@ function updateHandler(event) {
   event.stopPropagation();
 
   popupDOM.classList.remove("hidden");
-  clientPopupDOM.classList.remove("hidden");
+  updateClientPopupDOM.classList.remove("hidden");
+  popupDOM.classList.add("transparent");
 
   const embeddedDOMs = contentDOM.querySelectorAll("#embedded");
   embeddedDOMs.forEach((embeddedDOM) => {
     embeddedDOM.classList.add("hidden");
   });
+
+  const updatedAssociationDOM = updateClientFormDOM.querySelector(
+    "#updatedAssociation"
+  );
+  const updatedNameDOM = updateClientFormDOM.querySelector("#updatedName");
+  const updatedTelephoneDOM =
+    updateClientFormDOM.querySelector("#updatedTelephone");
+  const updatedCommentDOM =
+    updateClientFormDOM.querySelector("#updatedComment");
+
+  updatedAssociationDOM.value = this.dataset.association;
+  updatedNameDOM.value = this.dataset.name;
+  updatedTelephoneDOM.value = this.dataset.telephone;
+  updatedCommentDOM.value = this.dataset.comment;
+
+  updateClientFormDOM.dataset.id = this.dataset.id;
 }
 
 async function deleteHandler(event) {
@@ -173,16 +201,29 @@ async function deleteHandler(event) {
     return;
   }
 
-  const id = this.dataset.id;
-  const response = await FetchAPI.delete(`/clients/${id}`);
+  const clientId = this.dataset.id;
+  const response = await FetchAPI.delete(`/clients/${clientId}`);
   if (response) {
-    const data = await response.json();
-    alert(data.message);
+    clientContainerDOMs.forEach((clientContainerDOM) => {
+      const id = clientContainerDOM.dataset.id;
+      if (clientId === id) {
+        clientContainerDOM.remove();
+      }
+    });
   }
+
+  const embeddedDOMs = document.querySelectorAll("#embedded");
+  embeddedDOMs.forEach((embeddedDOM) => {
+    embeddedDOM.classList.add("hidden");
+  });
 }
 
 function bodyHandler(event) {
   if (isUpdate) {
+    return;
+  }
+
+  if (event.target === updateClientPopupDOM) {
     return;
   }
 
@@ -222,13 +263,15 @@ function bodyHandler(event) {
 
   bodyDOM.removeEventListener("click", bodyHandler);
   workInfoPopupDOM.addEventListener("mouseleave", workInfoPopupHandler);
-  popupDOM.classList.add("hidden");
-  workInfoPopupDOM.classList.add("hidden");
-  workDetailPopupDOM.classList.add("hidden");
+
   popupDOM.classList.remove("blur");
   workInfoPopupDOM.classList.remove("blur");
   navDOM.classList.remove("blur");
   headerDOM.classList.remove("blur");
+
+  popupDOM.classList.add("hidden");
+  workInfoPopupDOM.classList.add("hidden");
+  workDetailPopupDOM.classList.add("hidden");
 }
 
 const createClientFormHandler = async (event) => {
@@ -326,6 +369,75 @@ const docsHandler = (event) => {
   }
 };
 
+const closeUpdateClientPopupHandler = () => {
+  popupDOM.classList.remove("transparent");
+  popupDOM.classList.add("hidden");
+  updateClientPopupDOM.classList.add("hidden");
+};
+
+const updateClientFormHandler = async (event) => {
+  event.preventDefault();
+
+  const updatedAssociation = updatedAssociationDOM.value;
+  const updatedName = updatedNameDOM.value;
+  const updatedTelephone = updatedTelephoneDOM.value;
+  const updatedComment = updatedCommentDOM.value;
+
+  if (!updatedAssociation) {
+    alert("Association not found");
+    updatedAssociationDOM.focus();
+    return;
+  }
+
+  if (!updatedName) {
+    alert("Name not found");
+    updatedNameDOM.focus();
+    return;
+  }
+
+  if (!updatedTelephone) {
+    alert("Telephone not found");
+    updatedTelephoneDOM.focus();
+    return;
+  }
+
+  if (!updatedComment) {
+    alert("Comment not found");
+    updatedCommentDOM.focus();
+    return;
+  }
+
+  const data = {
+    association: updatedAssociation,
+    name: updatedName,
+    telephone: updatedTelephone,
+    comment: updatedComment,
+  };
+
+  const id = updateClientFormDOM.dataset.id;
+  const response = await FetchAPI.patch(`/clients/${id}`, data);
+  if (response) {
+    const data = await response.json();
+    const client = data.client;
+    clientContainerDOMs.forEach((clientContainerDOM) => {
+      const clientId = clientContainerDOM.dataset.id;
+      if (clientId === id) {
+        const associationDOM = clientContainerDOM.querySelector("#association");
+        const nameDOM = clientContainerDOM.querySelector("#name");
+        const telephoneDOM = clientContainerDOM.querySelector("#telephone");
+        associationDOM.textContent = client.association;
+        nameDOM.textContent = client.name;
+        telephoneDOM.textContent = client.telephone;
+      }
+    });
+  }
+};
+
+updateClientFormDOM.addEventListener("submit", updateClientFormHandler);
+closeUpdateClientPopupDOM.addEventListener(
+  "click",
+  closeUpdateClientPopupHandler
+);
 document.addEventListener("keydown", docsHandler);
 workInfoPopupDOM.addEventListener("mouseleave", workInfoPopupHandler);
 workInfoPopupDOM.addEventListener("mouseenter", workInfoPopupHandler);

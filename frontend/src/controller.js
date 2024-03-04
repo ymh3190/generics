@@ -236,6 +236,16 @@ class ClientController {
     res.status(200).json({ client: data.client });
   }
 
+  async update(req, res) {
+    const { id } = req.params;
+
+    const response = await FetchAPI.patch(`/clients/${id}`, req.body, {
+      cookie: req.headers.cookie,
+    });
+    const data = await response.json();
+    res.status(200).json({ client: data.client });
+  }
+
   async delete(req, res) {
     const { id } = req.params;
 

@@ -95,3 +95,65 @@
         </div>
     </div>
 </div>
+<div class="tertiary update-client-popup hidden" id="updateClientPopup">
+    <div class="popup-header">
+        <div class="left">
+            <p>update phase</p>
+        </div>
+        <div class="right">
+            <button id='closeUpdateClientPopup'>x</button>
+        </div>
+    </div>
+    <div class="popup-body" id="popupBody">
+        <form id="updateClientForm" class="update-client-form">
+            <div class="left">
+                <div class="top">
+                    <div class="input-containers">
+                        <div class="input-container">
+                            <div class="title">
+                                <span>association</span>
+                            </div>
+                            <div class="association">
+                                <input type="text" id="updatedAssociation" autocomplete="on">
+                            </div>
+                        </div>
+                        <div class="input-container">
+                            <div class="title">
+                                <span>name</span>
+                            </div>
+                            <div class="name">
+                                <input type="text" id="updatedName" autocomplete="on">
+                            </div>
+                        </div>
+                        <div class="input-container">
+                            <div class="title">
+                                <span>telephone</span>
+                            </div>
+                            <div class="telephone">
+                                <input type="text" id="updatedTelephone" autocomplete="on">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bottom">
+                    <div class="input-container">
+                        <div class="title">
+                            <span>comment</span>
+                        </div>
+                        <div class="comment">
+                            <input type="text" id="updatedComment" autocomplete="on">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="right">
+                <span>update</span>
+                <div class="update-row">
+                    <button>
+                        <i class="fa-solid fa-scissors"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

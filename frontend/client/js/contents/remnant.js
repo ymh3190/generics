@@ -149,6 +149,13 @@ async function deleteHandler() {
         remnantContainerDOM.remove();
       }
     });
+    // for (const remnantContainerDOM of remnantContainerDOMs) {
+    //   const id = remnantContainerDOM.dataset.id;
+    //   if (remnantDetailId === id) {
+    //     remnantContainerDOM.remove();
+    //     break
+    //   }
+    // }
   }
 }
 
