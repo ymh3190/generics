@@ -268,5 +268,50 @@
 
   let clientContainerDOMs = document.querySelectorAll("#clientContainer");
   if (clientContainerDOMs.length) {
+    const associationChipDOM = document.getElementById("associationChip");
+    const associationSelectDOM = document.getElementById("associationSelect");
+    const nameChipDOM = document.getElementById("nameChip");
+    const nameSelectDOM = document.getElementById("nameSelect");
+
+    const associationChipHandler = () => {
+      const association = associationSelectDOM.value;
+      const clientContainerDOMs = document.querySelectorAll("#clientContainer");
+      clientContainerDOMs.forEach((clientContainerDOM) => {
+        if (!association) {
+          clientContainerDOM.classList.remove("hidden");
+          return;
+        }
+
+        const associationDOM = clientContainerDOM.querySelector("#association");
+        const isMatch = associationDOM.textContent.trim() === association;
+        if (!isMatch) {
+          clientContainerDOM.classList.add("hidden");
+          return;
+        }
+        clientContainerDOM.classList.remove("hidden");
+      });
+    };
+
+    const nameChipHandler = () => {
+      const name = nameSelectDOM.value;
+      const clientContainerDOMs = document.querySelectorAll("#clientContainer");
+      clientContainerDOMs.forEach((clientContainerDOM) => {
+        if (!name) {
+          clientContainerDOM.classList.remove("hidden");
+          return;
+        }
+
+        const nameDOM = clientContainerDOM.querySelector("#name");
+        const isMatch = nameDOM.textContent.trim() === name;
+        if (!isMatch) {
+          clientContainerDOM.classList.add("hidden");
+          return;
+        }
+        clientContainerDOM.classList.remove("hidden");
+      });
+    };
+
+    nameChipDOM.addEventListener("change", nameChipHandler);
+    associationChipDOM.addEventListener("change", associationChipHandler);
   }
 })();

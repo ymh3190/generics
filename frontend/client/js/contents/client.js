@@ -425,9 +425,22 @@ const updateClientFormHandler = async (event) => {
         const associationDOM = clientContainerDOM.querySelector("#association");
         const nameDOM = clientContainerDOM.querySelector("#name");
         const telephoneDOM = clientContainerDOM.querySelector("#telephone");
+        const commentDOM = clientContainerDOM.querySelector("#comment");
+
+        const updateDOM = clientContainerDOM.querySelector("#update");
+        updateDOM.dataset.association = client.association;
+        updateDOM.dataset.name = client.name;
+        updateDOM.dataset.telephone = client.telephone;
+        updateDOM.dataset.comment = client.comment;
+
         associationDOM.textContent = client.association;
         nameDOM.textContent = client.name;
         telephoneDOM.textContent = client.telephone;
+        commentDOM.textContent = client.comment;
+
+        popupDOM.classList.remove("transparent");
+        updateClientPopupDOM.classList.add("hidden");
+        popupDOM.classList.add("hidden");
       }
     });
   }
